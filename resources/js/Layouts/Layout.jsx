@@ -1,6 +1,6 @@
 import Footer from "@/Layouts/Footer";
 import Navbar from "@/Layouts/Navbar";
-import { Head, Link } from "@inertiajs/react";
+import { Head } from "@inertiajs/react";
 
 export default function Layout({ children }) {
     return (
