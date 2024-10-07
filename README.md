@@ -1,92 +1,92 @@
-## Setup Instructions
+## Instruksi Setup
 
-### Prerequisites
+### Prasyarat
 
-Before you begin, ensure you have met the following requirements:
+Sebelum memulai, pastikan Anda telah memenuhi persyaratan berikut:
 
 -   PHP ^8.2
 -   Composer
--   Node.js and npm
--   MySQL or any other supported database
+-   Node.js dan npm
+-   MySQL atau database lain yang didukung
 
-### Installation
+### Instalasi
 
-1. **Clone the repository:**
+1. **Klon repositori:**
 
     ```sh
     git clone https://github.com/neddy1298/tugas-akhir
     cd tugas-akhir
     ```
 
-2. **Install PHP dependencies:**
+2. **Instal dependensi PHP:**
 
     ```sh
     composer install
     ```
 
-3. **Install JavaScript dependencies:**
+3. **Instal dependensi JavaScript:**
 
     ```sh
     npm install
     ```
 
-4. **Copy the `.env.example` file to `.env`:**
+4. **Salin file `.env.example` ke `.env`:**
 
     ```sh
     cp .env.example .env
     ```
 
-5. **Generate an application key:**
+5. **Hasilkan kunci aplikasi:**
 
     ```sh
     php artisan key:generate
     ```
 
-6. **Configure your database in the `.env` file:**
+6. **Konfigurasi database Anda di file `.env`:**
 
     ```env
     DB_CONNECTION=sqlite
     ```
 
-7. **Run database migrations:**
+7. **Jalankan migrasi database:**
 
     ```sh
     php artisan migrate
     php artisan db:seed
     ```
 
-8. **Build the front-end assets:**
+8. **Bangun aset front-end:**
 
     ```sh
     npm run dev
     ```
 
-### Running the Application
+### Menjalankan Aplikasi
 
-1. **Start the Laravel development server:**
+1. **Mulai server pengembangan Laravel:**
 
     ```sh
     php artisan serve
     ```
 
-2. **Visit the application in your browser:**
+2. **Kunjungi aplikasi di browser Anda:**
 
-    Open your browser and go to `http://localhost:8000`.
+    Buka browser Anda dan pergi ke `http://localhost:8000`.
 
-### Additional Commands
+### Perintah Tambahan (optional)
 
--   **Run tests:**
+-   **Jalankan tes:**
 
     ```sh
     php artisan test
     ```
 
--   **Build assets for production:**
+-   **Bangun aset untuk produksi:**
 
     ```sh
     npm run build
     ```
 
-### Troubleshooting
+### Pemecahan Masalah
 
-If you encounter any issues, please refer to the [Laravel documentation](https://laravel.com/docs) and the [React documentation](https://reactjs.org/docs/getting-started.html).
+Jika Anda mengalami masalah, silakan merujuk ke [dokumentasi Laravel](https://laravel.com/docs) dan [dokumentasi React](https://reactjs.org/docs/getting-started.html).
