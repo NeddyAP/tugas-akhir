@@ -1,5 +1,7 @@
 import React from 'react';
 import landingImage from '../../../images/Saly-10.png';
+import Button from '@/Components/Button';
+import { Link } from '@inertiajs/react';
 
 const LandingPage = () => {
     return (
@@ -13,12 +15,20 @@ const LandingPage = () => {
                     Terus semangat untuk mendapatkan hasil yang luar biasa, Isi sekarang yu.
                 </p>
                 <div className="flex space-x-4">
-                    <button className="px-6 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700 transition-colors">
+                    <Button
+                        src={route('login')}
+                    >
                         Login
-                    </button>
-                    <button className="px-6 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors">
+                    </Button>
+                    <Link
+                        href={route('informasi')}>
+                            test
+                        </Link>
+                    <Button
+                        style={"bg-gray-200 text-gray-800 hover:bg-gray-300"}
+                    >
                         Tutorial
-                    </button>
+                    </Button>
                 </div>
             </div>
 

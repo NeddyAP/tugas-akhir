@@ -47,7 +47,7 @@ export default function Footer() {
     const currentYear = new Date().getFullYear();
 
     return (
-        <footer className="py-10 md:px-8 lg:px-48 bg-white border-t">
+        <footer className="container mx-auto px-4 md:px-8 lg:px-16 py-8 md:py-20">
             <div className="container mx-auto">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                     <div className="col-span-1 md:col-span-2 lg:col-span-1">

@@ -1,6 +1,7 @@
 import { Head } from "@inertiajs/react";
 import LandingPage from "./Home/LandingPage";
 import Tutorial from "./Home/Tutorial";
+import Faq from "./Home/Faq";
 export default function Home() {
 
     return (
@@ -11,6 +12,8 @@ export default function Home() {
             <LandingPage />
 
             <Tutorial />
+
+            <Faq />
         </>
     );
 }
