@@ -1,7 +1,6 @@
 import React from 'react';
 import landingImage from '../../../images/Saly-10.png';
 import Button from '@/Components/Button';
-import { Link } from '@inertiajs/react';
 
 const LandingPage = () => {
     return (
