@@ -16,14 +16,10 @@ const LandingPage = () => {
                 </p>
                 <div className="flex space-x-4">
                     <Button
-                        src={route('login')}
+                        href={route('login')}
                     >
                         Login
                     </Button>
-                    <Link
-                        href={route('informasi')}>
-                            test
-                        </Link>
                     <Button
                         style={"bg-gray-200 text-gray-800 hover:bg-gray-300"}
                     >

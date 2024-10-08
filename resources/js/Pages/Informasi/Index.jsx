@@ -7,9 +7,6 @@ export default function Index() {
             <Head>
                 <title>Informasi</title>
             </Head>
-            <Navbar />
-
-            <Footer />
         </>
     );
 }

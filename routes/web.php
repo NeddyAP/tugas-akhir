@@ -15,7 +15,7 @@ use Inertia\Inertia;
 // });
 
 Route::inertia('/', 'Home')->name('home');
-Route::inertia('/informasi', 'Informasi.Index')->name('informasi');
+Route::inertia('/informasi', 'Informasi/Index')->name('info');
 // Route::get('/dashboard', function () {
 //     return Inertia::render('Dashboard');
 // })->middleware(['auth', 'verified'])->name('dashboard');

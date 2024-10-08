@@ -40,7 +40,7 @@ export default function Navbar() {
             <div className="container mx-auto flex justify-between items-center">
                 <Link href={route('home')} className="text-2xl font-bold">FILKOM</Link>
                 <div className="hidden md:flex items-center">
-                    <Link href='' className="mr-4 hover:underline-offset-2 hover:underline transition-all duration-300 ease-in-out">Informasi</Link>
+                    <Link href={route('info')} className="mr-4 hover:underline-offset-2 hover:underline transition-all duration-300 ease-in-out">Informasi</Link>
                     <Link href='' className="mr-4 hover:underline-offset-2 hover:underline transition-all duration-300 ease-in-out">Buku Pedoman</Link>
                     <Link href='' className="mr-4 hover:underline-offset-2 hover:underline transition-all duration-300 ease-in-out">Logbook</Link>
                     <Link href='' className="mr-4">
