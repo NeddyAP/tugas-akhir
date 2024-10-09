@@ -14,7 +14,10 @@ use Inertia\Inertia;
 //     ]);
 // });
 
-Route::inertia('/', 'Home')->name('home');
+Route::inertia('/', 'Home', [
+    'canLogin' => Route::has('login'),
+    'canRegister' => Route::has('register'),
+])->name('home');
 Route::inertia('/informasi', 'Informasi/Index')->name('info');
 // Route::get('/dashboard', function () {
 //     return Inertia::render('Dashboard');
