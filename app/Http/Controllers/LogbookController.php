@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreLogbookRequest;
 use App\Http\Requests\UpdateLogbookRequest;
 use App\Models\Logbook;
+use Inertia\Inertia;
 
 class LogbookController extends Controller
 {
@@ -13,7 +14,9 @@ class LogbookController extends Controller
      */
     public function index()
     {
-        //
+        return Inertia::render('Logbook/Index', [
+            'logbooks' => Logbook::all(),
+        ]);
     }
 
     /**

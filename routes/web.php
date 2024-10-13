@@ -22,12 +22,9 @@ Route::inertia('/', 'Home/Index', [
 Route::inertia('/pedoman', 'Pedoman/Index', [
     'canLogin' => Route::has('login'),
 ])->name('pedoman.index');
-Route::inertia('/logbook', 'Logbook/Index', [
-    'canLogin' => Route::has('login'),
-])->name('logbook.index');
 
 Route::middleware('auth')->group(function () {
-    Route::resource('logbook', LogbookController::class)->except(['index']);
+    Route::resource('logbook', LogbookController::class);
     Route::resource('laporan', LaporanController::class);
 });
 
@@ -42,4 +39,4 @@ Route::middleware('auth')->group(function () {
 //     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 // });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

@@ -12,26 +12,24 @@ const Card = ({ title, description }) => (
             <h3 className="mb-2 text-lg font-semibold text-gray-900 transition-all duration-300 group-hover:text-sky-500">{title}</h3>
             <p className="text-sm text-gray-600 transition-all duration-300 group-hover:text-gray-500">{description}</p>
             <div className="pt-4 text-sm font-semibold leading-7">
-                <a href="#" className="transition-all duration-300 text-sky-500 group-hover:text-sky-600">
+                <Link href="#" className="transition-all duration-300 text-sky-500 group-hover:text-sky-600">
                     Read the docs &rarr;
-                </a>
+                </Link>
             </div>
         </div>
     </div>
 );
 
 const CardGrid = ({ cards }) => (
-    <Link href="#">
-        <div className="flex flex-col justify-center min-h-screen py-6 bg-gray-50 sm:py-12">
-            <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
-                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                    {cards.map((card, index) => (
-                        <Card key={index} {...card} />
-                    ))}
-                </div>
+    <div className="flex flex-col justify-center min-h-screen py-6 bg-gray-50 sm:py-12">
+        <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                {cards.map((card, index) => (
+                    <Card key={index} {...card} />
+                ))}
             </div>
         </div>
-    </Link>
+    </div>
 );
 
 export default function Index() {

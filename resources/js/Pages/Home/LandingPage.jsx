@@ -8,7 +8,7 @@ const LandingPage = () => {
     const user = usePage().props.auth.user ?? { name: 'Guest' };
 
     return (
-        <div className="flex flex-col items-center justify-between min-h-screen px-6 py-24 md:flex-row md:px-24 lg:px-48 bg-gradient-to-tr from-sky-100 via-sky-200 to-teal-600 dark:bg-gray-800">
+        <div className="flex flex-col items-center justify-between min-h-screen px-6 pb-20 md:flex-row md:px-24 lg:px-48 bg-gradient-to-tr from-sky-100 via-sky-200 to-teal-600 dark:bg-gray-800 sm:py-20 sm:mb-20">
             <div className="max-w-md mb-8 md:mb-0">
                 <h2 className="mb-2 text-lg font-medium">Hallo, Selamat Datang</h2>
                 <h1 className="mb-4 text-3xl font-bold md:text-4xl">

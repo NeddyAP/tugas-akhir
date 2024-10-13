@@ -22,11 +22,11 @@ export default function Faq() {
 
     return (
         <div
-            class="relative w-full bg-white px-6 pt-10 pb-8 mt-20 shadow-xl ring-1 ring-gray-900/5 sm:mx-auto sm:max-w-2xl sm:rounded-lg sm:px-10">
-            <div class="mx-auto px-5">
-                <div class="flex flex-col items-center">
-                    <h2 class="mt-5 text-center text-3xl font-bold tracking-tight md:text-5xl">FAQ</h2>
-                    <p class="mt-3 text-lg text-neutral-500 md:text-xl">Pertanyaan yang Sering Diajukan
+            className="relative w-full px-6 pt-10 pb-8 mt-20 bg-white shadow-xl ring-1 ring-gray-900/5 sm:mx-auto sm:max-w-2xl sm:rounded-lg sm:px-10">
+            <div className="px-5 mx-auto">
+                <div className="flex flex-col items-center">
+                    <h2 className="mt-5 text-3xl font-bold tracking-tight text-center md:text-5xl">FAQ</h2>
+                    <p className="mt-3 text-lg text-neutral-500 md:text-xl">Pertanyaan yang Sering Diajukan
 
                     </p>
                 </div>
