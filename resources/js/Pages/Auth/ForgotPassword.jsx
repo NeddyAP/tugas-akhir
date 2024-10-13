@@ -1,12 +1,12 @@
 import React from 'react';
 import { Mail } from 'lucide-react';
-import { useForm } from '@inertiajs/react';
+import { Link, useForm } from '@inertiajs/react';
 import AuthLayout from '@/Layouts/AuthLayout';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const ForgotPassword = () => {
-    const { data, setData, post, processing, errors, reset } = useForm({
+    const { data, setData, post, processing, errors } = useForm({
         email: '',
     });
 
@@ -15,16 +15,14 @@ const ForgotPassword = () => {
         post(route('password.email'), {
             onSuccess: () => {
                 toast.success('Reset link berhasil dikirim, periksa email anda');
-                reset('email');
+                setData('email', '');
             },
-            onError: (errors) => {
-                toast.error('Terjadi kesalahan', errors);
-            },
+            onError: () => toast.error('Terjadi kesalahan'),
         });
     };
 
     return (
-        <AuthLayout title="Forgot Password">
+        <AuthLayout title="Lupa Password">
             <form onSubmit={handleSubmit}>
                 <div className="mb-4">
                     <label htmlFor="email" className="block mb-1 text-sm font-medium text-gray-700">Email</label>
@@ -41,6 +39,11 @@ const ForgotPassword = () => {
                         <Mail className="absolute text-gray-400 transform -translate-y-1/2 left-3 top-1/2" size={18} />
                         {errors.email && <p className="mt-1 text-xs text-red-500">{errors.email}</p>}
                     </div>
+                </div>
+                <div className="flex justify-end mb-4">
+                    <Link href={route('login')} className="text-sm text-blue-600 hover:underline">
+                        Kembali ke Login
+                    </Link>
                 </div>
                 <button
                     type="submit"

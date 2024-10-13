@@ -12,7 +12,7 @@ const AuthLayout = ({ title, children }) => {
                     <div className="absolute top-4 left-4">
                         <Link href={route('home')} className="flex items-center text-blue-600 hover:underline">
                             <ArrowLeft className="w-4 h-4 mr-1" />
-                            Kembali
+                            Home
                         </Link>
                     </div>
                     <div className="flex items-center justify-center w-1/2 p-8">

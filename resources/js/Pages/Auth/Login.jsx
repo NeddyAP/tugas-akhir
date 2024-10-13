@@ -16,7 +16,7 @@ const Login = () => {
     };
 
     return (
-        <AuthLayout title="Login to your account">
+        <AuthLayout title="Login">
             <form onSubmit={handleSubmit}>
                 <div className="mb-4">
                     <label htmlFor="email" className="block mb-1 text-sm font-medium text-gray-700">Email</label>
