@@ -13,13 +13,13 @@ export default function Layout({ children }) {
                 />
             </Head>
 
-            <Navbar />
-
-            <div className="my-auto">
-                {children}
+            <div className="flex flex-col min-h-screen">
+                <Navbar />
+                <main className="flex-grow pt-16">
+                    {children}
+                </main>
+                <Footer />
             </div>
-
-            <Footer />
         </>
     );
 }

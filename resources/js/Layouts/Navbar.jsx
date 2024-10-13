@@ -1,38 +1,39 @@
-import React, { useEffect, useRef, useCallback, Fragment } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link, usePage } from "@inertiajs/react";
-import { UserCircle } from "lucide-react";
-import { Menu, Transition } from '@headlessui/react';
 
 export default function Navbar() {
     const user = usePage().props.auth.user;
-    const navbarRef = useRef(null);
-
-    const handleScroll = useCallback(() => {
-        let lastScrollTop = 0;
-
-        return () => {
-            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-            if (navbarRef.current) {
-                navbarRef.current.style.transform = scrollTop > lastScrollTop ? 'translateY(-100%)' : 'translateY(0)';
-            }
-            lastScrollTop = scrollTop;
-        };
-    }, []);
+    const [isVisible, setIsVisible] = useState(true);
+    const [lastScrollY, setLastScrollY] = useState(0);
 
     useEffect(() => {
-        const debouncedHandleScroll = debounce(handleScroll(), 200);
-        window.addEventListener('scroll', debouncedHandleScroll);
+        const controlNavbar = () => {
+            if (typeof window !== 'undefined') {
+                if (window.scrollY > lastScrollY) { // if scroll down hide the navbar
+                    setIsVisible(false);
+                } else { // if scroll up show the navbar
+                    setIsVisible(true);
+                }
 
-        return () => {
-            window.removeEventListener('scroll', debouncedHandleScroll);
+                // remember current page location to use in the next move
+                setLastScrollY(window.scrollY);
+            }
         };
-    }, [handleScroll]);
+
+        if (typeof window !== 'undefined') {
+            window.addEventListener('scroll', controlNavbar);
+
+            // cleanup function
+            return () => {
+                window.removeEventListener('scroll', controlNavbar);
+            };
+        }
+    }, [lastScrollY]);
 
     return (
         <nav
-            ref={navbarRef}
-            id="navbar"
-            className="fixed top-0 left-0 z-50 w-full p-4 px-4 text-white transition-transform duration-300 bg-teal-600 shadow-md md:px-48"
+            className={`fixed top-0 left-0 z-50 w-full p-4 px-4 text-white transition-transform duration-300 bg-teal-600 shadow-md md:px-48 ${isVisible ? 'translate-y-0' : '-translate-y-full'
+                }`}
         >
             <div className="container flex items-center justify-between mx-auto">
                 <Link href={route('home')} className="text-2xl font-bold">FILKOM</Link>
@@ -58,17 +59,4 @@ export default function Navbar() {
             </div>
         </nav>
     );
-}
-
-// Utility function to debounce a function
-function debounce(func, wait) {
-    let timeout;
-    return function (...args) {
-        const later = () => {
-            clearTimeout(timeout);
-            func(...args);
-        };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-    };
 }

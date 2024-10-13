@@ -8,13 +8,13 @@ const LandingPage = () => {
     const user = usePage().props.auth.user ?? { name: 'Guest' };
 
     return (
-        <div className="flex flex-col md:flex-row items-center justify-between py-24 px-6 md:px-24 lg:px-48 min-h-screen bg-gradient-to-tr from-sky-100 via-sky-200 to-teal-600 dark:bg-gray-800">
+        <div className="flex flex-col items-center justify-between min-h-screen px-6 py-24 md:flex-row md:px-24 lg:px-48 bg-gradient-to-tr from-sky-100 via-sky-200 to-teal-600 dark:bg-gray-800">
             <div className="max-w-md mb-8 md:mb-0">
-                <h2 className="text-lg font-medium mb-2">Hallo, Selamat Datang</h2>
-                <h1 className="text-3xl md:text-4xl font-bold mb-4">
+                <h2 className="mb-2 text-lg font-medium">Hallo, Selamat Datang</h2>
+                <h1 className="mb-4 text-3xl font-bold md:text-4xl">
                     Semangat melaksanakan kuliah kerja lapangan & kuliah kerja nyata.
                 </h1>
-                <p className="text-gray-600 mb-6">
+                <p className="mb-6 text-gray-600">
                     Terus semangat untuk mendapatkan hasil yang luar biasa, Isi sekarang yu.
                 </p>
                 <div className="flex space-x-4">
@@ -31,7 +31,7 @@ const LandingPage = () => {
                     </SecondaryButton>
                 </div>
             </div>
-            <div className="relative w-full md:w-1/2 max-w-lg">
+            <div className="relative w-full max-w-lg md:w-1/2">
                 <img
                     src={landingImage}
                     alt="Illustration of person working"
