@@ -1,40 +1,47 @@
 import React, { useState } from 'react';
+import { ChevronDown } from 'lucide-react';
+
+const AccordionItem = React.memo(({ item, isActive, onToggle }) => (
+    <div className="py-5">
+        <details
+            className="group"
+            open={isActive}
+            onClick={(e) => {
+                e.preventDefault();
+                onToggle();
+            }}
+        >
+            <summary className="flex items-center justify-between font-medium list-none cursor-pointer">
+                <span>{item.question}</span>
+                <ChevronDown
+                    className={`transition-transform duration-300 ${isActive ? 'rotate-180' : ''}`}
+                />
+            </summary>
+            {isActive && (
+                <p className="mt-3 animate-fadeIn text-neutral-600">
+                    {item.answer}
+                </p>
+            )}
+        </details>
+    </div>
+));
 
 const Accordion = ({ items }) => {
     const [activeIndex, setActiveIndex] = useState(null);
 
     const toggleAccordion = (index) => {
-        setActiveIndex(activeIndex === index ? null : index);
+        setActiveIndex(prevIndex => (prevIndex === index ? null : index));
     };
 
     return (
-        <div className="relative w-full mx-auto overflow-hidden text-sm font-normal bg-white border border-gray-200 divide-y divide-gray-200 rounded-md">
+        <div className="grid max-w-xl mx-auto mt-8 divide-y divide-neutral-200">
             {items.map((item, index) => (
-                <div key={index} className="cursor-pointer group">
-                    <button
-                        onClick={() => toggleAccordion(index)}
-                        className="flex items-center justify-between w-full p-4 text-left select-none group-hover:underline"
-                    >
-                        <span>{item.question}</span>
-                        <svg
-                            className={`w-4 h-4 duration-200 ease-out ${activeIndex === index ? 'rotate-180' : ''}`}
-                            viewBox="0 0 24 24"
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                        >
-                            <polyline points="6 9 12 15 18 9"></polyline>
-                        </svg>
-                    </button>
-                    {activeIndex === index && (
-                        <div className="p-4 pt-0 opacity-70">
-                            {item.answer}
-                        </div>
-                    )}
-                </div>
+                <AccordionItem
+                    key={index}
+                    item={item}
+                    isActive={activeIndex === index}
+                    onToggle={() => toggleAccordion(index)}
+                />
             ))}
         </div>
     );

@@ -21,9 +21,17 @@ export default function Faq() {
     ];
 
     return (
-        <div className="container mx-auto px-4 md:px-8 lg:px-16 py-12 md:py-20">
-            <h1 className="text-3xl font-bold mt-8 mb-4 text-center">Pertanyaan yang Sering Diajukan</h1>
-            <Accordion items={faqItems} />
+        <div
+            class="relative w-full bg-white px-6 pt-10 pb-8 mt-20 shadow-xl ring-1 ring-gray-900/5 sm:mx-auto sm:max-w-2xl sm:rounded-lg sm:px-10">
+            <div class="mx-auto px-5">
+                <div class="flex flex-col items-center">
+                    <h2 class="mt-5 text-center text-3xl font-bold tracking-tight md:text-5xl">FAQ</h2>
+                    <p class="mt-3 text-lg text-neutral-500 md:text-xl">Pertanyaan yang Sering Diajukan
+
+                    </p>
+                </div>
+                <Accordion items={faqItems} />
+            </div>
         </div>
     );
 }
