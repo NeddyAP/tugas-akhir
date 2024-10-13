@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Laporan;
 use App\Http\Requests\StoreLaporanRequest;
 use App\Http\Requests\UpdateLaporanRequest;
+use App\Models\Laporan;
 
 class LaporanController extends Controller
 {

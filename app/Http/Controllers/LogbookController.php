@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Logbook;
 use App\Http\Requests\StoreLogbookRequest;
 use App\Http\Requests\UpdateLogbookRequest;
+use App\Models\Logbook;
 
 class LogbookController extends Controller
 {
