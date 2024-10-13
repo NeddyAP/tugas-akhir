@@ -7,17 +7,21 @@ import Layout from '@/Layouts/Layout';
 
 createInertiaApp({
     title: (title) => `${title} - FILKOM`,
-    resolve: (name) => {
-        const pages = import.meta.glob('./Pages/**/*.jsx', { eager: true });
-        const page = pages[`./Pages/${name}.jsx`];
+    // resolve: (name) => {
+    //     const pages = import.meta.glob('./Pages/**/*.jsx', { eager: true });
+    //     const page = pages[`./Pages/${name}.jsx`];
 
-        if (!page) {
-            throw new Error(`Page not found: ${name}`);
-        }
+    //     if (!page) {
+    //         throw new Error(`Page not found: ${name}`);
+    //     }
 
-        const PageComponent = page.default;
-        PageComponent.layout = PageComponent.layout || ((page) => <Layout children={page} />);
-        return page;
+    //     const PageComponent = page.default;
+    //     PageComponent.layout = PageComponent.layout || ((page) => <Layout children={page} />);
+    //     return page;
+    // },
+    resolve: name => {
+        const pages = import.meta.glob('./Pages/**/*.jsx', { eager: true })
+        return pages[`./Pages/${name}.jsx`]
     },
     setup({ el, App, props }) {
         if (import.meta.env.SSR) {

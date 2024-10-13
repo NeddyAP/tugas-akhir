@@ -1,10 +1,10 @@
-import { useRoute } from "@vendor/tightenco/ziggy";
-import { useEffect, useRef, useState, useCallback } from "react";
-import { Link } from "@inertiajs/react";
+import React, { useEffect, useRef, useCallback, Fragment } from "react";
+import { Link, usePage } from "@inertiajs/react";
+import { UserCircle } from "lucide-react";
+import { Menu, Transition } from '@headlessui/react';
 
 export default function Navbar() {
-    const [menuOpen, setMenuOpen] = useState(false);
-    const route = useRoute();
+    const user = usePage().props.auth.user;
     const navbarRef = useRef(null);
 
     const handleScroll = useCallback(() => {
@@ -12,10 +12,8 @@ export default function Navbar() {
 
         return () => {
             const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-            if (scrollTop > lastScrollTop) {
-                navbarRef.current.style.transform = 'translateY(-100%)';
-            } else {
-                navbarRef.current.style.transform = 'translateY(0)';
+            if (navbarRef.current) {
+                navbarRef.current.style.transform = scrollTop > lastScrollTop ? 'translateY(-100%)' : 'translateY(0)';
             }
             lastScrollTop = scrollTop;
         };
@@ -23,7 +21,6 @@ export default function Navbar() {
 
     useEffect(() => {
         const debouncedHandleScroll = debounce(handleScroll(), 200);
-
         window.addEventListener('scroll', debouncedHandleScroll);
 
         return () => {
@@ -35,32 +32,30 @@ export default function Navbar() {
         <nav
             ref={navbarRef}
             id="navbar"
-            className="px-4 md:px-48 bg-teal-600 text-white p-4 shadow-md fixed top-0 left-0 w-full transition-transform duration-300 z-10"
+            className="fixed top-0 left-0 z-50 w-full p-4 px-4 text-white transition-transform duration-300 bg-teal-600 shadow-md md:px-48"
         >
-            <div className="container mx-auto flex justify-between items-center">
+            <div className="container flex items-center justify-between mx-auto">
                 <Link href={route('home')} className="text-2xl font-bold">FILKOM</Link>
-                <div className="hidden md:flex items-center">
-                    <Link href={route('info')} className="mr-4 hover:underline-offset-2 hover:underline transition-all duration-300 ease-in-out">Informasi</Link>
-                    <Link href='' className="mr-4 hover:underline-offset-2 hover:underline transition-all duration-300 ease-in-out">Buku Pedoman</Link>
-                    <Link href='' className="mr-4 hover:underline-offset-2 hover:underline transition-all duration-300 ease-in-out">Logbook</Link>
-                    <Link href='' className="mr-4">
-                        <button className="px-2 py-1 bg-teal-700 text-white rounded-md hover:bg-teal-800 transition-colors">Submit</button>
-                    </Link>
+                <div className="items-center hidden md:flex">
+                    <Link href={route('pedoman')} className="mr-4 transition-all duration-300 ease-in-out hover:underline-offset-2 hover:underline">Buku Pedoman</Link>
+                    <Link href={route('logbook')} className="mr-4 transition-all duration-300 ease-in-out hover:underline-offset-2 hover:underline">Logbook</Link>
+                    <Link href={route('submit')} className="mr-4 transition-all duration-300 ease-in-out hover:underline-offset-2 hover:underline">Submit</Link>
+                    {user ? (
+                        <Link
+                            method="post"
+                            href={route('logout')}
+                            as="button"
+                            className="px-2 py-1 font-bold text-red-500 transition-colors rounded-md hover:text-red-600"
+                        >
+                            Logout
+                        </Link>
+                    ) : (
+                        <Link href={route('login')} className="mr-4">
+                            <button className="px-2 py-1 text-white transition-colors bg-teal-700 rounded-md hover:bg-teal-800">Login</button>
+                        </Link>
+                    )}
                 </div>
-                <button className="md:hidden text-2xl" onClick={() => setMenuOpen(!menuOpen)}>
-                    &#9776;
-                </button>
             </div>
-            {menuOpen && (
-                <div className="md:hidden flex flex-col items-center mt-4">
-                    <Link href='' className="mb-2 text-center">Informasi</Link>
-                    <Link href='' className="mb-2 text-center">Buku Pedoman</Link>
-                    <Link href='' className="mb-2 text-center">Logbook</Link>
-                    <Link href='' className="mb-2 text-center">
-                        <button className="px-2 py-1 bg-teal-700 text-white rounded-md hover:bg-teal-800 transition-colors">Submit</button>
-                    </Link>
-                </div>
-            )}
         </nav>
     );
 }

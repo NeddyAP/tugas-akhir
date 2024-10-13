@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from "@inertiajs/react";
+import PrimaryButton from '@/Components/PrimaryButton';
 
 const Tutorial = () => {
     return (
@@ -31,12 +31,12 @@ const Tutorial = () => {
                             feugiat nunc, vel scelerisque nunc eros nec ipsum.
                         </p>
                     </div>
-                    <Link
+                    <PrimaryButton
                         href={route('home')}
-                        className="px-6 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700 transition-colors inline-block"
+                        className=" inline-block"
                     >
                         Login
-                    </Link>
+                    </PrimaryButton>
                 </div>
             </div>
         </div>

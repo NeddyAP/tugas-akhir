@@ -1,5 +1,4 @@
 import Accordion from '@/Components/Accordion';
-import { useState } from 'react';
 
 export default function Faq() {
     const faqItems = [
@@ -23,7 +22,7 @@ export default function Faq() {
 
     return (
         <div className="container mx-auto px-4 md:px-8 lg:px-16 py-12 md:py-20">
-            <h1 className="text-3xl font-bold mt-8 mb-4">Pertanyaan yang Sering Diajukan</h1>
+            <h1 className="text-3xl font-bold mt-8 mb-4 text-center">Pertanyaan yang Sering Diajukan</h1>
             <Accordion items={faqItems} />
         </div>
     );
