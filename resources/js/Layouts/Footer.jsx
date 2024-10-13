@@ -1,49 +1,51 @@
 import React from 'react';
 import { Link } from '@inertiajs/react';
 
-const SocialIcon = ({ href, icon }) => (
+const SocialIcon = React.memo(({ href, icon }) => (
     <a href={href} target="_blank" rel="noopener noreferrer" className="mr-2">
         <i className={`fab fa-${icon}`}></i>
     </a>
-);
+));
 
-const FooterSection = ({ title, links }) => (
+const FooterSection = React.memo(({ title, links }) => (
     <div className="widget mb-6">
         <h4 className="widget-title mb-3 font-bold">{title}</h4>
         <ul className="list-none p-0">
             {links.map((link, index) => (
                 <li key={index} className="mb-2">
-                    <a href={link.href} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">{link.text}</a>
+                    <Link href={link.href} className="text-blue-500 hover:underline">{link.text}</Link>
                 </li>
             ))}
         </ul>
     </div>
-);
+));
 
-const ContactInfo = () => (
+const ContactInfo = React.memo(() => (
     <div className="widget">
         <h4 className="widget-title mb-3 font-bold">Kontak</h4>
         <address className="mb-2">Jl. Tol Ciawi No. 1, Ciawi-Bogor, Jawa Barat, Indonesia.</address>
         <a href="mailto:filkom@unida.ac.id" className="text-blue-500 block mb-1">filkom@unida.ac.id</a>
         <span>02518240773</span>
     </div>
-);
+));
 
-const SocialIcons = () => (
+const socialLinks = [
+    { href: "https://twitter.com/PMBUnidaBogor", icon: "twitter" },
+    { href: "https://facebook.com/PmbUnida", icon: "facebook" },
+    { href: "https://www.linkedin.com/in/universitas-djuanda-bogor-a97702172/", icon: "linkedin" },
+    { href: "https://www.instagram.com/faipgunida", icon: "instagram" },
+    { href: "https://www.youtube.com/channel/UC9EKxYOSyg0QtOs8sAXTceQ?view_as=subscriber", icon: "youtube" }
+];
+
+const SocialIcons = React.memo(() => (
     <nav className="nav social flex justify-center md:justify-start space-x-4">
-        {[
-            { href: "https://twitter.com/PMBUnidaBogor", icon: "twitter" },
-            { href: "https://facebook.com/PmbUnida", icon: "facebook" },
-            { href: "https://www.linkedin.com/in/universitas-djuanda-bogor-a97702172/", icon: "linkedin" },
-            { href: "https://www.instagram.com/faipgunida", icon: "instagram" },
-            { href: "https://www.youtube.com/channel/UC9EKxYOSyg0QtOs8sAXTceQ?view_as=subscriber", icon: "youtube" }
-        ].map((social, index) => (
+        {socialLinks.map((social, index) => (
             <SocialIcon key={index} href={social.href} icon={social.icon} />
         ))}
     </nav>
-);
+));
 
-export default function Footer() {
+const Footer = () => {
     const currentYear = new Date().getFullYear();
 
     return (
@@ -64,10 +66,10 @@ export default function Footer() {
                     <FooterSection
                         title="Sistem Online"
                         links={[
-                            { href: "https://unida.ac.id/pmb", text: "Pendaftaran Online" },
-                            { href: "https://cool.unida.ac.id", text: "E-Learning" },
-                            { href: "https://ojs.unida.ac.id", text: "Jurnal" },
-                            { href: "https://iojs.unida.ac.id", text: "Jurnal Internasional" },
+                            { href: "", text: "Pendaftaran Online" },
+                            { href: "", text: "E-Learning" },
+                            { href: "", text: "Jurnal" },
+                            { href: "", text: "Jurnal Internasional" },
                         ]}
                     />
 
@@ -82,4 +84,6 @@ export default function Footer() {
             </div>
         </footer>
     );
-}
+};
+
+export default React.memo(Footer);

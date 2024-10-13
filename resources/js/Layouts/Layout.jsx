@@ -1,8 +1,19 @@
+import React, { useEffect } from 'react';
 import Footer from "@/Layouts/Footer";
 import Navbar from "@/Layouts/Navbar";
-import { Head } from "@inertiajs/react";
+import { Head, usePage } from "@inertiajs/react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Layout({ children }) {
+    const { status } = usePage().props;
+
+    useEffect(() => {
+        if (status) {
+            toast.success(status);
+        }
+    }, [status]);
+
     return (
         <>
             <Head>
@@ -20,6 +31,7 @@ export default function Layout({ children }) {
                 </main>
                 <Footer />
             </div>
+            <ToastContainer position="top-right" autoClose={3000} />
         </>
     );
 }

@@ -1,5 +1,6 @@
 import '../css/app.css';
 import './bootstrap';
+import 'react-toastify/dist/ReactToastify.css';
 
 import { createInertiaApp } from '@inertiajs/react';
 import { createRoot, hydrateRoot } from 'react-dom/client';

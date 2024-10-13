@@ -2,6 +2,8 @@ import React from 'react';
 import { Mail } from 'lucide-react';
 import { useForm } from '@inertiajs/react';
 import AuthLayout from '@/Layouts/AuthLayout';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const ForgotPassword = () => {
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -11,7 +13,13 @@ const ForgotPassword = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         post(route('password.email'), {
-            onFinish: () => reset('email'),
+            onSuccess: () => {
+                toast.success('Reset link berhasil dikirim, periksa email anda');
+                reset('email');
+            },
+            onError: (errors) => {
+                toast.error('Terjadi kesalahan', errors);
+            },
         });
     };
 
@@ -37,10 +45,12 @@ const ForgotPassword = () => {
                 <button
                     type="submit"
                     className="w-full px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                    disabled={processing}
                 >
                     Send Reset Link
                 </button>
             </form>
+            <ToastContainer position="top-right" autoClose={5000} />
         </AuthLayout>
     );
 };

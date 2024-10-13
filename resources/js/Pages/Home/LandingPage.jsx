@@ -1,11 +1,11 @@
 import React from 'react';
+import { Link, usePage } from '@inertiajs/react';
 import landingImage from '../../../images/Saly-10.png';
 import PrimaryButton from '@/Components/PrimaryButton';
 import SecondaryButton from '@/Components/SecondaryButton';
-import { usePage } from '@inertiajs/react';
 
 const LandingPage = () => {
-    const user = usePage().props.auth.user ?? { name: 'Guest' };
+    const { auth } = usePage().props;
 
     return (
         <div className="flex flex-col items-center justify-between min-h-screen px-6 pb-20 md:flex-row md:px-24 lg:px-48 bg-gradient-to-tr from-sky-100 via-sky-200 to-teal-600 dark:bg-gray-800 sm:py-20 sm:mb-20">
@@ -18,17 +18,10 @@ const LandingPage = () => {
                     Terus semangat untuk mendapatkan hasil yang luar biasa, Isi sekarang yu.
                 </p>
                 <div className="flex space-x-4">
-                    {user ? (
-                        <PrimaryButton href={route('login')}>
-                            Submit
-                        </PrimaryButton>
-                    ) :
-                        <PrimaryButton href={route('login')}>
-                            Login
-                        </PrimaryButton>}
-                    <SecondaryButton>
-                        Tutorial
-                    </SecondaryButton>
+                    <PrimaryButton href={route('login')}>
+                        {auth.user ? 'Submit' : 'Login'}
+                    </PrimaryButton>
+                    <SecondaryButton href="">Tutorial</SecondaryButton>
                 </div>
             </div>
             <div className="relative w-full max-w-lg md:w-1/2">
@@ -42,4 +35,4 @@ const LandingPage = () => {
     );
 };
 
-export default LandingPage;
+export default React.memo(LandingPage);
