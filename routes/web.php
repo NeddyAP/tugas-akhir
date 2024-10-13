@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\LaporanController;
+use App\Http\Controllers\LogbookController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -17,7 +19,19 @@ use Inertia\Inertia;
 Route::inertia('/', 'Home/Index', [
     'canLogin' => Route::has('login'),
 ])->name('home');
-Route::inertia('/informasi', 'Informasi/Index')->name('info');
+Route::inertia('/pedoman', 'Pedoman/Index', [
+    'canLogin' => Route::has('login'),
+])->name('pedoman.index');
+Route::inertia('/logbook', 'Logbook/Index', [
+    'canLogin' => Route::has('login'),
+])->name('logbook.index');
+
+Route::middleware('auth')->group(function () {
+    Route::resource('logbook', LogbookController::class)->except(['index']);
+    Route::resource('laporan', LaporanController::class);
+});
+
+// Admin Page
 // Route::get('/dashboard', function () {
 //     return Inertia::render('Dashboard');
 // })->middleware(['auth', 'verified'])->name('dashboard');

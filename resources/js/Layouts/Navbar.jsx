@@ -37,9 +37,9 @@ export default function Navbar() {
             <div className="container flex items-center justify-between mx-auto">
                 <Link href={route('home')} className="text-2xl font-bold">FILKOM</Link>
                 <div className="items-center hidden md:flex">
-                    <Link href={route('pedoman')} className="mr-4 transition-all duration-300 ease-in-out hover:underline-offset-2 hover:underline">Buku Pedoman</Link>
-                    <Link href={route('logbook')} className="mr-4 transition-all duration-300 ease-in-out hover:underline-offset-2 hover:underline">Logbook</Link>
-                    <Link href={route('submit')} className="mr-4 transition-all duration-300 ease-in-out hover:underline-offset-2 hover:underline">Submit</Link>
+                    <Link href={route('pedoman.index')} className="mr-4 transition-all duration-300 ease-in-out hover:underline-offset-2 hover:underline">Buku Pedoman</Link>
+                    <Link href={route('logbook.index')} className="mr-4 transition-all duration-300 ease-in-out hover:underline-offset-2 hover:underline">Logbook</Link>
+                    <Link href={route('laporan.index')} className="mr-4 transition-all duration-300 ease-in-out hover:underline-offset-2 hover:underline">Laporan</Link>
                     {user ? (
                         <Link
                             method="post"
