@@ -16,7 +16,7 @@ const AuthButton = React.memo(({ user }) => (
             method="post"
             href={route('logout')}
             as="button"
-            className="px-2 py-1 font-bold text-red-400 transition-colors bg-teal-700 rounded-md hover:text-red-500"
+            className="px-2 py-1 font-bold text-red-500 transition-colors bg-teal-700 rounded-md hover:text-red-600"
         >
             Logout
         </Link>
