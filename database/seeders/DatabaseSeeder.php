@@ -2,9 +2,13 @@
 
 namespace Database\Seeders;
 
+use App\Models\Bimbingan;
+use App\Models\Laporan;
+use App\Models\Logbook;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -13,11 +17,30 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        // User::factory()->create([
+        //     'name' => 'Admin',
+        //     'email' => 'admin@gmail.com',
+        //     'password' => Hash::make('admin'),
+        // ]);
+
+        Bimbingan::factory()->create([
+            'user_id' => 1,
+            'tanggal' => '2024-10-13',
+            'keterangan' => 'Bimbingan kedua',
+        ]);
+
+        Laporan::factory()->create([
+            'user_id' => 1,
+            'tanggal' => '2024-10-13',
+            'catatan' => 'Laporan kedua',
+        ]);
+
+        Logbook::factory()->create([
+            'user_id' => 1,
+            'tanggal' => '2024-10-13',
+            'catatan' => 'Logbook kedua',
+            'keterangan' => 'Logbook kedua',
         ]);
     }
 }

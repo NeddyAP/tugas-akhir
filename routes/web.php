@@ -19,13 +19,13 @@ use Inertia\Inertia;
 Route::inertia('/', 'Home/Index', [
     'canLogin' => Route::has('login'),
 ])->name('home');
-Route::inertia('/pedoman', 'Pedoman/Index', [
+Route::inertia('/pedomans', 'Pedoman/Index', [
     'canLogin' => Route::has('login'),
-])->name('pedoman.index');
+])->name('pedomans.index');
 
 Route::middleware('auth')->group(function () {
-    Route::resource('logbook', LogbookController::class);
-    Route::resource('laporan', LaporanController::class);
+    Route::resource('logbooks', LogbookController::class);
+    Route::resource('laporans', LaporanController::class);
 });
 
 // Admin Page

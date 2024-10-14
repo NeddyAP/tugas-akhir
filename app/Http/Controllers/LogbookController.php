@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreLogbookRequest;
 use App\Http\Requests\UpdateLogbookRequest;
+use App\Models\Bimbingan;
 use App\Models\Logbook;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Auth;
 
 class LogbookController extends Controller
 {
@@ -14,8 +16,10 @@ class LogbookController extends Controller
      */
     public function index()
     {
+        $user = Auth::user();
         return Inertia::render('Logbook/Index', [
-            'logbooks' => Logbook::all(),
+            'logbooks' => Logbook::where('user_id', $user->id)->get(),
+            'bimbingans' => Bimbingan::where('user_id', $user->id)->get(),
         ]);
     }
 
@@ -32,7 +36,12 @@ class LogbookController extends Controller
      */
     public function store(StoreLogbookRequest $request)
     {
-        //
+        $validated = $request->validated();
+        $validated['user_id'] = Auth::id();
+        
+        $logbook = Logbook::create($validated);
+
+        return redirect()->back()->with('success', 'Logbook entry created successfully.');
     }
 
     /**
@@ -56,7 +65,8 @@ class LogbookController extends Controller
      */
     public function update(UpdateLogbookRequest $request, Logbook $logbook)
     {
-        //
+        $logbook->update($request->validated());
+        return redirect()->back()->with('success', 'Logbook entry updated successfully.');
     }
 
     /**
@@ -64,6 +74,7 @@ class LogbookController extends Controller
      */
     public function destroy(Logbook $logbook)
     {
-        //
+        $logbook->delete();
+        return redirect()->back()->with('success', 'Logbook entry deleted successfully.');
     }
 }

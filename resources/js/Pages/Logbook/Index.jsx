@@ -1,75 +1,115 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import Layout from "@/Layouts/Layout";
-import { Head } from "@inertiajs/react";
-import { Edit, Trash2 } from 'lucide-react';
-import Table from '@/Components/Table';
+import { Head, useForm } from "@inertiajs/react";
+import TableSection from '@/Components/TableSection';
+import LogbookModal from '@/Components/LogbookModal';
+import BimbinganModal from '@/Components/BimbinganModal';
+import createColumns from '@/utils/createColumns.jsx';
 
-const ActionCell = React.memo(({ row, onEdit, onDelete }) => (
-    <div className="flex space-x-2">
-        <button
-            onClick={() => onEdit(row.original)}
-            className="p-2 text-white bg-blue-500 rounded hover:bg-blue-600"
-        >
-            <Edit className="w-4 h-4" />
-        </button>
-        <button
-            onClick={() => onDelete(row.original)}
-            className="p-2 text-white bg-red-500 rounded hover:bg-red-600"
-        >
-            <Trash2 className="w-4 h-4" />
-        </button>
-    </div>
-));
+export default function Index({ logbooks, bimbingans }) {
+    const [isLogbookModalOpen, setIsLogbookModalOpen] = useState(false);
+    const [isBimbinganModalOpen, setIsBimbinganModalOpen] = useState(false);
+    const [editingLogbook, setEditingLogbook] = useState(null);
 
-export default function Index() {
-    const handleEdit = useCallback((row) => {
-        console.log('Edit:', row);
-    }, []);
+    const { delete: destroyLogbook } = useForm();
 
-    const handleDelete = useCallback((row) => {
-        if (window.confirm('Are you sure you want to delete this logbook entry?')) {
-            console.log('Delete:', row);
-        }
-    }, []);
+    const createHandlers = (tableType) => ({
+        handleEdit: useCallback((row) => {
+            if (tableType === 'Logbook') {
+                setEditingLogbook(row);
+                setIsLogbookModalOpen(true);
+            } else {
+                console.log(`Edit ${tableType}:`, row);
+            }
+        }, [tableType]),
+        handleDelete: useCallback((row) => {
+            if (window.confirm(`Are you sure you want to delete this ${tableType.toLowerCase()} entry?`)) {
+                if (tableType === 'Logbook') {
+                    destroyLogbook(route('logbooks.destroy', row.id), {
+                        preserveState: true,
+                        preserveScroll: true,
+                    });
+                } else {
+                    console.log(`Delete ${tableType}:`, row);
+                }
+            }
+        }, [tableType, destroyLogbook]),
+        handleAdd: useCallback(() => {
+            if (tableType === 'Logbook') {
+                setEditingLogbook(null);
+                setIsLogbookModalOpen(true);
+            } else if (tableType === 'Bimbingan') {
+                setIsBimbinganModalOpen(true);
+            }
+        }, [tableType]),
+        handleDownload: useCallback(() => {
+            console.log(`Download ${tableType} table as Word document`);
+            // Implement the actual download logic here
 
-    const handleAdd = useCallback(() => {
-        console.log('Add new logbook entry');
-    }, []);
+        }, [tableType]),
+    });
 
-    const data = useMemo(() => [
-        { no: 1, tanggal: '2023-10-01', catatan: 'Task 1', keterangan: 'Completed' },
-        { no: 2, tanggal: '2023-10-02', catatan: 'Task 2', keterangan: 'Pending' },
-    ], []);
+    const logbookHandlers = createHandlers('Logbook');
+    const bimbinganHandlers = createHandlers('Bimbingan');
 
-    const columns = useMemo(() => [
-        {
-            Header: 'Logbook',
-            columns: [
-                { Header: 'No', accessor: 'no' },
-                { Header: 'Tanggal Pelaksanaan', accessor: 'tanggal' },
-                { Header: 'Catatan Kegiatan', accessor: 'catatan' },
-                { Header: 'Keterangan Kegiatan', accessor: 'keterangan' },
-                {
-                    Header: 'Action',
-                    accessor: 'action',
-                    Cell: ({ row }) => (
-                        <ActionCell row={row} onEdit={handleEdit} onDelete={handleDelete} />
-                    ),
-                },
-            ],
-        },
-    ], [handleEdit, handleDelete]);
+    const logbookColumns = useMemo(() => createColumns(
+        'Logbook Kegiatan',
+        [
+            { header: 'Tanggal Pelaksanaan', accessor: 'tanggal' },
+            { header: 'Catatan Kegiatan', accessor: 'catatan' },
+            { header: 'Keterangan Kegiatan', accessor: 'keterangan' },
+        ],
+        logbookHandlers.handleEdit,
+        logbookHandlers.handleDelete
+    ), [logbookHandlers]);
+
+    const bimbinganColumns = useMemo(() => createColumns(
+        'Tabel Bimbingan KKL',
+        [
+            { header: 'Tanggal', accessor: 'tanggal' },
+            { header: 'Keterangan Bimbingan', accessor: 'judul' },
+            { header: 'Tanda Tangan Dosen Pembimbing', accessor: 'status' },
+        ],
+        bimbinganHandlers.handleEdit,
+        bimbinganHandlers.handleDelete
+    ), [bimbinganHandlers]);
+
+    const handleGuidanceSubmit = (event) => {
+        event.preventDefault();
+        console.log('Guidance form submitted');
+        setIsBimbinganModalOpen(false);
+    };
 
     return (
         <Layout>
             <Head title="Logbook" />
-            <div className="container px-4 py-8 mx-auto my-5">
-                <Table
-                    columns={columns}
-                    data={data}
-                    onAdd={handleAdd}
+            <div className="space-y-8 md:space-y-12">
+                <TableSection
+                    columns={logbookColumns}
+                    data={logbooks}
+                    onAdd={logbookHandlers.handleAdd}
+                    onDownload={logbookHandlers.handleDownload}
+                />
+                <TableSection
+                    columns={bimbinganColumns}
+                    data={bimbingans}
+                    onAdd={bimbinganHandlers.handleAdd}
+                    onDownload={bimbinganHandlers.handleDownload}
                 />
             </div>
+            <LogbookModal
+                isOpen={isLogbookModalOpen}
+                onClose={() => {
+                    setIsLogbookModalOpen(false);
+                    setEditingLogbook(null);
+                }}
+                initialData={editingLogbook}
+            />
+            <BimbinganModal
+                isOpen={isBimbinganModalOpen}
+                onClose={() => setIsBimbinganModalOpen(false)}
+                onSubmit={handleGuidanceSubmit}
+            />
         </Layout>
     );
 }

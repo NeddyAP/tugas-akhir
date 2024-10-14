@@ -13,6 +13,10 @@ return new class extends Migration
     {
         Schema::create('logbooks', function (Blueprint $table) {
             $table->id();
+            $table->date('tanggal');
+            $table->text('catatan');
+            $table->text('keterangan');
+            $table->foreignId('user_id')->constrained('users');
             $table->timestamps();
         });
     }
