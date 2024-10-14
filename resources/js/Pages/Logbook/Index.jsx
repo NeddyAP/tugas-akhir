@@ -66,7 +66,7 @@ export default function Index({ logbooks, bimbingans }) {
     ), [createColumnsMemo, logbookHandlers]);
 
     const bimbinganColumns = useMemo(() => createColumnsMemo(
-        'Tabel Bimbingan KKL',
+        'Bimbingan KKL',
         [
             { header: 'Tanggal', accessor: 'tanggal' },
             { header: 'Keterangan Bimbingan', accessor: 'judul' },
