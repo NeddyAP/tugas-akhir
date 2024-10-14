@@ -44,23 +44,7 @@ class LogbookController extends Controller
 
         Logbook::create($validated);
 
-        return redirect()->back()->with('success', 'Logbook entry created successfully.');
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Logbook $logbook)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Logbook $logbook)
-    {
-        //
+        return redirect()->back()->with('flash', ['message' => 'Logbook baru berhasil ditambahkan.', 'type' => 'success']);
     }
 
     /**
@@ -69,7 +53,7 @@ class LogbookController extends Controller
     public function update(Request $request, Logbook $logbook)
     {
         $logbook->update($request->validated());
-        return redirect()->back()->with('success', 'Logbook entry updated successfully.');
+        return redirect()->back()->with('flash', ['message' => 'Logbook berhasil diubah.', 'type' => 'success']);
     }
 
     /**
@@ -78,6 +62,6 @@ class LogbookController extends Controller
     public function destroy(Logbook $logbook)
     {
         $logbook->delete();
-        return redirect()->back()->with('success', 'Logbook entry deleted successfully.');
+        return redirect()->back()->with('flash', ['message' => 'Logbook berhasil dihapus.', 'type' => 'success']);
     }
 }

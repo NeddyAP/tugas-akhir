@@ -6,13 +6,17 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function Layout({ children }) {
-    const { status } = usePage().props;
+    const { flash } = usePage().props.flash;
 
     useEffect(() => {
-        if (status) {
-            toast.success(status);
+        if (flash && flash.message) {
+            if (flash.type === "success") {
+                toast.success(flash.message);
+            } else if (flash.type === "error") {
+                toast.error(flash.message);
+            }
         }
-    }, [status]);
+    }, [flash]);
 
     return (
         <>

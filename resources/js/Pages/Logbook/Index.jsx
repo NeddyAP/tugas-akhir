@@ -26,7 +26,7 @@ export default function Index({ logbooks, bimbingans }) {
             }
         },
         handleDelete: (row) => {
-            if (window.confirm(`Are you sure you want to delete this ${tableType.toLowerCase()} entry?`)) {
+            if (window.confirm(`Kamu yakin ingin menghapus data ${tableType.toLowerCase()}?`)) {
                 if (tableType === 'Logbook') {
                     destroyLogbook(route('logbooks.destroy', row.id), {
                         preserveState: true,
@@ -76,9 +76,9 @@ export default function Index({ logbooks, bimbingans }) {
         bimbinganHandlers.handleDelete
     ), [createColumnsMemo, bimbinganHandlers]);
 
-    const handleGuidanceSubmit = useCallback((event) => {
+    const handleBimbinganSubmit = useCallback((event) => {
         event.preventDefault();
-        console.log('Guidance form submitted');
+        console.log('Bimbingan form submitted');
         setModalState(prev => ({ ...prev, bimbingan: { isOpen: false } }));
     }, []);
 
@@ -158,7 +158,7 @@ export default function Index({ logbooks, bimbingans }) {
                                 <BimbinganModal
                                     isOpen={modalState.bimbingan.isOpen}
                                     onClose={() => closeModal('bimbingan')}
-                                    onSubmit={handleGuidanceSubmit}
+                                    onSubmit={handleBimbinganSubmit}
                                 />
                             </div>
                         )}

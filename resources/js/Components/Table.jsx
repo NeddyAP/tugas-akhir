@@ -103,7 +103,7 @@ const Table = ({ columns, data, onAdd }) => {
                                 prepareRow(row);
                                 const { key, ...rowProps } = row.getRowProps();
                                 return (
-                                    <tr key={key} {...rowProps} className="hover:bg-gray-50">
+                                    <tr key={key} {...rowProps} className="hover:bg-gray-100">
                                         {row.cells.map(cell => {
                                             const { key, ...cellProps } = cell.getCellProps();
                                             return (
