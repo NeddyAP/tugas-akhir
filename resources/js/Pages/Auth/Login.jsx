@@ -25,7 +25,7 @@ const Login = () => {
                             type="email"
                             id="email"
                             className={`w-full px-3 py-2 pl-10 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.email ? 'border-red-500' : 'border-gray-300'}`}
-                            placeholder="NIM@unida.ac.id"
+                            placeholder="nim@unida.ac.id"
                             value={data.email}
                             onChange={(e) => setData('email', e.target.value)}
                             required
