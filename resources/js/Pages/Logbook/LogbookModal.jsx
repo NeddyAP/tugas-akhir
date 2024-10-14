@@ -1,5 +1,5 @@
 import React from 'react';
-import { useForm } from "@inertiajs/react";
+import { useForm } from '@inertiajs/react';
 import Modal from '@/Components/Modal';
 import InputLabel from '@/Components/InputLabel';
 import InputError from '@/Components/InputError';
@@ -8,7 +8,7 @@ import PrimaryButton from '@/Components/PrimaryButton';
 import SecondaryButton from '@/Components/SecondaryButton';
 
 const LogbookModal = ({ isOpen, onClose, initialData = {} }) => {
-    const { data, setData, post, put, processing, errors } = useForm({
+    const { data, setData, post, processing, errors } = useForm({
         tanggal: initialData?.tanggal || '',
         catatan: initialData?.catatan || '',
         keterangan: initialData?.keterangan || '',
@@ -16,19 +16,11 @@ const LogbookModal = ({ isOpen, onClose, initialData = {} }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (initialData?.id) {
-            put(route('logbooks.update', initialData.id), {
-                preserveState: true,
-                preserveScroll: true,
-                onSuccess: () => onClose(),
-            });
-        } else {
-            post(route('logbooks.store'), {
-                preserveState: true,
-                preserveScroll: true,
-                onSuccess: () => onClose(),
-            });
-        }
+        post(route('logbooks.store'), {
+            onSuccess: () => {
+                onClose();
+            },
+        });
     };
 
     return (

@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreLogbookRequest;
-use App\Http\Requests\UpdateLogbookRequest;
 use App\Models\Bimbingan;
 use App\Models\Logbook;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
 
@@ -34,12 +33,16 @@ class LogbookController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreLogbookRequest $request)
+    public function store(Request $request)
     {
-        $validated = $request->validated();
+        $validated = $request->validate([
+            'tanggal' => 'required',
+            'catatan' => 'required',
+            'keterangan' => 'required',
+        ]);
         $validated['user_id'] = Auth::id();
-        
-        $logbook = Logbook::create($validated);
+
+        Logbook::create($validated);
 
         return redirect()->back()->with('success', 'Logbook entry created successfully.');
     }
@@ -63,7 +66,7 @@ class LogbookController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateLogbookRequest $request, Logbook $logbook)
+    public function update(Request $request, Logbook $logbook)
     {
         $logbook->update($request->validated());
         return redirect()->back()->with('success', 'Logbook entry updated successfully.');

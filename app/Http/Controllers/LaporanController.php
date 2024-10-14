@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreLaporanRequest;
 use App\Http\Requests\UpdateLaporanRequest;
 use App\Models\Laporan;
+use Illuminate\Http\Request;
 
 class LaporanController extends Controller
 {
@@ -29,7 +30,7 @@ class LaporanController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreLaporanRequest $request)
+    public function store(Request $request)
     {
         //
     }
@@ -53,7 +54,7 @@ class LaporanController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateLaporanRequest $request, Laporan $laporan)
+    public function update(Request $request, Laporan $laporan)
     {
         //
     }

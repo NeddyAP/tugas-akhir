@@ -2,10 +2,10 @@ import React from 'react';
 import { Download } from 'lucide-react';
 import Table from '@/Components/Table';
 
-const TableSection = React.memo(({ columns, data, onAdd, onDownload }) => (
+const TableSection = React.memo(({ columns, data, onAdd, onDownload, title }) => (
     <div className="container px-4 py-8 mx-auto my-5 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between mb-4">
-            <h2 className=""></h2>
+            <h2 className="text-xl font-semibold">{title}</h2>
             <div className="space-x-2">
                 <button
                     onClick={onDownload}
@@ -39,5 +39,7 @@ const TableSection = React.memo(({ columns, data, onAdd, onDownload }) => (
         </div>
     </div>
 ));
+
+TableSection.displayName = 'TableSection';
 
 export default TableSection;

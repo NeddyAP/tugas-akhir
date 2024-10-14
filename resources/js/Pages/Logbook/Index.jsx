@@ -1,28 +1,31 @@
 import React, { useState, useCallback, useMemo } from 'react';
-import Layout from "@/Layouts/Layout";
 import { Head, useForm } from "@inertiajs/react";
+import Layout from "@/Layouts/Layout";
 import TableSection from '@/Components/TableSection';
-import LogbookModal from '@/Components/LogbookModal';
-import BimbinganModal from '@/Components/BimbinganModal';
+import LogbookModal from '@/Pages/Logbook/LogbookModal';
+import BimbinganModal from '@/Pages/Logbook/BimbinganModal';
 import createColumns from '@/utils/createColumns.jsx';
 
 export default function Index({ logbooks, bimbingans }) {
-    const [isLogbookModalOpen, setIsLogbookModalOpen] = useState(false);
-    const [isBimbinganModalOpen, setIsBimbinganModalOpen] = useState(false);
-    const [editingLogbook, setEditingLogbook] = useState(null);
+    const [modalState, setModalState] = useState({
+        logbook: { isOpen: false, editingData: null },
+        bimbingan: { isOpen: false },
+    });
 
     const { delete: destroyLogbook } = useForm();
 
-    const createHandlers = (tableType) => ({
-        handleEdit: useCallback((row) => {
+    const createHandlers = useCallback((tableType) => ({
+        handleEdit: (row) => {
             if (tableType === 'Logbook') {
-                setEditingLogbook(row);
-                setIsLogbookModalOpen(true);
+                setModalState(prev => ({
+                    ...prev,
+                    logbook: { isOpen: true, editingData: row },
+                }));
             } else {
                 console.log(`Edit ${tableType}:`, row);
             }
-        }, [tableType]),
-        handleDelete: useCallback((row) => {
+        },
+        handleDelete: (row) => {
             if (window.confirm(`Are you sure you want to delete this ${tableType.toLowerCase()} entry?`)) {
                 if (tableType === 'Logbook') {
                     destroyLogbook(route('logbooks.destroy', row.id), {
@@ -33,26 +36,25 @@ export default function Index({ logbooks, bimbingans }) {
                     console.log(`Delete ${tableType}:`, row);
                 }
             }
-        }, [tableType, destroyLogbook]),
-        handleAdd: useCallback(() => {
-            if (tableType === 'Logbook') {
-                setEditingLogbook(null);
-                setIsLogbookModalOpen(true);
-            } else if (tableType === 'Bimbingan') {
-                setIsBimbinganModalOpen(true);
-            }
-        }, [tableType]),
-        handleDownload: useCallback(() => {
+        },
+        handleAdd: () => {
+            setModalState(prev => ({
+                ...prev,
+                [tableType.toLowerCase()]: { isOpen: true, editingData: null },
+            }));
+        },
+        handleDownload: () => {
             console.log(`Download ${tableType} table as Word document`);
             // Implement the actual download logic here
+        },
+    }), [destroyLogbook]);
 
-        }, [tableType]),
-    });
+    const logbookHandlers = useMemo(() => createHandlers('Logbook'), [createHandlers]);
+    const bimbinganHandlers = useMemo(() => createHandlers('Bimbingan'), [createHandlers]);
 
-    const logbookHandlers = createHandlers('Logbook');
-    const bimbinganHandlers = createHandlers('Bimbingan');
+    const createColumnsMemo = useMemo(() => createColumns, []);
 
-    const logbookColumns = useMemo(() => createColumns(
+    const logbookColumns = useMemo(() => createColumnsMemo(
         'Logbook Kegiatan',
         [
             { header: 'Tanggal Pelaksanaan', accessor: 'tanggal' },
@@ -61,9 +63,9 @@ export default function Index({ logbooks, bimbingans }) {
         ],
         logbookHandlers.handleEdit,
         logbookHandlers.handleDelete
-    ), [logbookHandlers]);
+    ), [createColumnsMemo, logbookHandlers]);
 
-    const bimbinganColumns = useMemo(() => createColumns(
+    const bimbinganColumns = useMemo(() => createColumnsMemo(
         'Tabel Bimbingan KKL',
         [
             { header: 'Tanggal', accessor: 'tanggal' },
@@ -72,13 +74,20 @@ export default function Index({ logbooks, bimbingans }) {
         ],
         bimbinganHandlers.handleEdit,
         bimbinganHandlers.handleDelete
-    ), [bimbinganHandlers]);
+    ), [createColumnsMemo, bimbinganHandlers]);
 
-    const handleGuidanceSubmit = (event) => {
+    const handleGuidanceSubmit = useCallback((event) => {
         event.preventDefault();
         console.log('Guidance form submitted');
-        setIsBimbinganModalOpen(false);
-    };
+        setModalState(prev => ({ ...prev, bimbingan: { isOpen: false } }));
+    }, []);
+
+    const closeModal = useCallback((modalType) => {
+        setModalState(prev => ({
+            ...prev,
+            [modalType]: { isOpen: false, editingData: null },
+        }));
+    }, []);
 
     return (
         <Layout>
@@ -89,25 +98,24 @@ export default function Index({ logbooks, bimbingans }) {
                     data={logbooks}
                     onAdd={logbookHandlers.handleAdd}
                     onDownload={logbookHandlers.handleDownload}
+                    title="Logbook Kegiatan"
                 />
                 <TableSection
                     columns={bimbinganColumns}
                     data={bimbingans}
                     onAdd={bimbinganHandlers.handleAdd}
                     onDownload={bimbinganHandlers.handleDownload}
+                    title="Tabel Bimbingan KKL"
                 />
             </div>
             <LogbookModal
-                isOpen={isLogbookModalOpen}
-                onClose={() => {
-                    setIsLogbookModalOpen(false);
-                    setEditingLogbook(null);
-                }}
-                initialData={editingLogbook}
+                isOpen={modalState.logbook.isOpen}
+                onClose={() => closeModal('logbook')}
+                initialData={modalState.logbook.editingData}
             />
             <BimbinganModal
-                isOpen={isBimbinganModalOpen}
-                onClose={() => setIsBimbinganModalOpen(false)}
+                isOpen={modalState.bimbingan.isOpen}
+                onClose={() => closeModal('bimbingan')}
                 onSubmit={handleGuidanceSubmit}
             />
         </Layout>
