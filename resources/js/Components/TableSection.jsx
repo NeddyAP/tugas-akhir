@@ -2,10 +2,10 @@ import React from 'react';
 import { Download } from 'lucide-react';
 import Table from '@/Components/Table';
 
-const TableSection = React.memo(({ columns, data, onAdd, onDownload, title }) => (
+const TableSection = React.memo(({ columns, data, onAdd, onDownload }) => (
     <div className="container px-4 py-8 mx-auto my-5 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-semibold">{title}</h2>
+            <div></div>
             <div className="space-x-2">
                 <button
                     onClick={onDownload}
@@ -16,7 +16,7 @@ const TableSection = React.memo(({ columns, data, onAdd, onDownload, title }) =>
                 </button>
                 <button
                     onClick={onAdd}
-                    className="px-4 py-2 text-white bg-green-500 rounded hover:bg-green-600"
+                    className="px-4 py-2 text-white bg-teal-600 rounded hover:bg-teal-700"
                 >
                     Tambah Baru
                 </button>

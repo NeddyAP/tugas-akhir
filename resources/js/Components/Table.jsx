@@ -58,7 +58,7 @@ const Table = ({ columns, data, onAdd }) => {
                     {onAdd && (
                         <button
                             onClick={onAdd}
-                            className="px-4 py-2 text-white bg-green-500 rounded hover:bg-green-600"
+                            className="px-4 py-2 text-white bg-teal-600 rounded hover:bg-teal-700"
                         >
                             Tambah
                         </button>
@@ -130,7 +130,7 @@ const Table = ({ columns, data, onAdd }) => {
                 </table>
             </div>
             <div className="flex items-center justify-between mt-4">
-                <div>
+                <div className="flex items-center space-x-2">
                     <span className="text-sm text-gray-700">
                         Page <span className="font-medium">{pageIndex + 1}</span> of <span className="font-medium">{pageOptions.length}</span>
                     </span>
@@ -146,37 +146,35 @@ const Table = ({ columns, data, onAdd }) => {
                         ))}
                     </select>
                 </div>
-                <div>
-                    <nav className="relative z-0 inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
-                        <button
-                            onClick={() => gotoPage(0)}
-                            disabled={!canPreviousPage}
-                            className="px-2 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-l-md hover:bg-gray-50"
-                        >
-                            {'<<'}
-                        </button>
-                        <button
-                            onClick={() => previousPage()}
-                            disabled={!canPreviousPage}
-                            className="px-2 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 hover:bg-gray-50"
-                        >
-                            {'<'}
-                        </button>
-                        <button
-                            onClick={() => nextPage()}
-                            disabled={!canNextPage}
-                            className="px-2 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 hover:bg-gray-50"
-                        >
-                            {'>'}
-                        </button>
-                        <button
-                            onClick={() => gotoPage(pageCount - 1)}
-                            disabled={!canNextPage}
-                            className="px-2 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-r-md hover:bg-gray-50"
-                        >
-                            {'>>'}
-                        </button>
-                    </nav>
+                <div className="flex items-center space-x-1">
+                    <button
+                        onClick={() => gotoPage(0)}
+                        disabled={!canPreviousPage}
+                        className="px-2 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-l-md hover:bg-gray-50 disabled:opacity-50"
+                    >
+                        {'<<'}
+                    </button>
+                    <button
+                        onClick={() => previousPage()}
+                        disabled={!canPreviousPage}
+                        className="px-2 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 hover:bg-gray-50 disabled:opacity-50"
+                    >
+                        {'<'}
+                    </button>
+                    <button
+                        onClick={() => nextPage()}
+                        disabled={!canNextPage}
+                        className="px-2 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 hover:bg-gray-50 disabled:opacity-50"
+                    >
+                        {'>'}
+                    </button>
+                    <button
+                        onClick={() => gotoPage(pageCount - 1)}
+                        disabled={!canNextPage}
+                        className="px-2 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-r-md hover:bg-gray-50 disabled:opacity-50"
+                    >
+                        {'>>'}
+                    </button>
                 </div>
             </div>
         </div>

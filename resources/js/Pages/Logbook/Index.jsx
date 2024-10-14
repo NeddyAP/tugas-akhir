@@ -89,35 +89,82 @@ export default function Index({ logbooks, bimbingans }) {
         }));
     }, []);
 
+
+    const [activeTab, setActiveTab] = useState('Logbook');
+
+    const handleTabClick = (tab) => {
+        setActiveTab(tab);
+    };
+
     return (
         <Layout>
             <Head title="Logbook" />
-            <div className="space-y-8 md:space-y-12">
-                <TableSection
-                    columns={logbookColumns}
-                    data={logbooks}
-                    onAdd={logbookHandlers.handleAdd}
-                    onDownload={logbookHandlers.handleDownload}
-                    title="Logbook Kegiatan"
-                />
-                <TableSection
-                    columns={bimbinganColumns}
-                    data={bimbingans}
-                    onAdd={bimbinganHandlers.handleAdd}
-                    onDownload={bimbinganHandlers.handleDownload}
-                    title="Tabel Bimbingan KKL"
-                />
+            <div>
+                <div className="flex justify-center mt-20">
+                    <nav className="flex items-center p-1 space-x-1 overflow-x-auto text-sm text-gray-600 rtl:space-x-reverse bg-gray-500/5 rounded-xl dark:bg-gray-500/20">
+                        <button
+                            role="tab"
+                            type="button"
+                            className={`flex whitespace-nowrap items-center h-8 px-5 font-medium rounded-lg outline-none focus:ring-2 focus:ring-teal-600 focus:ring-inset ${activeTab === 'Logbook'
+                                ? 'text-teal-600 shadow bg-white dark:text-white dark:bg-teal-600'
+                                : 'hover:text-gray-800 focus:text-teal-600 dark:text-gray-400 dark:hover:text-gray-300 dark:focus:text-gray-400'
+                                }`}
+                            aria-selected={activeTab === 'Logbook'}
+                            onClick={() => handleTabClick('Logbook')}
+                        >
+                            Logbook
+                        </button>
+
+                        <button
+                            role="tab"
+                            type="button"
+                            className={`flex whitespace-nowrap items-center h-8 px-5 font-medium rounded-lg outline-none focus:ring-2 focus:ring-teal-600 focus:ring-inset ${activeTab === 'Bimbingan'
+                                ? 'text-teal-600 shadow bg-white dark:text-white dark:bg-teal-600'
+                                : 'hover:text-gray-800 focus:text-teal-600 dark:text-gray-400 dark:hover:text-gray-300 dark:focus:text-gray-400'
+                                }`}
+                            aria-selected={activeTab === 'Bimbingan'}
+                            onClick={() => handleTabClick('Bimbingan')}
+                        >
+                            Bimbingan
+                        </button>
+                    </nav>
+                </div>
+
+                <div className="mt-4">
+                    <div className="space-y-8 md:space-y-12">
+                        {activeTab === 'Logbook' && (
+                            <div>
+                                <TableSection
+                                    columns={logbookColumns}
+                                    data={logbooks}
+                                    onAdd={logbookHandlers.handleAdd}
+                                    onDownload={logbookHandlers.handleDownload}
+                                />
+                                <LogbookModal
+                                    isOpen={modalState.logbook.isOpen}
+                                    onClose={() => closeModal('logbook')}
+                                    initialData={modalState.logbook.editingData}
+                                />
+                            </div>
+                        )}
+                        {activeTab === 'Bimbingan' && (
+                            <div>
+                                <TableSection
+                                    columns={bimbinganColumns}
+                                    data={bimbingans}
+                                    onAdd={bimbinganHandlers.handleAdd}
+                                    onDownload={bimbinganHandlers.handleDownload}
+                                />
+                                <BimbinganModal
+                                    isOpen={modalState.bimbingan.isOpen}
+                                    onClose={() => closeModal('bimbingan')}
+                                    onSubmit={handleGuidanceSubmit}
+                                />
+                            </div>
+                        )}
+                    </div>
+                </div>
             </div>
-            <LogbookModal
-                isOpen={modalState.logbook.isOpen}
-                onClose={() => closeModal('logbook')}
-                initialData={modalState.logbook.editingData}
-            />
-            <BimbinganModal
-                isOpen={modalState.bimbingan.isOpen}
-                onClose={() => closeModal('bimbingan')}
-                onSubmit={handleGuidanceSubmit}
-            />
         </Layout>
     );
 }
