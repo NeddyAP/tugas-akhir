@@ -33,7 +33,7 @@ const TableSection = React.memo(({ columns, data, onAdd, onDownload }) => (
                     <div className="w-48 h-24 p-4 text-center border-2 border-gray-300 border-dashed">
                         <p className="text-gray-500">Tanda tangan akan ditampilkan di sini</p>
                     </div>
-                    <p className="mt-2 font-semibold text-center">BU AISYAH S.KOM .</p>
+                    <p className="mt-2 font-semibold text-center">AISYAH S.KOM .</p>
                 </div>
             </div>
         </div>
