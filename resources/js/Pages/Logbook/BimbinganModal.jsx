@@ -9,8 +9,8 @@ import SecondaryButton from '@/Components/SecondaryButton';
 
 const BimbinganModal = ({ isOpen, onClose, onSubmit }) => {
     const { data, setData, post, processing, errors } = useForm({
-        tanggalBimbingan: '',
-        keteranganBimbingan: '',
+        tanggal: '',
+        keterangan: '',
     });
 
     const handleSubmit = (e) => {
@@ -29,28 +29,28 @@ const BimbinganModal = ({ isOpen, onClose, onSubmit }) => {
         <Modal isOpen={isOpen} onClose={onClose} title="Laporan Bimbingan">
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                    <InputLabel htmlFor="tanggalBimbingan" value="Tanggal Bimbingan:" />
+                    <InputLabel htmlFor="tanggal" value="Tanggal Bimbingan:" />
                     <TextInput
-                        id="tanggalBimbingan"
+                        id="tanggal"
                         type="date"
-                        value={data.tanggalBimbingan}
-                        onChange={e => setData('tanggalBimbingan', e.target.value)}
-                        error={errors.tanggalBimbingan}
+                        value={data.tanggal}
+                        onChange={e => setData('tanggal', e.target.value)}
+                        error={errors.tanggal}
                         required
                     />
-                    <InputError message={errors.tanggalBimbingan} />
+                    <InputError message={errors.tanggal} />
                 </div>
                 <div>
-                    <InputLabel htmlFor="keteranganBimbingan" value="Keterangan Bimbingan:" />
+                    <InputLabel htmlFor="keterangan" value="Keterangan Bimbingan:" />
                     <TextInput
-                        id="keteranganBimbingan"
+                        id="keterangan"
                         type="textarea"
-                        value={data.keteranganBimbingan}
-                        onChange={e => setData('keteranganBimbingan', e.target.value)}
-                        error={errors.keteranganBimbingan}
+                        value={data.keterangan}
+                        onChange={e => setData('keterangan', e.target.value)}
+                        error={errors.keterangan}
                         required
                     />
-                    <InputError message={errors.keteranganBimbingan} />
+                    <InputError message={errors.keterangan} />
                 </div>
                 <div className="flex justify-end space-x-2">
                     <SecondaryButton onClick={onClose}>Review</SecondaryButton>

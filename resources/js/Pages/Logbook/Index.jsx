@@ -69,7 +69,7 @@ export default function Index({ logbooks, bimbingans }) {
         'Bimbingan KKL',
         [
             { header: 'Tanggal', accessor: 'tanggal' },
-            { header: 'Keterangan Bimbingan', accessor: 'judul' },
+            { header: 'Keterangan Bimbingan', accessor: 'keterangan' },
             { header: 'Tanda Tangan Dosen Pembimbing', accessor: 'status' },
         ],
         bimbinganHandlers.handleEdit,

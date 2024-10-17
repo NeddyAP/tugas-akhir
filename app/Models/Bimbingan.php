@@ -13,6 +13,7 @@ class Bimbingan extends Model
         'id',
         'tanggal',
         'keterangan',
+        'status',
         'user_id',
     ];
 

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BimbinganController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\LogbookController;
 use App\Http\Controllers\ProfileController;
@@ -24,6 +25,7 @@ Route::inertia('/pedomans', 'Pedoman/Index', [
 ])->name('pedomans.index');
 
 Route::middleware('auth')->group(function () {
+    Route::post('bimbingans/store', [BimbinganController::class, 'store'])->name('bimbingans.store');
     Route::resource('logbooks', LogbookController::class);
     Route::resource('laporans', LaporanController::class);
 });
