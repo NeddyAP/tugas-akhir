@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Bimbingan;
 use App\Models\Logbook;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
 class LogbookController extends Controller
 {
@@ -16,6 +16,7 @@ class LogbookController extends Controller
     public function index()
     {
         $user = Auth::user();
+
         return Inertia::render('Logbook/Index', [
             'logbooks' => Logbook::where('user_id', $user->id)->get(),
             'bimbingans' => Bimbingan::where('user_id', $user->id)->get(),
@@ -53,6 +54,7 @@ class LogbookController extends Controller
     public function update(Request $request, Logbook $logbook)
     {
         $logbook->update($request->validated());
+
         return redirect()->back()->with('flash', ['message' => 'Logbook berhasil diubah.', 'type' => 'success']);
     }
 
@@ -62,6 +64,7 @@ class LogbookController extends Controller
     public function destroy(Logbook $logbook)
     {
         $logbook->delete();
+
         return redirect()->back()->with('flash', ['message' => 'Logbook berhasil dihapus.', 'type' => 'success']);
     }
 }

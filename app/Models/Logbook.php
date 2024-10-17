@@ -8,7 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Logbook extends Model
 {
     use HasFactory;
+
     protected $table = 'logbooks';
+
     protected $fillable = [
         'tanggal',
         'catatan',

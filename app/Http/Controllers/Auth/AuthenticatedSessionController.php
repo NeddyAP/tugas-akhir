@@ -33,8 +33,9 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
         $username = Auth::user()->name;
+
         return redirect()->intended(route('home', absolute: false))
-            ->with('flash', ['message' => 'Login berhasil. Selamat Datang ' . $username, 'type' => 'success'])
+            ->with('flash', ['message' => 'Login berhasil. Selamat Datang '.$username, 'type' => 'success'])
             ->with('canLogin', false);
     }
 

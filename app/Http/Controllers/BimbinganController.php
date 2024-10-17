@@ -10,7 +10,6 @@ class BimbinganController extends Controller
 {
     public function store(Request $request)
     {
-        // dd($request->all());
         $validated = $request->validate([
             'tanggal' => 'required',
             'keterangan' => 'required',
