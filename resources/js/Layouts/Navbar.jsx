@@ -1,31 +1,75 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { Link, usePage } from "@inertiajs/react";
+import React, { useCallback, useState, useEffect } from 'react';
+import { Link, usePage } from '@inertiajs/react';
+import avatarProfile from '../../images/avatar-profile.jpg';
 
-const NavLink = React.memo(({ href, children }) => (
+const NavLink = ({ href, children }) => (
     <Link
         href={route(href)}
         className="mr-4 transition-all duration-300 ease-in-out hover:underline-offset-2 hover:underline"
     >
         {children}
     </Link>
-));
+);
 
-const AuthButton = React.memo(({ user }) => (
-    user ? (
-        <Link
-            method="post"
-            href={route('logout')}
-            as="button"
-            className="px-2 py-1 font-bold text-red-500 transition-colors bg-teal-700 rounded-md hover:text-red-600"
-        >
-            Logout
-        </Link>
+const AuthButton = ({ user }) => {
+    const [isOpen, setIsOpen] = useState(false);
+
+    const toggleDropdown = () => setIsOpen(!isOpen);
+
+    useEffect(() => {
+        const closeDropdown = (e) => {
+            if (isOpen && !e.target.closest('.avatar-dropdown')) {
+                setIsOpen(false);
+            }
+        };
+
+        document.addEventListener('click', closeDropdown);
+        return () => document.removeEventListener('click', closeDropdown);
+    }, [isOpen]);
+
+    return user ? (
+        <div className="relative avatar-dropdown">
+            <button
+                onClick={toggleDropdown}
+                className="relative z-10 block w-8 h-8 overflow-hidden rounded-full shadow focus:outline-none"
+            >
+                <img className="object-cover w-full h-full" src={avatarProfile} alt="User Avatar" />
+            </button>
+            {isOpen && (
+                <div className="absolute right-0 z-20 w-48 py-2 mt-2 text-black bg-white rounded-md shadow-xl">
+                    <Link
+                        href={route('profile.edit')}
+                        as="button"
+                        className="block w-full px-4 py-2 text-left transition-colors hover:bg-gray-100"
+                    >
+                        {user.name}
+                    </Link>
+                    <Link
+                        href={route('dashboard')}
+                        as="button"
+                        className="block w-full px-4 py-2 text-left transition-colors hover:bg-gray-100"
+                    >
+                        Dahsboard
+                    </Link>
+                    <Link
+                        method="post"
+                        href={route('logout')}
+                        as="button"
+                        className="block w-full px-4 py-2 text-left text-red-500 transition-colors hover:bg-gray-100"
+                    >
+                        Logout
+                    </Link>
+                </div>
+            )}
+        </div>
     ) : (
         <Link href={route('login')} className="mr-4">
-            <button className="px-2 py-1 text-white transition-colors bg-teal-700 rounded-md hover:bg-teal-800">Login</button>
+            <button className="px-2 py-1 text-white transition-colors bg-teal-700 rounded-md hover:bg-teal-800">
+                Login
+            </button>
         </Link>
-    )
-));
+    );
+};
 
 const Navbar = () => {
     const { auth } = usePage().props;
@@ -33,28 +77,25 @@ const Navbar = () => {
     const [lastScrollY, setLastScrollY] = useState(0);
 
     const controlNavbar = useCallback(() => {
-        if (typeof window !== 'undefined') {
-            setIsVisible(window.scrollY <= lastScrollY);
-            setLastScrollY(window.scrollY);
-        }
+        const currentScrollY = window.scrollY;
+        setIsVisible(currentScrollY <= lastScrollY);
+        setLastScrollY(currentScrollY);
     }, [lastScrollY]);
 
     useEffect(() => {
-        if (typeof window !== 'undefined') {
-            window.addEventListener('scroll', controlNavbar);
-            return () => {
-                window.removeEventListener('scroll', controlNavbar);
-            };
-        }
+        window.addEventListener('scroll', controlNavbar);
+        return () => window.removeEventListener('scroll', controlNavbar);
     }, [controlNavbar]);
 
     return (
         <nav
-            className={`fixed top-0 left-0 z-50 w-full p-4 px-4 text-white transition-transform duration-300 bg-teal-600 shadow-md md:px-48 ${isVisible ? 'translate-y-0' : '-translate-y-full'
+            className={`fixed top-0 left-0 z-50 w-full p-4 text-white transition-transform duration-300 bg-teal-600 shadow-md ${isVisible ? 'translate-y-0' : '-translate-y-full'
                 }`}
         >
-            <div className="container flex items-center justify-between mx-auto">
-                <Link href={route('home')} className="text-2xl font-bold">FILKOM</Link>
+            <div className="container flex items-center justify-between px-4 mx-auto md:px-20">
+                <Link href={route('home')} className="text-2xl font-bold">
+                    FILKOM
+                </Link>
                 <div className="items-center hidden md:flex">
                     <NavLink href="pedomans.index">Buku Pedoman</NavLink>
                     <NavLink href="logbooks.index">Logbook</NavLink>
@@ -66,4 +107,4 @@ const Navbar = () => {
     );
 };
 
-export default React.memo(Navbar);
+export default Navbar;
