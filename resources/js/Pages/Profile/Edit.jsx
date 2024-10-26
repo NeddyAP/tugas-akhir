@@ -55,10 +55,10 @@ export default function Edit({ mustVerifyEmail, status }) {
                         alt="Profile"
                         className="object-cover w-32 h-32 mb-4 rounded-full"
                     />
-                    <label className="px-4 py-2 text-white transition duration-300 bg-blue-500 rounded cursor-pointer hover:bg-blue-600">
+                    {/* <label className="px-4 py-2 text-white transition duration-300 bg-blue-500 rounded cursor-pointer hover:bg-blue-600">
                         Select Image
                         <input type="file" className="hidden" onChange={handleImageChange} accept="image/*" />
-                    </label>
+                    </label> */}
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-4">

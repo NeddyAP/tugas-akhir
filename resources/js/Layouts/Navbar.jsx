@@ -42,10 +42,10 @@ const AuthButton = ({ user }) => {
                         as="button"
                         className="block w-full px-4 py-2 text-left transition-colors hover:bg-gray-100"
                     >
-                        {user.name}
+                        Profile
                     </Link>
                     <Link
-                        href={route('dashboard')}
+                        href={route('mahasiswas.index')}
                         as="button"
                         className="block w-full px-4 py-2 text-left transition-colors hover:bg-gray-100"
                     >
@@ -92,7 +92,7 @@ const Navbar = () => {
             className={`fixed top-0 left-0 z-50 w-full p-4 text-white transition-transform duration-300 bg-teal-600 shadow-md ${isVisible ? 'translate-y-0' : '-translate-y-full'
                 }`}
         >
-            <div className="container flex items-center justify-between px-4 mx-auto md:px-20">
+            <div className="container flex items-center justify-between px-4 mx-auto md:px-24">
                 <Link href={route('home')} className="text-2xl font-bold">
                     FILKOM
                 </Link>
