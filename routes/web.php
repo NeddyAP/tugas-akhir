@@ -31,5 +31,4 @@ Route::middleware('auth')->group(function () {
     Route::resource('mahasiswas', MahasiswaController::class);
 });
 
-
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';
