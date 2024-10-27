@@ -13,7 +13,7 @@ class MahasiswaController extends Controller
      */
     public function index()
     {
-        return Inertia::render('Admin/MahasiswaPage', [
+        return Inertia::render('Admin/Mahasiswa/MahasiswaPage', [
             'mahasiswas' => User::get()
         ]);
     }

@@ -12,7 +12,7 @@ class LaporanController extends Controller
      */
     public function index()
     {
-        return inertia('Laporan/Index', [
+        return inertia('Front/Laporan/Index', [
             'laporans' => Laporan::all(),
         ]);
     }
