@@ -15,6 +15,7 @@ export default defineConfig({
         alias: {
             '@': '/resources/js',
             '@vendor': '../../../vendor',
+            '@images': '/resources/images',
         },
     },
 });
