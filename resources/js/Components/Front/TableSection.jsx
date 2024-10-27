@@ -1,6 +1,6 @@
 import React from 'react';
 import { Download } from 'lucide-react';
-import Table from '@/Components/Table';
+import Table from '@/Components/Front/Table';
 
 const TableSection = React.memo(({ columns, data, onAdd, onDownload }) => (
     <div className="container px-4 py-8 mx-auto my-5 sm:px-6 lg:px-8">

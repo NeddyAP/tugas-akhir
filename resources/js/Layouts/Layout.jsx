@@ -11,9 +11,15 @@ export default function Layout({ children }) {
     useEffect(() => {
         if (flash && flash.message) {
             if (flash.type === "success") {
-                toast.success(flash.message);
+                toast.success(flash.message, {
+                    position: "bottom-right",
+                    className: 'foo-bar'
+                });
             } else if (flash.type === "error") {
-                toast.error(flash.message);
+                toast.error(flash.message, {
+                    position: "bottom-right",
+                    className: 'foo-bar'
+                });
             }
         }
     }, [flash]);

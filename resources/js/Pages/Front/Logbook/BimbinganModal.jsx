@@ -1,11 +1,11 @@
 import React from 'react';
 import { useForm } from "@inertiajs/react";
-import Modal from '@/Components/Modal';
-import InputLabel from '@/Components/InputLabel';
-import InputError from '@/Components/InputError';
-import TextInput from '@/Components/TextInput';
-import PrimaryButton from '@/Components/PrimaryButton';
-import SecondaryButton from '@/Components/SecondaryButton';
+import Modal from '@/Components/Front/Modal';
+import InputLabel from '@/Components/Front/InputLabel';
+import InputError from '@/Components/Front/InputError';
+import TextInput from '@/Components/Front/TextInput';
+import PrimaryButton from '@/Components/Front/PrimaryButton';
+import SecondaryButton from '@/Components/Front/SecondaryButton';
 
 const BimbinganModal = ({ isOpen, onClose, onSubmit }) => {
     const { data, setData, post, processing, errors } = useForm({

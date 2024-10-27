@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { Head, useForm, usePage } from "@inertiajs/react";
 import { User } from 'lucide-react';
 import Layout from "@/Layouts/Layout";
-import SecondaryButton from "@/Components/SecondaryButton";
-import PrimaryButton from "@/Components/PrimaryButton";
-import avatarProfile from '../../../images/avatar-profile.jpg';
+import SecondaryButton from "@/Components/Front/SecondaryButton";
+import PrimaryButton from "@/Components/Front/PrimaryButton";
+import avatarProfile from '@images/avatar-profile.jpg';
 
 export default function Edit({ mustVerifyEmail, status }) {
     const user = usePage().props.auth.user;

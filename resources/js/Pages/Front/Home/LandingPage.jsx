@@ -1,8 +1,8 @@
 import React from 'react';
 import { Link, usePage } from '@inertiajs/react';
-import landingImage from '../../../images/Saly-10.png';
-import PrimaryButton from '@/Components/PrimaryButton';
-import SecondaryButton from '@/Components/SecondaryButton';
+import landingImage from '@images/Saly-10.png';
+import PrimaryButton from '@/Components/Front/PrimaryButton';
+import SecondaryButton from '@/Components/Front/SecondaryButton';
 
 const LandingPage = () => {
     const { auth } = usePage().props;

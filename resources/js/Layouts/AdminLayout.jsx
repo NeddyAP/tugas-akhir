@@ -1,18 +1,20 @@
-import AdminNavbar from '../Components/AdminNavbar';
-import AdminSidebar from '../Components/AdminSidebar';
+import { Head } from '@inertiajs/react';
+import AdminNavbar from '../Components/Admin/AdminNavbar';
+import AdminSidebar from '../Components/Admin/AdminSidebar';
 
-export default function AdminLayout({ children, title }) {
+export default function AdminLayout({ children, title, currentPage }) {
     return (
-        <div className="min-h-screen bg-gray-100">
-            <AdminSidebar />
-            <div className="flex flex-col flex-1 md:pl-64">
-                <AdminNavbar title={title} />
-                <main className="flex-1 pb-8">
-                    <div className="px-4 mt-8 sm:px-6 lg:px-8">
-                        {children}
-                    </div>
-                </main>
-            </div>
-        </div>
+        <div className="flex min-h-screen bg-gray-50">
+            <Head title={title} />
+            <AdminSidebar currentLabel={title} />
+
+            <div className="flex flex-col flex-1">
+                <AdminNavbar currentPage={currentPage} />
+
+                <main className="flex-1 p-8">
+                    {children}
+                </main >
+            </div >
+        </div >
     );
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import PrimaryButton from '@/Components/PrimaryButton';
+import PrimaryButton from '@/Components/Front/PrimaryButton';
 
 const Tutorial = () => (
     <div className="container mx-auto px-4 md:px-8 lg:px-16 py-12 md:py-20">

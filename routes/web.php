@@ -5,23 +5,13 @@ use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\LogbookController;
 use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\ProfileController;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-// Route::get('/', function () {
-//     return Inertia::render('Home', [
-//         'canLogin' => Route::has('login'),
-//         'canRegister' => Route::has('register'),
-//         'laravelVersion' => Application::VERSION,
-//         'phpVersion' => PHP_VERSION,
-//     ]);
-// });
-
-Route::inertia('/', 'Home/Index', [
+Route::inertia('/', 'Front/Home/Index', [
     'canLogin' => Route::has('login'),
 ])->name('home');
-Route::inertia('/pedomans', 'Pedoman/Index', [
+Route::inertia('/pedomans', 'Front/Pedoman/Index', [
     'canLogin' => Route::has('login'),
 ])->name('pedomans.index');
 
@@ -35,9 +25,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // Admin Page
-    // Route::get('/dashboard', function () {
-    //     return Inertia::render('Admin/MahasiswaPage');
-    // })->middleware(['auth', 'verified'])->name('dashboard');
+    Route::get('/dashboard', function () {
+        return Inertia::render('Admin/Dashboard');
+    })->middleware(['auth', 'verified'])->name('dashboard');
     Route::resource('mahasiswas', MahasiswaController::class);
 });
 

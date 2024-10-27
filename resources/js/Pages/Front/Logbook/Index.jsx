@@ -1,9 +1,9 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import { Head, useForm } from "@inertiajs/react";
 import Layout from "@/Layouts/Layout";
-import TableSection from '@/Components/TableSection';
-import LogbookModal from '@/Pages/Logbook/LogbookModal';
-import BimbinganModal from '@/Pages/Logbook/BimbinganModal';
+import TableSection from '@/Components/Front/TableSection';
+import LogbookModal from '@/Pages/Front/Logbook/LogbookModal';
+import BimbinganModal from '@/Pages/Front/Logbook/BimbinganModal';
 import createColumns from '@/utils/createColumns.jsx';
 
 export default function Index({ logbooks, bimbingans }) {

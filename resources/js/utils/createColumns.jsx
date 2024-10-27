@@ -1,5 +1,5 @@
 import React from 'react';
-import ActionCell from '@/Components/ActionCell';
+import ActionCell from '@/Components/Front/ActionCell';
 
 const createColumns = (title, fields, handleEdit, handleDelete) => [
     {

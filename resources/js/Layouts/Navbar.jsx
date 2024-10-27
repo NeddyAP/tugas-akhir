@@ -1,6 +1,6 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import { Link, usePage } from '@inertiajs/react';
-import avatarProfile from '../../images/avatar-profile.jpg';
+import avatarProfile from '@images/avatar-profile.jpg';
 
 const NavLink = ({ href, children }) => (
     <Link
@@ -45,7 +45,7 @@ const AuthButton = ({ user }) => {
                         Profile
                     </Link>
                     <Link
-                        href={route('mahasiswas.index')}
+                        href={route('dashboard')}
                         as="button"
                         className="block w-full px-4 py-2 text-left transition-colors hover:bg-gray-100"
                     >

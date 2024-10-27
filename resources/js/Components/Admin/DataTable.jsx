@@ -5,7 +5,6 @@ import { ChevronUp, ChevronDown, Search, ChevronLeft, ChevronRight } from 'lucid
 export default function DataTable({ columns: userColumns, data, actions }) {
     const [globalFilter, setGlobalFilter] = useState('');
 
-    // Add action column if actions are provided
     const columns = useMemo(() => {
         const cols = [...userColumns];
         if (actions) {
@@ -80,11 +79,12 @@ export default function DataTable({ columns: userColumns, data, actions }) {
                     <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
                         <table {...getTableProps()} className="min-w-full divide-y divide-gray-300">
                             <thead className="bg-gray-50">
-                                {headerGroups.map(headerGroup => (
-                                    <tr {...headerGroup.getHeaderGroupProps()}>
-                                        {headerGroup.headers.map(column => (
+                                {headerGroups.map((headerGroup, headerGroupIndex) => (
+                                    <tr {...headerGroup.getHeaderGroupProps()} key={headerGroupIndex}>
+                                        {headerGroup.headers.map((column, columnIndex) => (
                                             <th
                                                 {...column.getHeaderProps(column.getSortByToggleProps())}
+                                                key={columnIndex}
                                                 className="px-6 py-3 text-sm font-semibold text-left text-gray-900"
                                             >
                                                 <div className="flex items-center gap-2">
@@ -103,13 +103,14 @@ export default function DataTable({ columns: userColumns, data, actions }) {
                                 ))}
                             </thead>
                             <tbody {...getTableBodyProps()} className="bg-white divide-y divide-gray-200">
-                                {page.map(row => {
+                                {page.map((row, rowIndex) => {
                                     prepareRow(row);
                                     return (
-                                        <tr {...row.getRowProps()} className="hover:bg-gray-50">
-                                            {row.cells.map(cell => (
+                                        <tr {...row.getRowProps()} key={rowIndex} className="hover:bg-gray-50">
+                                            {row.cells.map((cell, cellIndex) => (
                                                 <td
                                                     {...cell.getCellProps()}
+                                                    key={cellIndex}
                                                     className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap"
                                                 >
                                                     {cell.render('Cell')}
