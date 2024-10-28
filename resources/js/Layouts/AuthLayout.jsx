@@ -2,6 +2,8 @@ import React from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { Head, Link } from '@inertiajs/react';
 import salyImage from '../../images/Saly-10.png';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const AuthLayout = ({ title, children }) => {
     return (
@@ -19,6 +21,18 @@ const AuthLayout = ({ title, children }) => {
                         <div className="w-full">
                             <h2 className="mb-6 text-3xl font-bold text-gray-800">{title}</h2>
                             {children}
+                            <ToastContainer
+                                position="top-right"
+                                autoClose={3000}
+                                hideProgressBar={false}
+                                newestOnTop
+                                closeOnClick
+                                rtl={false}
+                                pauseOnFocusLoss
+                                draggable
+                                pauseOnHover
+                                theme="light"
+                            />
                         </div>
                     </div>
                     <div className="flex items-center justify-center w-1/2 p-8 bg-blue-100">
@@ -29,7 +43,7 @@ const AuthLayout = ({ title, children }) => {
                         />
                     </div>
                 </div>
-            </div>
+            </div >
         </>
     );
 };
