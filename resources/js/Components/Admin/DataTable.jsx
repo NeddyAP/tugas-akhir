@@ -1,12 +1,19 @@
 import { useState, useMemo } from 'react';
 import { useTable, useSortBy, useGlobalFilter, usePagination } from 'react-table';
-import { ChevronUp, ChevronDown, Search, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronUp, ChevronDown, Search, ChevronLeft, ChevronRight, Edit, Trash } from 'lucide-react';
 
 export default function DataTable({ columns: userColumns, data, actions }) {
     const [globalFilter, setGlobalFilter] = useState('');
 
     const columns = useMemo(() => {
-        const cols = [...userColumns];
+        const cols = [
+            {
+                Header: '#',
+                id: 'rowNumber',
+                Cell: ({ row }) => row.index + 1,
+            },
+            ...userColumns
+        ];
         if (actions) {
             cols.push({
                 Header: 'Actions',
@@ -17,13 +24,13 @@ export default function DataTable({ columns: userColumns, data, actions }) {
                             onClick={() => actions.handleEdit(row.original)}
                             className="p-1 text-blue-600 hover:text-blue-800"
                         >
-                            Edit
+                            <Edit className="w-5 h-5" />
                         </button>
                         <button
                             onClick={() => actions.handleDelete(row.original)}
                             className="p-1 text-red-600 hover:text-red-800"
                         >
-                            Delete
+                            <Trash className="w-5 h-5" />
                         </button>
                     </div>
                 ),
@@ -47,11 +54,13 @@ export default function DataTable({ columns: userColumns, data, actions }) {
         canNextPage,
         pageCount,
         pageOptions,
+        setGlobalFilter: setTableGlobalFilter,
     } = useTable(
         {
             columns,
             data,
-            initialState: { pageSize: 10 }
+            initialState: { pageSize: 10 },
+            globalFilter: 'text',
         },
         useGlobalFilter,
         useSortBy,
@@ -60,15 +69,19 @@ export default function DataTable({ columns: userColumns, data, actions }) {
 
     const { pageIndex, pageSize } = state;
 
+    const handleGlobalFilterChange = (e) => {
+        setGlobalFilter(e.target.value);
+        setTableGlobalFilter(e.target.value);
+    };
+
     return (
         <div className="flex flex-col gap-4">
-
             <div className="flex items-center justify-end gap-2 px-4">
                 <Search className="w-5 h-5 text-gray-400" />
                 <input
                     type="text"
                     value={globalFilter || ''}
-                    onChange={e => setGlobalFilter(e.target.value)}
+                    onChange={handleGlobalFilterChange}
                     placeholder="Search..."
                     className="px-3 py-2 border border-gray-300 rounded-md w-52 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
