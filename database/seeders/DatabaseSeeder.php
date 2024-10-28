@@ -21,7 +21,31 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'name' => 'Admin',
             'email' => 'admin@gmail.com',
+            'role' => 'admin',
             'password' => Hash::make('admin'),
+        ]);
+
+        User::factory()->create([
+            'name' => 'Super Admin',
+            'email' => 'superadmin@gmail.com',
+            'role' => 'superadmin',
+            'password' => Hash::make('superadmin'),
+        ]);
+
+        User::factory()->create([
+            'name' => 'Mahasiswa User',
+            'email' => 'mahasiswa@gmail.com',
+            'nim' => '123456789',
+            'role' => 'mahasiswa',
+            'password' => Hash::make('mahasiswa'),
+        ]);
+
+        User::factory()->create([
+            'name' => 'Dosen User',
+            'email' => 'dosen@gmail.com',
+            'nip' => '987654321',
+            'role' => 'dosen',
+            'password' => Hash::make('dosen'),
         ]);
 
         Bimbingan::factory()->create([
