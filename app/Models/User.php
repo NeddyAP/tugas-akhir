@@ -2,47 +2,78 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'name',
         'email',
         'password',
+        'role',
+        'nim',
+        'nip',
+        'phone',
+        'address',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+    ];
+
+    // Role constants
+    const ROLE_SUPERADMIN = 'superadmin';
+    const ROLE_ADMIN = 'admin';
+    const ROLE_MAHASISWA = 'mahasiswa';
+    const ROLE_DOSEN = 'dosen';
+
+    // Role checker methods
+    public function isSuperAdmin()
     {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
+        return $this->role === self::ROLE_SUPERADMIN;
+    }
+
+    public function isAdmin()
+    {
+        return $this->role === self::ROLE_ADMIN;
+    }
+
+    public function isMahasiswa()
+    {
+        return $this->role === self::ROLE_MAHASISWA;
+    }
+
+    public function isDosen()
+    {
+        return $this->role === self::ROLE_DOSEN;
+    }
+
+    // Scope untuk filter berdasarkan role
+    public function scopeMahasiswa($query)
+    {
+        return $query->where('role', self::ROLE_MAHASISWA);
+    }
+
+    public function scopeDosen($query)
+    {
+        return $query->where('role', self::ROLE_DOSEN);
+    }
+
+    public function scopeAdmin($query)
+    {
+        return $query->whereIn('role', [self::ROLE_ADMIN, self::ROLE_SUPERADMIN]);
     }
 
     public function logbook()
