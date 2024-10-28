@@ -1,10 +1,9 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useState, useEffect } from "react";
 import { Head, useForm } from "@inertiajs/react";
+import { toast } from 'react-toastify';
 import AdminLayout from "@/Layouts/AdminLayout";
 import DataTable from "@/Components/Admin/DataTable";
 import MahasiswaModal from "./MahasiswaModal";
-import AdminSidebar from "@/Components/Admin/AdminSidebar";
-import AdminNavbar from "@/Components/Admin/AdminNavbar";
 
 export default function MahasiswaPage({ mahasiswas }) {
     const { delete: destroyMahasiswa } = useForm();
@@ -19,6 +18,9 @@ export default function MahasiswaPage({ mahasiswas }) {
             destroyMahasiswa(route("mahasiswas.destroy", row.id), {
                 preserveState: true,
                 preserveScroll: true,
+                onError: () => {
+                    toast.error("Gagal menghapus mahasiswa");
+                }
             });
         }
     }, [destroyMahasiswa, confirmDelete]);
@@ -28,7 +30,8 @@ export default function MahasiswaPage({ mahasiswas }) {
         handleDelete,
         handleAdd: () => setModalState({ isOpen: true, editingData: null }),
         handleDownload: () => {
-            console.log("Downloading mahasiswa data...");
+            toast.info("Mengunduh data mahasiswa...");
+            // Implementasi download
         },
     }), [handleDelete]);
 
@@ -51,7 +54,7 @@ export default function MahasiswaPage({ mahasiswas }) {
     ], []);
 
     const processedData = useMemo(() =>
-        mahasiswas.map(mahasiswa => ({
+        mahasiswas.filter(mahasiswa => mahasiswa.role === 'mahasiswa').map(mahasiswa => ({
             ...mahasiswa,
         }))
         , [mahasiswas]);
