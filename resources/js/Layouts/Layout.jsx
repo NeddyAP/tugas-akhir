@@ -12,12 +12,10 @@ export default function Layout({ children }) {
         if (flash && flash.message) {
             if (flash.type === "success") {
                 toast.success(flash.message, {
-                    position: "bottom-right",
                     className: 'foo-bar'
                 });
             } else if (flash.type === "error") {
                 toast.error(flash.message, {
-                    position: "bottom-right",
                     className: 'foo-bar'
                 });
             }
@@ -41,7 +39,7 @@ export default function Layout({ children }) {
                 </main>
                 <Footer />
             </div>
-            <ToastContainer position="top-right" autoClose={3000} />
+            <ToastContainer position="bottom-right" autoClose={3000} />
         </>
     );
 }
