@@ -31,7 +31,17 @@ class MahasiswaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request = $request->validate([
+            'name' => 'required',
+            'email' => 'required|email',
+            'nim' => 'required',
+            'password' => 'required',
+        ]);
+        $request['role'] = 'mahasiswa';
+
+        User::create($request);
+
+        return redirect()->route('mahasiswas.index')->with('flash', ['message' => 'Mahasiswa berhasil ditambahkan.', 'type' => 'success']);
     }
 
     /**
@@ -55,7 +65,15 @@ class MahasiswaController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request = $request->validate([
+            'name' => 'required',
+            'email' => 'required|email',
+            'nim' => 'required',
+        ]);
+
+        User::find($id)->update($request);
+
+        return redirect()->route('mahasiswas.index')->with('flash', ['message' => 'Mahasiswa berhasil diupdate.', 'type' => 'success']);
     }
 
     /**
@@ -63,6 +81,8 @@ class MahasiswaController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        User::destroy($id);
+
+        return redirect()->route('mahasiswas.index')->with('flash', ['message' => 'Mahasiswa berhasil dihapus.', 'type' => 'success']);
     }
 }
