@@ -11,10 +11,10 @@ import {
     X,
     FileText,
     GraduationCap,
-    Table,
     File,
     UserCog,
     TargetIcon,
+    LucideTable2,
 } from 'lucide-react';
 import { Link, usePage } from '@inertiajs/react';
 import filkomLogo from '@images/filkomlogo.png';
@@ -149,7 +149,7 @@ const AdminSidebar = () => {
         },
         {
             type: 'dropdown',
-            icon: <Table />,
+            icon: <LucideTable2 />,
             label: 'Tabel',
             children: [
                 { icon: <FileText />, label: 'Logbook', href: '' },
