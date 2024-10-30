@@ -1,18 +1,11 @@
-import { useCallback, useMemo, useState, useEffect } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { Head, useForm } from "@inertiajs/react";
 import { toast } from 'react-toastify';
 import AdminLayout from "@/Layouts/AdminLayout";
 import DataTable from "@/Components/Admin/DataTable";
 import MahasiswaModal from "./MahasiswaModal";
 
-export default function MahasiswaPage({ mahasiswas }) {
-    const { delete: destroyMahasiswa } = useForm();
-    const [modalState, setModalState] = useState({ isOpen: false, editingData: null });
-
-    const confirmDelete = useCallback((message) => {
-        return window.confirm(message);
-    }, []);
-
+const useMahasiswaActions = (destroyMahasiswa, confirmDelete, setModalState) => {
     const handleDelete = useCallback((row) => {
         if (confirmDelete("Kamu yakin ingin menghapus data mahasiswa?")) {
             destroyMahasiswa(route("mahasiswas.destroy", row.id), {
@@ -25,7 +18,7 @@ export default function MahasiswaPage({ mahasiswas }) {
         }
     }, [destroyMahasiswa, confirmDelete]);
 
-    const tableActions = useMemo(() => ({
+    return useMemo(() => ({
         handleEdit: (row) => setModalState({ isOpen: true, editingData: row }),
         handleDelete,
         handleAdd: () => setModalState({ isOpen: true, editingData: null }),
@@ -33,30 +26,24 @@ export default function MahasiswaPage({ mahasiswas }) {
             toast.info("Mengunduh data mahasiswa...");
             // Implementasi download
         },
-    }), [handleDelete]);
+    }), [handleDelete, setModalState]);
+};
+
+export default function MahasiswaPage({ mahasiswas }) {
+    const { delete: destroyMahasiswa } = useForm();
+    const [modalState, setModalState] = useState({ isOpen: false, editingData: null });
+
+    const confirmDelete = useCallback((message) => window.confirm(message), []);
+    const tableActions = useMahasiswaActions(destroyMahasiswa, confirmDelete, setModalState);
 
     const columns = useMemo(() => [
-        {
-            Header: "Nama",
-            accessor: "name",
-            sortable: true,
-        },
-        {
-            Header: "NIM",
-            accessor: "nim",
-            sortable: true,
-        },
-        {
-            Header: "Email",
-            accessor: "email",
-            sortable: true,
-        }
+        { Header: "Nama", accessor: "name", sortable: true },
+        { Header: "NIM", accessor: "nim", sortable: true },
+        { Header: "Email", accessor: "email", sortable: true }
     ], []);
 
     const processedData = useMemo(() =>
-        mahasiswas.filter(mahasiswa => mahasiswa.role === 'mahasiswa').map(mahasiswa => ({
-            ...mahasiswa,
-        }))
+        mahasiswas.filter(mahasiswa => mahasiswa.role === 'mahasiswa').map(mahasiswa => ({ ...mahasiswa }))
         , [mahasiswas]);
 
     return (
@@ -64,9 +51,7 @@ export default function MahasiswaPage({ mahasiswas }) {
             <div className="grid grid-cols-1 mb-8">
                 <div className="flex flex-col gap-8">
                     <header className="flex items-center justify-between">
-                        <h2 className="text-xl font-semibold text-gray-900">
-                            Data Mahasiswa
-                        </h2>
+                        <h2 className="text-xl font-semibold text-gray-900">Data Mahasiswa</h2>
                         <div className="flex gap-2">
                             <button
                                 type="button"
@@ -96,6 +81,7 @@ export default function MahasiswaPage({ mahasiswas }) {
                         isOpen={modalState.isOpen}
                         onClose={() => setModalState({ isOpen: false, editingData: null })}
                         editingData={modalState.editingData}
+                        className="transition duration-300 ease-in-out transform"
                     />
                 </div>
             </div>

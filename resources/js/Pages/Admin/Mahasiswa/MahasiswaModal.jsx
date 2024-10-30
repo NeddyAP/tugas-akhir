@@ -16,47 +16,42 @@ export default function MahasiswaModal({ isOpen, onClose, editingData }) {
 
     useEffect(() => {
         if (isOpen) {
-            clearErrors();
             if (editingData) {
                 setData({
                     name: editingData.name,
                     email: editingData.email,
-                    role: "mahasiswa", // Ensure role is always "mahasiswa"
+                    role: "mahasiswa",
                     nim: editingData.nim || "",
                     nip: editingData.nip || "",
                     phone: editingData.phone || "",
                     address: editingData.address || "",
-                    password: "", // Kosong saat edit
+                    password: "",
                 });
             } else {
                 reset();
             }
+        } else {
+            reset();
+            clearErrors();
         }
     }, [isOpen, editingData]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
-
-        const toastId = toast.loading(
-            editingData ? "Memperbarui data..." : "Menyimpan data..."
-        );
-
-        const submitOptions = {
-            preserveScroll: true,
-            onSuccess: () => {
-                onClose();
-                reset();
-                toast.dismiss(toastId);
-            },
-            onError: (errors) => {
-                toast.dismiss(toastId);
-            }
-        };
-
         if (editingData) {
-            put(route("mahasiswas.update", editingData.id), submitOptions);
+            put(route('mahasiswas.update', editingData.id), {
+                onSuccess: () => {
+                    reset();
+                    onClose();
+                },
+            });
         } else {
-            post(route("mahasiswas.store"), submitOptions);
+            post(route('mahasiswas.store'), {
+                onSuccess: () => {
+                    reset();
+                    onClose();
+                },
+            });
         }
     };
 

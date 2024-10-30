@@ -1,6 +1,6 @@
-import { useState, useMemo } from 'react';
-import { useTable, useSortBy, useGlobalFilter, usePagination } from 'react-table';
-import { ChevronUp, ChevronDown, Search, ChevronLeft, ChevronRight, Edit, Trash } from 'lucide-react';
+import { ChevronDown, ChevronLeft, ChevronRight, ChevronUp, Edit, Search, Trash } from 'lucide-react';
+import { useCallback, useMemo, useState } from 'react';
+import { useGlobalFilter, usePagination, useSortBy, useTable } from 'react-table';
 
 export default function DataTable({ columns: userColumns, data, actions }) {
     const [globalFilter, setGlobalFilter] = useState('');
@@ -39,6 +39,10 @@ export default function DataTable({ columns: userColumns, data, actions }) {
         return cols;
     }, [userColumns, actions]);
 
+    // Memoize data and columns
+    const memoizedColumns = useMemo(() => columns, [columns]);
+    const memoizedData = useMemo(() => data, [data]);
+
     const {
         getTableProps,
         getTableBodyProps,
@@ -57,8 +61,8 @@ export default function DataTable({ columns: userColumns, data, actions }) {
         setGlobalFilter: setTableGlobalFilter,
     } = useTable(
         {
-            columns,
-            data,
+            columns: memoizedColumns,
+            data: memoizedData,
             initialState: { pageSize: 10 },
             globalFilter: 'text',
         },
@@ -69,10 +73,10 @@ export default function DataTable({ columns: userColumns, data, actions }) {
 
     const { pageIndex, pageSize } = state;
 
-    const handleGlobalFilterChange = (e) => {
+    const handleGlobalFilterChange = useCallback((e) => {
         setGlobalFilter(e.target.value);
         setTableGlobalFilter(e.target.value);
-    };
+    }, [setGlobalFilter, setTableGlobalFilter]);
 
     return (
         <div className="flex flex-col gap-4">
@@ -140,14 +144,15 @@ export default function DataTable({ columns: userColumns, data, actions }) {
 
             <div className="flex items-center justify-between px-4 py-3 bg-white border-t">
                 <div className="flex items-center gap-4">
+                    <span>Show</span>
                     <select
                         value={pageSize}
                         onChange={e => setPageSize(Number(e.target.value))}
-                        className="px-2 py-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="px-2 py-1 pr-8 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
                         {[10, 20, 30, 40, 50].map(size => (
                             <option key={size} value={size}>
-                                Show {size}
+                                {size}
                             </option>
                         ))}
                     </select>
