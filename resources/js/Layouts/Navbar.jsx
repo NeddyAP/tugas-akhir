@@ -89,7 +89,7 @@ const Navbar = () => {
 
     return (
         <nav
-            className={`fixed top-0 left-0 z-50 w-full p-4 text-white transition-transform duration-300 bg-teal-600 shadow-md ${isVisible ? 'translate-y-0' : '-translate-y-full'
+            className={`fixed top-0 left-0 z-50 w-full p-4 px-24 text-white transition-transform duration-300 bg-teal-600 shadow-md ${isVisible ? 'translate-y-0' : '-translate-y-full'
                 }`}
         >
             <div className="container flex items-center justify-between px-4 mx-auto md:px-24">

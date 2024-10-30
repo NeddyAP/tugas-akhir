@@ -2,10 +2,10 @@ import React from 'react';
 import PrimaryButton from '@/Components/Front/PrimaryButton';
 
 const Tutorial = () => (
-    <div className="container mx-auto px-4 md:px-8 lg:px-16 py-12 md:py-20">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
+    <div className="container px-4 py-12 mx-auto md:px-8 lg:px-16 md:py-20">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-3 md:gap-12">
             <div className="md:col-span-2">
-                <div className="aspect-w-16 h-96 mb-6 md:mb-0">
+                <div className="mb-6 aspect-w-16 h-96 md:mb-0">
                     <iframe
                         src="https://www.youtube.com/embed/ptY6CH4A1xc"
                         title="Tutorial Video"
@@ -15,9 +15,9 @@ const Tutorial = () => (
                     />
                 </div>
             </div>
-            <div className="md:col-span-1 flex flex-col items-center text-center">
-                <h2 className="text-2xl font-bold mb-4">Tutorial</h2>
-                <div className="space-y-4 mb-6">
+            <div className="flex flex-col items-center text-center md:col-span-1">
+                <h2 className="mb-4 text-2xl font-bold">Tutorial</h2>
+                <div className="mb-6 space-y-4">
                     <p className="text-gray-700">
                         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ac
                         efficitur sapien. Nullam nec erat nec ex ultricies tincidunt. Donec

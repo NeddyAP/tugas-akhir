@@ -8,19 +8,15 @@ const Faq = React.lazy(() => import("./Faq"));
 
 const LoadingFallback = () => <div>Loading...</div>;
 
-const MemoizedLandingPage = React.memo(LandingPage);
-const MemoizedTutorial = React.memo(Tutorial);
-const MemoizedFaq = React.memo(Faq);
-
 export default function Index() {
     return (
         <Layout>
             <Head title="Home" />
-            <main>
+            <main className="px-24">
                 <Suspense fallback={<LoadingFallback />}>
-                    <MemoizedLandingPage />
-                    <MemoizedTutorial />
-                    <MemoizedFaq />
+                    <LandingPage />
+                    <Tutorial />
+                    <Faq />
                 </Suspense>
             </main>
         </Layout>
