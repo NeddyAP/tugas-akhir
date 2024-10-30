@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import { useForm } from "@inertiajs/react";
 import { Dialog } from "@headlessui/react";
 import { X } from "lucide-react";
-import { toast } from "react-toastify";
 
 export default function MahasiswaModal({ isOpen, onClose, editingData }) {
     const { data, setData, post, put, processing, errors, reset, clearErrors } = useForm({
