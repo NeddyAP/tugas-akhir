@@ -1,6 +1,5 @@
-// src/components/admin/AdminNavbar.jsx
 import React, { useState } from 'react';
-import { ChevronRight, Settings, LogOut, User } from 'lucide-react';
+import { ChevronRight, Settings, LogOut, User, LucideCalendar } from 'lucide-react';
 import { Link, usePage } from '@inertiajs/react';
 
 const AdminNavbar = ({ currentPage = 'Dashboard' }) => {
@@ -12,14 +11,15 @@ const AdminNavbar = ({ currentPage = 'Dashboard' }) => {
         <div className="flex items-center justify-between h-16 px-8 bg-white border-b border-gray-200">
             <div className="flex items-center space-x-8">
                 <div className="flex items-center text-gray-500">
-                    {/* <Link href={route('dashboard')} className="hover:text-gray-700">Admin</Link>
-                    <ChevronRight className="w-4 h-4 mx-2" /> */}
+                    <Link href={route('dashboard')} className="hover:text-gray-700">Admin</Link>
+                    <ChevronRight className="w-4 h-4 mx-2" />
                     <span className="text-gray-900">{currentPage}</span>
                 </div>
             </div>
 
             <div className="flex items-center space-x-4">
-                <span className="text-gray-600">{new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
+                <span className="text-gray-600">{new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })} </span>
+                <LucideCalendar className='w-4 h-4' />
                 <div className="relative">
                     <button
                         onClick={() => setIsProfileOpen(!isProfileOpen)}
@@ -46,8 +46,11 @@ const AdminNavbar = ({ currentPage = 'Dashboard' }) => {
                                 <Settings className="w-4 h-4" />
                                 <span>Settings</span>
                             </Link>
-
-                            <Link className="flex items-center w-full px-4 py-2 space-x-2 text-left text-gray-700 hover:bg-gray-100">
+                            <Link
+                                method="post"
+                                href={route('logout')}
+                                as="button"
+                                className="flex items-center w-full px-4 py-2 space-x-2 text-left text-red-700 hover:bg-gray-100">
                                 <LogOut className="w-4 h-4" />
                                 <span>Logout</span>
                             </Link>

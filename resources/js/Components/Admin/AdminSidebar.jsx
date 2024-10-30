@@ -1,8 +1,6 @@
-// src/components/admin/AdminSidebar.jsx
-import React, { useState } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import {
     Settings,
-    Layout,
     Users,
     HelpCircle,
     LogOut,
@@ -12,12 +10,16 @@ import {
     MenuIcon,
     X,
     FileText,
-    Calendar,
-    CheckSquare,
-    Flag
+    GraduationCap,
+    LucideTable2,
+    Goal,
+    File,
+    UserCog2Icon
 } from 'lucide-react';
 import { Link, usePage } from '@inertiajs/react';
-import FilkomLogo from '../../../images/filkomlogo.png';
+
+// Assuming you have a way to import images in your project
+import filkomLogo from '@images/filkomlogo.png';
 
 const SidebarTooltip = ({ children, label, show }) => {
     if (!show) return children;
@@ -32,14 +34,21 @@ const SidebarTooltip = ({ children, label, show }) => {
     );
 };
 
-const SidebarItem = ({ icon, label, href, isActive, isCollapsed }) => {
+const SidebarItem = ({ icon, label, href, isCollapsed }) => {
+    const { url } = usePage();
+    const isActive = url.startsWith(href);
+
     return (
         <SidebarTooltip label={label} show={isCollapsed}>
             <Link
                 href={href}
-                className={`flex items-center px-4 py-2 text-gray-700 rounded-lg hover:bg-gray-100 ${isActive ? 'text-blue-600' : ''} ${isCollapsed ? 'justify-center' : ''}`}
+                className={`flex items-center rounded-lg px-4 py-2 transition-colors duration-200
+          ${isActive ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'} 
+          ${isCollapsed ? 'justify-center' : ''}`}
             >
-                {icon}
+                {React.cloneElement(icon, {
+                    className: isActive ? 'text-blue-600' : 'text-gray-700'
+                })}
                 <span className={`ml-2 transition-all duration-200 ${isCollapsed ? 'hidden' : 'block'}`}>
                     {label}
                 </span>
@@ -50,27 +59,37 @@ const SidebarItem = ({ icon, label, href, isActive, isCollapsed }) => {
 
 const SidebarDropdown = ({ icon, label, children, isCollapsed }) => {
     const [isOpen, setIsOpen] = useState(false);
+    const { url } = usePage();
+    const childRoutes = React.Children.map(children, child => child.props.href);
+    const isActive = childRoutes.some(route => url.startsWith(route));
+
+    const toggleOpen = useCallback(() => setIsOpen(prev => !prev), []);
+
+    useMemo(() => {
+        if (isActive) setIsOpen(true);
+    }, [isActive]);
 
     return (
         <div className="relative">
             <SidebarTooltip label={label} show={isCollapsed}>
                 <button
-                    onClick={() => setIsOpen(!isOpen)}
-                    className={`flex items-center w-full px-4 py-2 text-gray-700 rounded-lg hover:bg-gray-100
+                    onClick={toggleOpen}
+                    className={`flex w-full items-center rounded-lg px-4 py-2 transition-colors duration-200
+            ${isActive ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'}
             ${isCollapsed ? 'justify-center' : 'justify-between'}`}
                 >
                     <div className={`flex items-center ${isCollapsed ? 'justify-center' : ''}`}>
-                        {icon}
-                        <span className={`ml-2 transition-all duration-200 
-              ${isCollapsed ? 'hidden' : 'block'}`}>
+                        {React.cloneElement(icon, {
+                            className: isActive ? 'text-blue-600' : 'text-gray-700'
+                        })}
+                        <span className={`ml-2 transition-all duration-200 ${isCollapsed ? 'hidden' : 'block'}`}>
                             {label}
                         </span>
                     </div>
                     {!isCollapsed && (
                         <ChevronDown
                             size={16}
-                            className={`transform transition-transform duration-200 
-                ${isOpen ? 'rotate-180' : ''}`}
+                            className={`transform transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
                         />
                     )}
                 </button>
@@ -88,32 +107,67 @@ const SidebarDropdown = ({ icon, label, children, isCollapsed }) => {
 const AdminSidebar = () => {
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [isMobileOpen, setIsMobileOpen] = useState(false);
-    const { url } = usePage();
+
+    const toggleCollapsed = useCallback(() => setIsCollapsed(prev => !prev), []);
+    const toggleMobileMenu = useCallback(() => setIsMobileOpen(prev => !prev), []);
 
     const sidebarClass = `
     ${isCollapsed ? 'w-20' : 'w-64'} 
     ${isMobileOpen ? 'translate-x-0' : '-translate-x-full'}
     fixed md:static md:translate-x-0
-    flex flex-col min-h-screen p-4 bg-white border-r border-gray-200
+    flex flex-col min-h-screen bg-white border-r border-gray-200 p-4
     transition-all duration-300 ease-in-out z-50
   `;
 
+    const navigationItems = useMemo(() => [
+        {
+            type: 'item',
+            icon: <LayoutDashboard size={20} />,
+            label: 'Dashboard',
+            href: route('dashboard')
+        },
+        {
+            type: 'dropdown',
+            icon: <LucideTable2 size={20} />,
+            label: 'Tabel',
+            children: [
+                { icon: <FileText size={18} />, label: 'Logbook', href: '/logbook' },
+                { icon: <Goal size={18} />, label: 'Bimbingan', href: '/bimbingan' },
+                { icon: <File size={18} />, label: 'Laporan', href: '/laporan' }
+            ]
+        },
+        {
+            type: 'dropdown',
+            icon: <Users size={20} />,
+            label: 'Data',
+            children: [
+                { icon: <GraduationCap size={20} />, label: 'Mahasiswa', href: route('mahasiswas.index') },
+                { icon: <UserCog2Icon size={18} />, label: 'Admin', href: route('dashboard') }
+            ]
+        },
+        {
+            type: 'item',
+            icon: <Settings size={20} />,
+            label: 'Settings',
+            href: '/settings'
+        }
+    ], []);
+
     return (
         <>
-            {/* Mobile Menu Button */}
             <button
-                onClick={() => setIsMobileOpen(!isMobileOpen)}
-                className="fixed p-2 bg-white rounded-lg shadow-lg md:hidden top-4 left-4"
+                onClick={toggleMobileMenu}
+                className="fixed p-2 bg-white rounded-lg shadow-lg top-4 left-4 md:hidden"
             >
                 <MenuIcon size={24} />
             </button>
 
             <div className={sidebarClass}>
-                {/* Sidebar Header */}
+                {/* Header */}
                 <div className="flex items-center justify-between mb-8">
-                    <div className={`flex items-center ${isCollapsed ? 'justify-center w-full' : 'justify-center w-full'}`}>
+                    <div className={`flex items-center ${isCollapsed ? 'w-full justify-center' : ''}`}>
                         <img
-                            src={FilkomLogo}
+                            src={filkomLogo}
                             alt="Filkom Logo"
                             className={`h-8 transition-all duration-200 ${isCollapsed ? 'hidden' : 'block'}`}
                         />
@@ -122,7 +176,7 @@ const AdminSidebar = () => {
                         </div>
                     </div>
                     <button
-                        onClick={() => setIsCollapsed(!isCollapsed)}
+                        onClick={toggleCollapsed}
                         className="hidden p-2 rounded-lg hover:bg-gray-100 md:block"
                     >
                         {isCollapsed ? <ChevronRight size={20} /> : <X size={20} />}
@@ -131,117 +185,68 @@ const AdminSidebar = () => {
 
                 {/* Navigation */}
                 <nav className="flex-1 space-y-1">
-                    <SidebarItem
-                        href={route('dashboard')}
-                        icon={<LayoutDashboard size={20} />}
-                        label="Dashboard"
-                        isActive={url === '/dashboard'}
-                        isCollapsed={isCollapsed}
-                    />
-
-                    <SidebarDropdown
-                        icon={<Layout size={20} />}
-                        label="Projects"
-                        isCollapsed={isCollapsed}
-                    >
-                        <SidebarItem
-                            href=""
-                            icon={<FileText size={18} />}
-                            label="All Projects"
-                            isActive=""
-                            isCollapsed={isCollapsed}
-                        />
-                        <SidebarItem
-                            href=""
-                            icon={< Calendar size={18} />}
-                            label="Project Calendar"
-                            isActive=""
-                            isCollapsed={isCollapsed}
-                        />
-                        <SidebarItem
-                            href=""
-                            icon={< Flag size={18} />}
-                            label="Milestones"
-                            isActive=""
-                            isCollapsed={isCollapsed}
-                        />
-                    </SidebarDropdown>
-
-                    <SidebarDropdown
-                        icon={<CheckSquare size={20} />}
-                        label="Tasks"
-                        isCollapsed={isCollapsed}
-                    >
-                        <SidebarItem
-                            href=""
-                            icon={<FileText size={18} />}
-                            label="All Tasks"
-                            isActive=""
-                            isCollapsed={isCollapsed}
-                        />
-                        <SidebarItem
-                            href=""
-                            icon={<Users size={18} />}
-                            label="Assigned to Me"
-                            isActive=""
-                            isCollapsed={isCollapsed}
-                        />
-                        <SidebarItem
-                            href=""
-                            icon={<Calendar size={18} />}
-                            label="Task Calendar"
-                            isActive=""
-                            isCollapsed={isCollapsed}
-                        />
-                    </SidebarDropdown>
-
-                    <SidebarItem
-                        href={route('mahasiswas.index')}
-                        icon={<Users size={20} />}
-                        label="Data Mahasiswa"
-                        isActive={url === '/mahasiswas'}
-                        isCollapsed={isCollapsed}
-                    />
-
-                    <SidebarItem
-                        href=""
-                        icon={<Settings size={20} />}
-                        label="Settings"
-                        isActive=""
-                        isCollapsed={isCollapsed}
-                    />
+                    {navigationItems.map((item, index) => (
+                        item.type === 'dropdown' ? (
+                            <SidebarDropdown
+                                key={index}
+                                icon={item.icon}
+                                label={item.label}
+                                isCollapsed={isCollapsed}
+                            >
+                                {item.children.map((child, childIndex) => (
+                                    <SidebarItem
+                                        key={childIndex}
+                                        icon={child.icon}
+                                        label={child.label}
+                                        href={child.href}
+                                        isCollapsed={isCollapsed}
+                                    />
+                                ))}
+                            </SidebarDropdown>
+                        ) : (
+                            <SidebarItem
+                                key={index}
+                                icon={item.icon}
+                                label={item.label}
+                                href={item.href}
+                                isCollapsed={isCollapsed}
+                            />
+                        )
+                    ))}
                 </nav>
 
                 {/* Footer */}
                 <div className="mt-auto space-y-4">
                     <div className="space-y-1">
                         <SidebarItem
-                            href=""
+                            href="/help"
                             icon={<HelpCircle size={20} />}
                             label="Help & Information"
-                            isActive=""
                             isCollapsed={isCollapsed}
                         />
 
                         <SidebarTooltip label="Log out" show={isCollapsed}>
-                            <button className={`flex items-center w-full px-4 py-2 text-gray-700 rounded-lg hover:bg-gray-100
-                ${isCollapsed ? 'justify-center' : ''}`}>
+                            <Link
+                                method="post"
+                                href={route('logout')}
+                                as="button"
+                                className={`flex w-full items-center rounded-lg px-4 py-2 text-red-700 hover:bg-gray-100 
+                  ${isCollapsed ? 'justify-center' : ''}`}
+                            >
                                 <LogOut size={20} />
-                                <span className={`ml-2 transition-all duration-200 
-                  ${isCollapsed ? 'hidden' : 'block'}`}>
-                                    Log out
+                                <span className={`ml-2 transition-all duration-200 ${isCollapsed ? 'hidden' : 'block'}`}>
+                                    Logout
                                 </span>
-                            </button>
+                            </Link>
                         </SidebarTooltip>
                     </div>
                 </div>
             </div>
 
-            {/* Overlay for mobile */}
             {isMobileOpen && (
                 <div
                     className="fixed inset-0 bg-black bg-opacity-50 md:hidden"
-                    onClick={() => setIsMobileOpen(false)}
+                    onClick={toggleMobileMenu}
                 />
             )}
         </>

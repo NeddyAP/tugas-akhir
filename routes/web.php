@@ -25,10 +25,18 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // Admin Page
-    Route::get('/dashboard', function () {
-        return Inertia::render('Admin/Dashboard');
-    })->middleware(['auth', 'verified'])->name('dashboard');
-    Route::resource('mahasiswas', MahasiswaController::class);
+    Route::prefix('admin')->group(function () {
+        Route::get('/dashboard', function () {
+            return Inertia::render('Admin/Dashboard');
+        })->middleware(['auth', 'verified'])->name('dashboard');
+
+        Route::resource('mahasiswas', MahasiswaController::class);
+        Route::prefix('Table')->group(function () {
+            Route::get('/bimbingans', [BimbinganController::class, 'index'])->name('table.bimbingans.index');
+            Route::get('/logbooks', [LogbookController::class, 'index'])->name('table.logbooks.index');
+            Route::get('/laporans', [LaporanController::class, 'index'])->name('table.laporans.index');
+        });
+    });
 });
 
 require __DIR__.'/auth.php';
