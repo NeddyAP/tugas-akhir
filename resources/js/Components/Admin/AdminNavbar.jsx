@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { ChevronRight, Settings, LogOut, User, LucideCalendar } from 'lucide-react';
 import { Link, usePage } from '@inertiajs/react';
 
@@ -6,6 +6,20 @@ const AdminNavbar = ({ currentPage = 'Dashboard' }) => {
 
     const user = usePage().props.auth.user;
     const [isProfileOpen, setIsProfileOpen] = useState(false);
+    const profileRef = useRef();
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (profileRef.current && !profileRef.current.contains(event.target)) {
+                setIsProfileOpen(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
 
     return (
         <div className="flex items-center justify-between h-16 px-8 bg-white border-b border-gray-200">
@@ -20,13 +34,15 @@ const AdminNavbar = ({ currentPage = 'Dashboard' }) => {
             <div className="flex items-center space-x-4">
                 <span className="text-gray-600">{new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })} </span>
                 <LucideCalendar className='w-4 h-4' />
-                <div className="relative">
+                <div className="relative" ref={profileRef}>
                     <button
                         onClick={() => setIsProfileOpen(!isProfileOpen)}
                         className="flex items-center space-x-3 focus:outline-none"
                     >
                         <div className="flex items-center justify-center w-10 h-10 bg-blue-100 rounded-full">
-                            <span className="font-medium text-blue-700">M</span>
+                            <span className="font-medium text-blue-700">
+                                {user.name.charAt(0).toUpperCase()}
+                            </span>
                         </div>
                     </button>
 
