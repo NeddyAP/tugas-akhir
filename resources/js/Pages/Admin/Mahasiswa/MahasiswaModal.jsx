@@ -38,14 +38,14 @@ export default function MahasiswaModal({ isOpen, onClose, editingData }) {
     const handleSubmit = (e) => {
         e.preventDefault();
         if (editingData) {
-            put(route('mahasiswas.update', editingData.id), {
+            put(route('admin.mahasiswas.update', editingData.id), {
                 onSuccess: () => {
                     reset();
                     onClose();
                 },
             });
         } else {
-            post(route('mahasiswas.store'), {
+            post(route('admin.mahasiswas.store'), {
                 onSuccess: () => {
                     reset();
                     onClose();

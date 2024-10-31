@@ -176,12 +176,12 @@ const AdminSidebar = ({ onCollapse = () => { } }) => {
                 {
                     icon: <GraduationCap />,
                     label: 'Mahasiswa',
-                    href: route('mahasiswas.index'),
+                    href: route('admin.mahasiswas.index'),
                 },
                 {
                     icon: <UserCog />,
                     label: 'Admin',
-                    href: route('users.index'),
+                    href: route('admin.users.index'),
                 },
             ],
         },

@@ -46,7 +46,7 @@ export default function UserModal({ isOpen, onClose, editingData }) {
         }
 
         if (editingData) {
-            put(route('users.update', editingData.id), {
+            put(route('admin.users.update', editingData.id), {
                 onSuccess: () => {
                     reset();
                     onClose();
@@ -56,7 +56,7 @@ export default function UserModal({ isOpen, onClose, editingData }) {
                 },
             });
         } else {
-            post(route('users.store'), {
+            post(route('admin.users.store'), {
                 onSuccess: () => {
                     reset();
                     onClose();

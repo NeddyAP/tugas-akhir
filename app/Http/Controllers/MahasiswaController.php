@@ -41,7 +41,7 @@ class MahasiswaController extends Controller
 
         User::create($request);
 
-        return redirect()->route('mahasiswas.index')->with('flash', ['message' => 'Mahasiswa berhasil ditambahkan.', 'type' => 'success']);
+        return redirect()->route('admin.mahasiswas.index')->with('flash', ['message' => 'Mahasiswa berhasil ditambahkan.', 'type' => 'success']);
     }
 
     /**
@@ -73,7 +73,7 @@ class MahasiswaController extends Controller
 
         User::find($id)->update($request);
 
-        return redirect()->route('mahasiswas.index')->with('flash', ['message' => 'Mahasiswa berhasil diupdate.', 'type' => 'success']);
+        return redirect()->route('admin.mahasiswas.index')->with('flash', ['message' => 'Mahasiswa berhasil diupdate.', 'type' => 'success']);
     }
 
     /**
@@ -83,6 +83,6 @@ class MahasiswaController extends Controller
     {
         User::destroy($id);
 
-        return redirect()->route('mahasiswas.index')->with('flash', ['message' => 'Mahasiswa berhasil dihapus.', 'type' => 'success']);
+        return redirect()->route('admin.mahasiswas.index')->with('flash', ['message' => 'Mahasiswa berhasil dihapus.', 'type' => 'success']);
     }
 }
