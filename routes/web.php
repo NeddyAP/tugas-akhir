@@ -5,6 +5,7 @@ use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\LogbookController;
 use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -31,6 +32,7 @@ Route::middleware('auth')->group(function () {
         })->middleware(['auth', 'verified'])->name('dashboard');
 
         Route::resource('mahasiswas', MahasiswaController::class);
+        Route::resource('users', UserController::class);
         Route::prefix('Table')->group(function () {
             Route::get('/bimbingans', [BimbinganController::class, 'index'])->name('table.bimbingans.index');
             Route::get('/logbooks', [LogbookController::class, 'index'])->name('table.logbooks.index');
@@ -39,4 +41,4 @@ Route::middleware('auth')->group(function () {
     });
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

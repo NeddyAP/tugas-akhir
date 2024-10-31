@@ -3,10 +3,11 @@ import AdminNavbar from '../Components/Admin/AdminNavbar';
 import AdminSidebar from '../Components/Admin/AdminSidebar';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 export default function AdminLayout({ children, title, currentPage }) {
     const { flash } = usePage().props.flash;
+    const [isCollapsed, setIsCollapsed] = useState(false);
 
     useEffect(() => {
         if (flash && flash.message) {
@@ -23,18 +24,18 @@ export default function AdminLayout({ children, title, currentPage }) {
     }, [flash]);
 
     return (
-        <div className="flex min-h-screen bg-gray-50">
+        <div className="flex">
             <Head title={title} />
-            <AdminSidebar currentLabel={title} />
+            <AdminSidebar currentLabel={title} onCollapse={setIsCollapsed} />
 
-            <div className="flex flex-col flex-1">
+            <div className={`flex flex-col flex-1 ${isCollapsed ? 'ml-20' : 'ml-64'}`}>
                 <AdminNavbar currentPage={currentPage} />
 
                 <main className="flex-1 p-8">
                     {children}
                     <ToastContainer position="top-right" autoClose={3000} />
-                </main >
-            </div >
-        </div >
+                </main>
+            </div>
+        </div>
     );
 }

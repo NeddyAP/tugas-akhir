@@ -1,20 +1,11 @@
-// src/pages/Dashboard.jsx
 import React from 'react';
 import { Layout } from 'lucide-react';
-import AdminSidebar from '@/Components/Admin/AdminSidebar';
-import AdminNavbar from '@/Components/Admin/AdminNavbar';
 import StatCard from '@/Components/Admin/StatCard';
-import TaskCard from '@/Components/Admin/TaskCard';
-import { Head } from '@inertiajs/react';
+import AdminLayout from '@/Layouts/AdminLayout';
 const Dashboard = () => {
     return (
-        <div className="flex min-h-screen bg-gray-50">
-            <Head title="Dashboard" />
-            <AdminSidebar />
-
+        <AdminLayout title="Dashboard" currentPage="Dashboard">
             <div className="flex flex-col flex-1">
-                <AdminNavbar currentPage="Dashboard" />
-
                 <main className="flex-1 p-8">
                     <div className="grid grid-cols-1 gap-6 mb-8 md:grid-cols-3">
                         <StatCard
@@ -43,7 +34,7 @@ const Dashboard = () => {
                     {/* Table here */}
                 </main>
             </div>
-        </div>
+        </AdminLayout>
     );
 };
 

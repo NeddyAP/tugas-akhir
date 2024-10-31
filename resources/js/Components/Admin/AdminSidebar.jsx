@@ -122,20 +122,31 @@ const SidebarDropdown = ({ icon, label, children, isCollapsed }) => {
     );
 };
 
-const AdminSidebar = () => {
+const AdminSidebar = ({ onCollapse = () => { } }) => {
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [isMobileOpen, setIsMobileOpen] = useState(false);
 
-    const toggleCollapsed = useCallback(() => setIsCollapsed((prev) => !prev), []);
+    const toggleCollapsed = useCallback(() => {
+        setIsCollapsed((prev) => {
+            const newState = !prev;
+            onCollapse(newState);
+            return newState;
+        });
+    }, [onCollapse]);
+
     const toggleMobileMenu = useCallback(() => setIsMobileOpen((prev) => !prev), []);
 
     const sidebarClass = useMemo(
         () => `
             ${isCollapsed ? 'w-20' : 'w-64'}
             ${isMobileOpen ? 'translate-x-0' : '-translate-x-full'}
-            fixed md:static md:translate-x-0
-            flex flex-col min-h-screen bg-white border-r border-gray-200 p-4
+            fixed top-0 left-0
+            md:translate-x-0
+            flex flex-col
+            bg-white border-r border-gray-200 p-4
             transition-all duration-300 ease-in-out z-50
+            h-screen
+            overflow-auto
         `,
         [isCollapsed, isMobileOpen]
     );
@@ -167,7 +178,11 @@ const AdminSidebar = () => {
                     label: 'Mahasiswa',
                     href: route('mahasiswas.index'),
                 },
-                { icon: <UserCog />, label: 'Admin', href: '' },
+                {
+                    icon: <UserCog />,
+                    label: 'Admin',
+                    href: route('users.index'),
+                },
             ],
         },
         {
@@ -206,60 +221,63 @@ const AdminSidebar = () => {
                     </button>
                 </div>
 
-                {/* Navigation */}
-                <nav className="flex-1 space-y-1">
-                    {navigationItems.map((item, index) =>
-                        item.type === 'dropdown' ? (
-                            <SidebarDropdown
-                                key={index}
-                                icon={item.icon}
-                                label={item.label}
-                                isCollapsed={isCollapsed}
-                            >
-                                {item.children.map((child, childIndex) => (
-                                    <SidebarItem
-                                        key={childIndex}
-                                        icon={child.icon}
-                                        label={child.label}
-                                        href={child.href}
-                                        isCollapsed={isCollapsed}
-                                    />
-                                ))}
-                            </SidebarDropdown>
-                        ) : (
+                {/* Wrap navigation and footer in a flex container */}
+                <div className="flex flex-col flex-1">
+                    {/* Navigation */}
+                    <nav className="flex-1 space-y-1">
+                        {navigationItems.map((item, index) =>
+                            item.type === 'dropdown' ? (
+                                <SidebarDropdown
+                                    key={index}
+                                    icon={item.icon}
+                                    label={item.label}
+                                    isCollapsed={isCollapsed}
+                                >
+                                    {item.children.map((child, childIndex) => (
+                                        <SidebarItem
+                                            key={childIndex}
+                                            icon={child.icon}
+                                            label={child.label}
+                                            href={child.href}
+                                            isCollapsed={isCollapsed}
+                                        />
+                                    ))}
+                                </SidebarDropdown>
+                            ) : (
+                                <SidebarItem
+                                    key={index}
+                                    icon={item.icon}
+                                    label={item.label}
+                                    href={item.href}
+                                    isCollapsed={isCollapsed}
+                                />
+                            )
+                        )}
+                    </nav>
+
+                    {/* Footer */}
+                    <div className="mt-auto space-y-4">
+                        <div className="flex-1 space-y-1">
                             <SidebarItem
-                                key={index}
-                                icon={item.icon}
-                                label={item.label}
-                                href={item.href}
+                                href=""
+                                icon={<HelpCircle />}
+                                label="Help & Information"
                                 isCollapsed={isCollapsed}
                             />
-                        )
-                    )}
-                </nav>
 
-                {/* Footer */}
-                <div className="mt-auto space-y-4">
-                    <div className="flex-1 space-y-1">
-                        <SidebarItem
-                            href=""
-                            icon={<HelpCircle />}
-                            label="Help & Information"
-                            isCollapsed={isCollapsed}
-                        />
-
-                        <SidebarTooltip label="Log out" show={isCollapsed}>
-                            <Link
-                                method="post"
-                                href={route('logout')}
-                                as="button"
-                                className={`flex w-full items-center rounded-lg px-4 py-2 text-red-700 hover:bg-gray-100 transition-colors duration-200
+                            <SidebarTooltip label="Log out" show={isCollapsed}>
+                                <Link
+                                    method="post"
+                                    href={route('logout')}
+                                    as="button"
+                                    className={`flex w-full items-center rounded-lg px-4 py-2 text-red-700 hover:bg-gray-100 transition-colors duration-200
                                     ${isCollapsed ? 'justify-center' : ''}`}
-                            >
-                                <LogOut className="w-5 h-5" />
-                                {!isCollapsed && <span className="ml-2 transition-all duration-200">Logout</span>}
-                            </Link>
-                        </SidebarTooltip>
+                                >
+                                    <LogOut className="w-5 h-5" />
+                                    {!isCollapsed && <span className="ml-2 transition-all duration-200">Logout</span>}
+                                </Link>
+                            </SidebarTooltip>
+                        </div>
                     </div>
                 </div>
             </div>
