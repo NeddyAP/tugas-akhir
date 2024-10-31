@@ -44,13 +44,15 @@ const AuthButton = ({ user }) => {
                     >
                         Profile
                     </Link>
-                    <Link
-                        href={route('admin.dashboard')}
-                        as="button"
-                        className="block w-full px-4 py-2 text-left transition-colors hover:bg-gray-100"
-                    >
-                        Dahsboard
-                    </Link>
+                    {(user.role === 'admin' || user.role === 'superadmin') && (
+                        <Link
+                            href={route('admin.dashboard')}
+                            as="button"
+                            className="block w-full px-4 py-2 text-left transition-colors hover:bg-gray-100"
+                        >
+                            Dahsboard
+                        </Link>
+                    )}
                     <Link
                         method="post"
                         href={route('logout')}
