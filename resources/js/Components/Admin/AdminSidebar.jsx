@@ -156,7 +156,7 @@ const AdminSidebar = ({ onCollapse = () => { } }) => {
             type: 'item',
             icon: <LayoutDashboard />,
             label: 'Dashboard',
-            href: route('dashboard'),
+            href: route('admin.dashboard'),
         },
         {
             type: 'dropdown',

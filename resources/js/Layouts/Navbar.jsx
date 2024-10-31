@@ -45,7 +45,7 @@ const AuthButton = ({ user }) => {
                         Profile
                     </Link>
                     <Link
-                        href={route('dashboard')}
+                        href={route('admin.dashboard')}
                         as="button"
                         className="block w-full px-4 py-2 text-left transition-colors hover:bg-gray-100"
                     >

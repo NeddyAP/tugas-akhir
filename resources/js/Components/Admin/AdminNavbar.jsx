@@ -25,7 +25,7 @@ const AdminNavbar = ({ currentPage = 'Dashboard' }) => {
         <div className="flex items-center justify-between h-16 px-8 bg-white border-b border-gray-200">
             <div className="flex items-center space-x-8">
                 <div className="flex items-center text-gray-500">
-                    <Link href={route('dashboard')} className="hover:text-gray-700">Admin</Link>
+                    <Link href={route('admin.dashboard')} className="hover:text-gray-700">Admin</Link>
                     <ChevronRight className="w-4 h-4 mx-2" />
                     <span className="text-gray-900">{currentPage}</span>
                 </div>

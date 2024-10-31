@@ -6,6 +6,7 @@ use App\Http\Controllers\LogbookController;
 use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
+use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -26,19 +27,19 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // Admin Page
-    Route::prefix('admin')->group(function () {
+    Route::prefix('admin')->as('admin.')->middleware(AdminMiddleware::class)->group(function () {
         Route::get('/dashboard', function () {
             return Inertia::render('Admin/Dashboard');
-        })->middleware(['auth', 'verified'])->name('dashboard');
+        })->name('dashboard');
 
         Route::resource('mahasiswas', MahasiswaController::class);
         Route::resource('users', UserController::class);
-        Route::prefix('Table')->group(function () {
-            Route::get('/bimbingans', [BimbinganController::class, 'index'])->name('table.bimbingans.index');
-            Route::get('/logbooks', [LogbookController::class, 'index'])->name('table.logbooks.index');
-            Route::get('/laporans', [LaporanController::class, 'index'])->name('table.laporans.index');
+        Route::prefix('table')->as('table.')->group(function () {
+            Route::get('/bimbingans', [BimbinganController::class, 'index'])->name('bimbingans.index');
+            Route::get('/logbooks', [LogbookController::class, 'index'])->name('logbooks.index');
+            Route::get('/laporans', [LaporanController::class, 'index'])->name('laporans.index');
         });
     });
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
