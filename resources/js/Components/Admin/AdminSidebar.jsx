@@ -34,7 +34,8 @@ const SidebarTooltip = React.memo(({ children, label, show }) =>
 
 const SidebarItem = ({ icon, label, href, isCollapsed }) => {
     const { url } = usePage();
-    const isActive = url === new URL(href, window.location.origin).pathname;
+    // Update isActive check to ignore query parameters
+    const isActive = url.split('?')[0] === new URL(href, window.location.origin).pathname;
 
     return (
         <SidebarTooltip label={label} show={isCollapsed}>
@@ -55,8 +56,11 @@ const SidebarItem = ({ icon, label, href, isCollapsed }) => {
 
 const SidebarDropdown = ({ icon, label, children, isCollapsed }) => {
     const { url } = usePage();
-    const childHrefs = React.Children.map(children, (child) => new URL(child.props.href, window.location.origin).pathname);
-    const isActive = childHrefs.includes(url);
+    const childHrefs = React.Children.map(children, (child) =>
+        new URL(child.props.href, window.location.origin).pathname
+    );
+    // Update isActive check to ignore query parameters
+    const isActive = childHrefs.includes(url.split('?')[0]);
     const [isOpen, setIsOpen] = useState(isActive);
     const [isPopoverOpen, setIsPopoverOpen] = useState(false);
     const popoverRef = useRef();

@@ -42,7 +42,7 @@ export default function MahasiswaPage({ mahasiswas }) {
         { Header: "Email", accessor: "email", sortable: true }
     ], []);
 
-    const processedData = useMemo(() => mahasiswas, [mahasiswas]);
+    const processedData = useMemo(() => mahasiswas.data, [mahasiswas]);
 
     return (
         <AdminLayout title="Mahasiswa" currentPage="Mahasiswa > Table">
@@ -73,6 +73,14 @@ export default function MahasiswaPage({ mahasiswas }) {
                         data={processedData}
                         actions={tableActions}
                         defaultSortBy="name"
+                        pagination={{
+                            pageIndex: mahasiswas.current_page - 1,
+                            pageCount: mahasiswas.last_page,
+                            pageSize: mahasiswas.per_page,
+                            total: mahasiswas.total,
+                            from: mahasiswas.from,
+                            to: mahasiswas.to
+                        }}
                     />
 
                     <MahasiswaModal

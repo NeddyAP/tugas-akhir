@@ -1,16 +1,20 @@
 import { ChevronDown, ChevronLeft, ChevronRight, ChevronUp, Edit, Search, Trash } from 'lucide-react';
 import { useCallback, useMemo, useState } from 'react';
 import { useGlobalFilter, usePagination, useSortBy, useTable } from 'react-table';
+import { router } from '@inertiajs/react';
 
-export default function DataTable({ columns: userColumns, data, actions }) {
-    const [globalFilter, setGlobalFilter] = useState('');
+export default function DataTable({ columns: userColumns, data, actions, pagination }) {
+    const [searchValue, setSearchValue] = useState('');
 
     const columns = useMemo(() => {
         const cols = [
             {
                 Header: '#',
                 id: 'rowNumber',
-                Cell: ({ row }) => row.index + 1,
+                Cell: ({ row }) => {
+                    // Use pagination.from to get the correct starting number
+                    return pagination?.from + row.index;
+                },
             },
             ...userColumns
         ];
@@ -37,7 +41,7 @@ export default function DataTable({ columns: userColumns, data, actions }) {
             });
         }
         return cols;
-    }, [userColumns, actions]);
+    }, [userColumns, actions, pagination?.from]);
 
     // Memoize data and columns
     const memoizedColumns = useMemo(() => columns, [columns]);
@@ -50,21 +54,17 @@ export default function DataTable({ columns: userColumns, data, actions }) {
         page,
         prepareRow,
         state,
-        setPageSize,
-        gotoPage,
-        nextPage,
-        previousPage,
-        canPreviousPage,
-        canNextPage,
-        pageCount,
-        pageOptions,
         setGlobalFilter: setTableGlobalFilter,
     } = useTable(
         {
             columns: memoizedColumns,
             data: memoizedData,
-            initialState: { pageSize: 10 },
-            globalFilter: 'text',
+            manualPagination: true,
+            pageCount: pagination?.pageCount || 1,
+            initialState: {
+                pageIndex: pagination?.pageIndex || 0,
+                pageSize: pagination?.pageSize || 10
+            },
         },
         useGlobalFilter,
         useSortBy,
@@ -73,10 +73,103 @@ export default function DataTable({ columns: userColumns, data, actions }) {
 
     const { pageIndex, pageSize } = state;
 
-    const handleGlobalFilterChange = useCallback((e) => {
-        setGlobalFilter(e.target.value);
-        setTableGlobalFilter(e.target.value);
-    }, [setGlobalFilter, setTableGlobalFilter]);
+    const handleSearch = useCallback((e) => {
+        const value = e.target.value;
+        setSearchValue(value);
+
+        // Debounce the search request
+        const timeoutId = setTimeout(() => {
+            router.get(
+                route(route().current()),
+                { search: value, page: 1 },
+                {
+                    preserveState: true,
+                    preserveScroll: true,
+                    only: ['users', 'mahasiswas'] // Add the data key you're paginating
+                }
+            );
+        }, 300);
+
+        return () => clearTimeout(timeoutId);
+    }, []);
+
+    const handlePageChange = (newPage) => {
+        router.get(
+            route(route().current()),
+            { page: newPage },
+            { preserveState: true, preserveScroll: true }
+        );
+    };
+
+    const handlePageSizeChange = (newSize) => {
+        router.get(
+            route(route().current()),
+            { per_page: newSize, page: 1 },
+            { preserveState: true, preserveScroll: true }
+        );
+    };
+
+    const renderPaginationButtons = () => {
+        const buttons = [];
+        const currentPage = pagination.pageIndex + 1;
+        const lastPage = pagination.pageCount;
+
+        // First and Previous buttons
+        buttons.push(
+            <button
+                key="first"
+                onClick={() => handlePageChange(1)}
+                disabled={currentPage === 1}
+                className="px-3 py-1 text-sm border rounded-md disabled:opacity-50 hover:bg-gray-100"
+            >
+                First
+            </button>,
+            <button
+                key="prev"
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+                className="p-1 rounded-md disabled:opacity-50 hover:bg-gray-100"
+            >
+                <ChevronLeft className="w-5 h-5" />
+            </button>
+        );
+
+        // Page numbers
+        for (let i = Math.max(1, currentPage - 2); i <= Math.min(lastPage, currentPage + 2); i++) {
+            buttons.push(
+                <button
+                    key={i}
+                    onClick={() => handlePageChange(i)}
+                    className={`px-3 py-1 text-sm border rounded-md ${currentPage === i ? 'bg-blue-500 text-white' : 'hover:bg-gray-100'
+                        }`}
+                >
+                    {i}
+                </button>
+            );
+        }
+
+        // Next and Last buttons
+        buttons.push(
+            <button
+                key="next"
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === lastPage}
+                className="p-1 rounded-md disabled:opacity-50 hover:bg-gray-100"
+            >
+                <ChevronRight className="w-5 h-5" />
+            </button>,
+            <button
+                key="last"
+                onClick={() => handlePageChange(lastPage)}
+                disabled={currentPage === lastPage}
+                className="px-3 py-1 text-sm border rounded-md disabled:opacity-50 hover:bg-gray-100"
+            >
+                Last
+            </button>
+        );
+
+        return buttons;
+    };
 
     return (
         <div className="flex flex-col gap-4">
@@ -84,8 +177,8 @@ export default function DataTable({ columns: userColumns, data, actions }) {
                 <Search className="w-5 h-5 text-gray-400" />
                 <input
                     type="text"
-                    value={globalFilter || ''}
-                    onChange={handleGlobalFilterChange}
+                    value={searchValue}
+                    onChange={handleSearch}
                     placeholder="Search..."
                     className="px-3 py-2 border border-gray-300 rounded-md w-52 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
@@ -146,8 +239,8 @@ export default function DataTable({ columns: userColumns, data, actions }) {
                 <div className="flex items-center gap-4">
                     <span>Show</span>
                     <select
-                        value={pageSize}
-                        onChange={e => setPageSize(Number(e.target.value))}
+                        value={pagination?.pageSize}
+                        onChange={e => handlePageSizeChange(Number(e.target.value))}
                         className="px-2 py-1 pr-8 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
                         {[10, 20, 30, 40, 50].map(size => (
@@ -157,24 +250,12 @@ export default function DataTable({ columns: userColumns, data, actions }) {
                         ))}
                     </select>
                     <span className="text-sm text-gray-700">
-                        Page {pageIndex + 1} of {pageOptions.length}
+                        Page {pagination?.pageIndex + 1} of {pagination?.pageCount}{' '}
+                        ({pagination?.total} total records)
                     </span>
                 </div>
-                <div className="flex gap-2">
-                    <button
-                        onClick={() => previousPage()}
-                        disabled={!canPreviousPage}
-                        className="p-1 rounded-md disabled:opacity-50 hover:bg-gray-100"
-                    >
-                        <ChevronLeft className="w-5 h-5" />
-                    </button>
-                    <button
-                        onClick={() => nextPage()}
-                        disabled={!canNextPage}
-                        className="p-1 rounded-md disabled:opacity-50 hover:bg-gray-100"
-                    >
-                        <ChevronRight className="w-5 h-5" />
-                    </button>
+                <div className="flex items-center gap-2">
+                    {renderPaginationButtons()}
                 </div>
             </div>
         </div>

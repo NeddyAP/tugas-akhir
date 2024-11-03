@@ -11,10 +11,25 @@ class MahasiswaController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $query = User::where('role', '!=', 'admin')
+            ->where('role', '!=', 'dosen')
+            ->where('role', '!=', 'superadmin');
+
+        if ($request->has('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhere('nim', 'like', "%{$search}%");
+            });
+        }
+
+        $perPage = $request->input('per_page', 10);
+
         return Inertia::render('Admin/Mahasiswa/MahasiswaPage', [
-            'mahasiswas' => User::where('role', 'mahasiswa')->get(),
+            'mahasiswas' => $query->latest()->paginate($perPage)->withQueryString(),
         ]);
     }
 

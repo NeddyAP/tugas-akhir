@@ -12,10 +12,25 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $query = User::where('role', '!=', 'mahasiswa')
+            ->where('role', '!=', 'dosen');
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%')
+                    ->orWhere('email', 'like', '%' . $search . '%')
+                    ->orWhere('role', 'like', '%' . $search . '%');
+            });
+        }
+
+        $perPage = $request->input('per_page', 10);
+
         return Inertia::render('Admin/User/UserPage', [
-            'users' => User::where('role', '!=', 'mahasiswa')->where('role', '!=', 'dosen')->get(),
+            'users' => $query->latest()->paginate($perPage)->withQueryString(),
+            'filters' => $request->only(['search'])
         ]);
     }
 

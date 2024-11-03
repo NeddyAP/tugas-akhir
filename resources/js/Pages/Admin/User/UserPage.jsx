@@ -61,7 +61,7 @@ export default function UserPage({ users }) {
         { Header: "Role", accessor: "role", sortable: true },
     ], []);
 
-    const processedData = useMemo(() => users, [users]);
+    const processedData = useMemo(() => users.data, [users]);
 
     return (
         <AdminLayout title="User" currentPage="User > Table">
@@ -92,6 +92,14 @@ export default function UserPage({ users }) {
                         data={processedData}
                         actions={tableActions}
                         defaultSortBy="name"
+                        pagination={{
+                            pageIndex: users.current_page - 1,
+                            pageCount: users.last_page,
+                            pageSize: users.per_page,
+                            total: users.total,
+                            from: users.from,
+                            to: users.to
+                        }}
                     />
 
                     <UserModal
