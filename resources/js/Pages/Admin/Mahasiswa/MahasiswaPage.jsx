@@ -1,14 +1,14 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useState, useEffect } from "react";
 import { useForm } from "@inertiajs/react";
 import { toast } from 'react-toastify';
 import AdminLayout from "@/Layouts/AdminLayout";
 import DataTable from "@/Components/Admin/DataTable";
-import MahasiswaModal from "./MahasiswaModal";
+import GenericModal from "@/Components/Admin/GenericModal";
 
 const useMahasiswaActions = (destroyMahasiswa, confirmDelete, setModalState) => {
     const handleDelete = useCallback((row) => {
         if (confirmDelete("Kamu yakin ingin menghapus data mahasiswa?")) {
-            destroyMahasiswa(route("mahasiswas.destroy", row.id), {
+            destroyMahasiswa(route("admin.mahasiswas.destroy", row.id), {
                 preserveState: true,
                 preserveScroll: true,
                 onError: () => {
@@ -33,6 +33,61 @@ export default function MahasiswaPage({ mahasiswas }) {
     const { delete: destroyMahasiswa } = useForm();
     const [modalState, setModalState] = useState({ isOpen: false, editingData: null });
 
+    const { data, setData, post, put, processing, errors, reset, clearErrors } = useForm({
+        name: "",
+        email: "",
+        password: "",
+        nim: "",
+        phone: "",
+        address: "",
+    });
+
+    useEffect(() => {
+        if (modalState.isOpen) {
+            if (modalState.editingData) {
+                setData({
+                    name: modalState.editingData.name,
+                    email: modalState.editingData.email,
+                    nim: modalState.editingData.nim || "",
+                    phone: modalState.editingData.phone || "",
+                    address: modalState.editingData.address || "",
+                    password: "",
+                });
+            } else {
+                reset();
+            }
+        } else {
+            reset();
+            clearErrors();
+        }
+    }, [modalState.isOpen, modalState.editingData]);
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
+        if (modalState.editingData) {
+            put(route('admin.mahasiswas.update', modalState.editingData.id), {
+                preserveState: true,
+                onSuccess: () => {
+                    setModalState({ isOpen: false, editingData: null });
+                },
+                onError: () => {
+                    toast.error("Gagal memperbarui mahasiswa");
+                },
+            });
+        } else {
+            post(route('admin.mahasiswas.store'), {
+                preserveState: true,
+                onSuccess: () => {
+                    setModalState({ isOpen: false, editingData: null });
+                },
+                onError: () => {
+                    toast.error("Gagal menambahkan mahasiswa");
+                },
+            });
+        }
+    };
+
     const confirmDelete = useCallback((message) => window.confirm(message), []);
     const tableActions = useMahasiswaActions(destroyMahasiswa, confirmDelete, setModalState);
 
@@ -43,6 +98,15 @@ export default function MahasiswaPage({ mahasiswas }) {
     ], []);
 
     const processedData = useMemo(() => mahasiswas.data, [mahasiswas]);
+
+    const modalFields = [
+        { name: "name", label: "Nama", type: "text" },
+        { name: "email", label: "Email", type: "email" },
+        { name: "nim", label: "NIM", type: "text" },
+        { name: "phone", label: "Telepon", type: "tel" },
+        { name: "address", label: "Alamat", type: "textarea", rows: 3 },
+        { name: "password", label: "Password", type: "password" },
+    ];
 
     return (
         <AdminLayout title="Mahasiswa" currentPage="Mahasiswa > Table">
@@ -83,11 +147,17 @@ export default function MahasiswaPage({ mahasiswas }) {
                         }}
                     />
 
-                    <MahasiswaModal
+                    <GenericModal
                         isOpen={modalState.isOpen}
                         onClose={() => setModalState({ isOpen: false, editingData: null })}
-                        editingData={modalState.editingData}
-                        className="transition duration-300 ease-in-out transform"
+                        title={modalState.editingData ? "Edit Data Mahasiswa" : "Tambah Data Mahasiswa Baru"}
+                        data={data}
+                        setData={setData}
+                        errors={errors}
+                        processing={processing}
+                        handleSubmit={handleSubmit}
+                        clearErrors={clearErrors}
+                        fields={modalFields}
                     />
                 </div>
             </div>

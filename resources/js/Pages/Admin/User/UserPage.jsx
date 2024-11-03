@@ -1,15 +1,44 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useState, useEffect } from "react";
 import { useForm, usePage } from "@inertiajs/react";
 import { toast } from 'react-toastify';
 import AdminLayout from "@/Layouts/AdminLayout";
 import DataTable from "@/Components/Admin/DataTable";
-import UserModal from "./UserModal";
+import GenericModal from "@/Components/Admin/GenericModal";
 
 export default function UserPage({ users }) {
     const { delete: destroyUser } = useForm();
     const { user } = usePage().props;
     const currentUserRole = user.role;
     const [modalState, setModalState] = useState({ isOpen: false, editingData: null });
+
+    const { data, setData, post, put, processing, errors, reset, clearErrors } = useForm({
+        name: "",
+        email: "",
+        password: "",
+        role: "",
+        phone: "",
+        address: "",
+    });
+
+    useEffect(() => {
+        if (modalState.isOpen) {
+            if (modalState.editingData) {
+                setData({
+                    name: modalState.editingData.name,
+                    email: modalState.editingData.email,
+                    role: modalState.editingData.role || "",
+                    phone: modalState.editingData.phone || "",
+                    address: modalState.editingData.address || "",
+                    password: "",
+                });
+            } else {
+                reset();
+            }
+        } else {
+            reset();
+            clearErrors();
+        }
+    }, [modalState.isOpen, modalState.editingData]);
 
     const confirmDelete = useCallback((message) => window.confirm(message), []);
 
@@ -35,7 +64,7 @@ export default function UserPage({ users }) {
             return;
         }
         if (confirmDelete("Kamu yakin ingin menghapus data user?")) {
-            destroyUser(route("users.destroy", row.id), {
+            destroyUser(route("admin.users.destroy", row.id), {
                 preserveState: true,
                 preserveScroll: true,
                 onError: () => {
@@ -45,13 +74,44 @@ export default function UserPage({ users }) {
         }
     }, [destroyUser, confirmDelete, currentUserRole]);
 
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
+        if (currentUserRole !== 'superadmin') {
+            toast.error("Role kurang tinggi untuk melakukan action");
+            return;
+        }
+
+        if (modalState.editingData) {
+            put(route('admin.users.update', modalState.editingData.id), {
+                preserveState: true,
+                onSuccess: () => {
+                    setModalState({ isOpen: false, editingData: null });
+                },
+                onError: () => {
+                    toast.error("Gagal memperbarui user");
+                },
+            });
+        } else {
+            post(route('admin.users.store'), {
+                preserveState: true,
+                onSuccess: () => {
+                    setModalState({ isOpen: false, editingData: null });
+                },
+                onError: () => {
+                    toast.error("Gagal menambahkan user");
+                },
+            });
+        }
+    };
+
     const tableActions = useMemo(() => ({
         handleEdit,
         handleDelete,
         handleAdd,
         handleDownload: () => {
             toast.info("Mengunduh data user...");
-            // Implement download functionality
+            // TODO: Implementasi download
         },
     }), [handleEdit, handleDelete, handleAdd]);
 
@@ -62,6 +122,24 @@ export default function UserPage({ users }) {
     ], []);
 
     const processedData = useMemo(() => users.data, [users]);
+
+    const modalFields = [
+        { name: "name", label: "Nama", type: "text" },
+        { name: "email", label: "Email", type: "email" },
+        {
+            name: "role",
+            label: "Role",
+            type: "select",
+            options: [
+                { value: "admin", label: "Admin" },
+                { value: "superadmin", label: "Superadmin" },
+            ],
+            disabled: currentUserRole === 'admin',
+        },
+        { name: "phone", label: "Telepon", type: "tel" },
+        { name: "address", label: "Alamat", type: "textarea", rows: 3 },
+        { name: "password", label: "Password", type: "password" },
+    ];
 
     return (
         <AdminLayout title="User" currentPage="User > Table">
@@ -102,11 +180,17 @@ export default function UserPage({ users }) {
                         }}
                     />
 
-                    <UserModal
+                    <GenericModal
                         isOpen={modalState.isOpen}
                         onClose={() => setModalState({ isOpen: false, editingData: null })}
-                        editingData={modalState.editingData}
-                        className="transition duration-300 ease-in-out transform"
+                        title={modalState.editingData ? "Edit Data User" : "Tambah Data User Baru"}
+                        data={data}
+                        setData={setData}
+                        errors={errors}
+                        processing={processing}
+                        handleSubmit={handleSubmit}
+                        clearErrors={clearErrors}
+                        fields={modalFields}
                     />
                 </div>
             </div>
