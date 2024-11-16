@@ -16,12 +16,13 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!in_array(Auth::user()->role, ['admin', 'superadmin'])) {
+        if (! in_array(Auth::user()->role, ['admin', 'superadmin'])) {
             return redirect()->back()->with('flash', [
                 'type' => 'error',
                 'message' => 'You are not authorized to access this page',
             ]);
         }
+
         return $next($request);
     }
 }

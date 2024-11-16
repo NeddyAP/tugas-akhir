@@ -31,7 +31,7 @@ class UserController extends Controller
         $mahasiswaQuery = User::where('role', 'mahasiswa');
 
         if ($search) {
-            $searchWildcard = '%' . $search . '%';
+            $searchWildcard = '%'.$search.'%';
             $searchCallback = function ($query) use ($searchWildcard) {
                 $query->where('name', 'like', $searchWildcard)
                     ->orWhere('email', 'like', $searchWildcard)
@@ -48,7 +48,7 @@ class UserController extends Controller
             'users' => $adminQuery->latest()->paginate($perPage)->withQueryString(),
             'dosens' => $dosenQuery->latest()->paginate($perPage)->withQueryString(),
             'mahasiswas' => $mahasiswaQuery->latest()->paginate($perPage)->withQueryString(),
-            'filters' => $request->only(['search'])
+            'filters' => $request->only(['search']),
         ]);
     }
 
@@ -62,7 +62,7 @@ class UserController extends Controller
         ];
 
         // Add password rule only for new users
-        if (!$id) {
+        if (! $id) {
             $rules['password'] = ['required', 'string', 'min:8'];
         } else {
             $rules['password'] = ['nullable', 'string', 'min:8'];
@@ -89,7 +89,7 @@ class UserController extends Controller
         if (Auth::user()->role !== 'superadmin') {
             return redirect()->back()->with('flash', [
                 'message' => 'Unauthorized access',
-                'type' => 'error'
+                'type' => 'error',
             ]);
         }
 
@@ -111,13 +111,13 @@ class UserController extends Controller
             User::create($validated);
 
             return redirect()->back()->with('flash', [
-                'message' => ucfirst($tab) . ' berhasil ditambahkan',
-                'type' => 'success'
+                'message' => ucfirst($tab).' berhasil ditambahkan',
+                'type' => 'success',
             ]);
         } catch (\Exception $e) {
             return redirect()->back()->with('flash', [
-                'message' => 'Gagal menambahkan ' . $tab,
-                'type' => 'error'
+                'message' => 'Gagal menambahkan '.$tab,
+                'type' => 'error',
             ]);
         }
     }
@@ -127,7 +127,7 @@ class UserController extends Controller
         if (Auth::user()->role !== 'superadmin') {
             return redirect()->back()->with('flash', [
                 'message' => 'Unauthorized access',
-                'type' => 'error'
+                'type' => 'error',
             ]);
         }
 
@@ -155,13 +155,13 @@ class UserController extends Controller
             $user->update($validated);
 
             return redirect()->back()->with('flash', [
-                'message' => ucfirst($tab) . ' berhasil diperbarui',
-                'type' => 'success'
+                'message' => ucfirst($tab).' berhasil diperbarui',
+                'type' => 'success',
             ]);
         } catch (\Exception $e) {
             return redirect()->back()->with('flash', [
-                'message' => 'Gagal memperbarui ' . $tab,
-                'type' => 'error'
+                'message' => 'Gagal memperbarui '.$tab,
+                'type' => 'error',
             ]);
         }
     }
@@ -171,7 +171,7 @@ class UserController extends Controller
         if (Auth::user()->role !== 'superadmin') {
             return redirect()->back()->with('flash', [
                 'message' => 'Unauthorized access',
-                'type' => 'error'
+                'type' => 'error',
             ]);
         }
 
@@ -187,23 +187,23 @@ class UserController extends Controller
                 default => false,
             };
 
-            if (!$roleMatches) {
+            if (! $roleMatches) {
                 return redirect()->back()->with('flash', [
                     'message' => 'Invalid user type',
-                    'type' => 'error'
+                    'type' => 'error',
                 ]);
             }
 
             $user->delete();
 
             return redirect()->back()->with('flash', [
-                'message' => ucfirst($tab) . ' berhasil dihapus',
-                'type' => 'success'
+                'message' => ucfirst($tab).' berhasil dihapus',
+                'type' => 'success',
             ]);
         } catch (\Exception $e) {
             return redirect()->back()->with('flash', [
-                'message' => 'Gagal menghapus ' . $tab,
-                'type' => 'error'
+                'message' => 'Gagal menghapus '.$tab,
+                'type' => 'error',
             ]);
         }
     }
