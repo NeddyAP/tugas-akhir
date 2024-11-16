@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\LogbookController as AdminLogbookController;
+use App\Http\Controllers\Admin\BimbinganController as AdminBimbinganController;
 use App\Http\Controllers\BimbinganController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\LogbookController;
@@ -33,8 +34,8 @@ Route::middleware('auth')->group(function () {
         })->name('dashboard');
 
         Route::resource('users', UserController::class);
-        Route::get('/bimbingans', [BimbinganController::class, 'index'])->name('bimbingans.index');
-        Route::resource('/logbooks', AdminLogbookController::class);
+        Route::resource('logbooks', AdminLogbookController::class);
+        Route::resource('bimbingans', AdminBimbinganController::class);
         Route::get('/laporans', [LaporanController::class, 'index'])->name('laporans.index');
     });
 });

@@ -28,7 +28,7 @@ class LogbookController extends Controller
         // Get paginated results
         $logbooks = $query->latest()->paginate($request->input('per_page', 10));
 
-        return Inertia::render('Admin/Logbook/LogbookPage', [
+        return Inertia::render('Admin/Table/LogbookPage', [
             'logbooks' => $logbooks,
         ]);
     }

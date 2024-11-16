@@ -194,7 +194,7 @@ const AdminSidebar = ({ onCollapse = () => { } }) => {
             label: 'Tabel',
             children: [
                 { icon: <FileText />, label: 'Logbook', href: route('admin.logbooks.index') },
-                { icon: <TargetIcon />, label: 'Bimbingan', href: '' },
+                { icon: <TargetIcon />, label: 'Bimbingan', href: route('admin.bimbingans.index') },
                 { icon: <File />, label: 'Laporan', href: '' },
             ],
         },

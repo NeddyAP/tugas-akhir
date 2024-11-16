@@ -58,7 +58,6 @@ export default function LogbookPage({ logbooks }) {
         },
     ];
 
-    // Update form data when editing
     React.useEffect(() => {
         if (modalState.editingData) {
             setData({
