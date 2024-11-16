@@ -193,7 +193,7 @@ const AdminSidebar = ({ onCollapse = () => { } }) => {
             icon: <LucideTable2 />,
             label: 'Tabel',
             children: [
-                { icon: <FileText />, label: 'Logbook', href: '' },
+                { icon: <FileText />, label: 'Logbook', href: route('admin.logbooks.index') },
                 { icon: <TargetIcon />, label: 'Bimbingan', href: '' },
                 { icon: <File />, label: 'Laporan', href: '' },
             ],
@@ -201,7 +201,7 @@ const AdminSidebar = ({ onCollapse = () => { } }) => {
         {
             type: 'dropdown',
             icon: <Users />,
-            label: 'Data User',
+            label: 'Data',
             children: [
                 {
                     icon: <GraduationCap />,

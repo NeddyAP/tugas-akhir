@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\LogbookController as AdminLogbookController;
 use App\Http\Controllers\BimbinganController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\LogbookController;
@@ -32,12 +33,10 @@ Route::middleware('auth')->group(function () {
         })->name('dashboard');
 
         Route::resource('users', UserController::class);
-        Route::prefix('table')->as('table.')->group(function () {
-            Route::get('/bimbingans', [BimbinganController::class, 'index'])->name('bimbingans.index');
-            Route::get('/logbooks', [LogbookController::class, 'index'])->name('logbooks.index');
-            Route::get('/laporans', [LaporanController::class, 'index'])->name('laporans.index');
-        });
+        Route::get('/bimbingans', [BimbinganController::class, 'index'])->name('bimbingans.index');
+        Route::resource('/logbooks', AdminLogbookController::class);
+        Route::get('/laporans', [LaporanController::class, 'index'])->name('laporans.index');
     });
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
