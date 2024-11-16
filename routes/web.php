@@ -3,7 +3,6 @@
 use App\Http\Controllers\BimbinganController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\LogbookController;
-use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\AdminMiddleware;
@@ -32,7 +31,6 @@ Route::middleware('auth')->group(function () {
             return Inertia::render('Admin/Dashboard');
         })->name('dashboard');
 
-        Route::resource('mahasiswas', MahasiswaController::class);
         Route::resource('users', UserController::class);
         Route::prefix('table')->as('table.')->group(function () {
             Route::get('/bimbingans', [BimbinganController::class, 'index'])->name('bimbingans.index');

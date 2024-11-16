@@ -12,7 +12,6 @@ export default function DataTable({ columns: userColumns, data, actions, paginat
                 Header: '#',
                 id: 'rowNumber',
                 Cell: ({ row }) => {
-                    // Use pagination.from to get the correct starting number
                     return pagination?.from + row.index;
                 },
             },
@@ -79,13 +78,16 @@ export default function DataTable({ columns: userColumns, data, actions, paginat
 
         // Debounce the search request
         const timeoutId = setTimeout(() => {
+            const currentQuery = new URLSearchParams(window.location.search);
+            currentQuery.set('search', value);
+            currentQuery.set('page', 1); // Reset to first page on search
+
             router.get(
                 route(route().current()),
-                { search: value, page: 1 },
+                Object.fromEntries(currentQuery.entries()),
                 {
                     preserveState: true,
                     preserveScroll: true,
-                    only: ['users', 'mahasiswas'] // Add the data key you're paginating
                 }
             );
         }, 300);
@@ -94,17 +96,24 @@ export default function DataTable({ columns: userColumns, data, actions, paginat
     }, []);
 
     const handlePageChange = (newPage) => {
+        const currentQuery = new URLSearchParams(window.location.search);
+        currentQuery.set('page', newPage);
+
         router.get(
             route(route().current()),
-            { page: newPage },
+            Object.fromEntries(currentQuery.entries()),
             { preserveState: true, preserveScroll: true }
         );
     };
 
     const handlePageSizeChange = (newSize) => {
+        const currentQuery = new URLSearchParams(window.location.search);
+        currentQuery.set('per_page', newSize);
+        currentQuery.set('page', 1); // Reset to first page when changing page size
+
         router.get(
             route(route().current()),
-            { per_page: newSize, page: 1 },
+            Object.fromEntries(currentQuery.entries()),
             { preserveState: true, preserveScroll: true }
         );
     };
@@ -172,15 +181,15 @@ export default function DataTable({ columns: userColumns, data, actions, paginat
     };
 
     return (
-        <div className="flex flex-col gap-4">
-            <div className="flex items-center justify-end gap-2 px-4">
+        <div className="overflow-hidden bg-white border border-gray-200 rounded-lg shadow-sm">
+            <div className="flex items-center justify-end gap-2 px-4 pt-2">
                 <Search className="w-5 h-5 text-gray-400" />
                 <input
                     type="text"
                     value={searchValue}
                     onChange={handleSearch}
                     placeholder="Search..."
-                    className="px-3 py-2 border border-gray-300 rounded-md w-52 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="px-3 py-2 border border-gray-300 rounded-md w-52"
                 />
             </div>
 
@@ -213,22 +222,49 @@ export default function DataTable({ columns: userColumns, data, actions, paginat
                                 ))}
                             </thead>
                             <tbody {...getTableBodyProps()} className="bg-white divide-y divide-gray-200">
-                                {page.map((row, rowIndex) => {
-                                    prepareRow(row);
-                                    return (
-                                        <tr {...row.getRowProps()} key={rowIndex} className="hover:bg-gray-50">
-                                            {row.cells.map((cell, cellIndex) => (
-                                                <td
-                                                    {...cell.getCellProps()}
-                                                    key={cellIndex}
-                                                    className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap"
+                                {data && data.length > 0 ? (
+                                    page.map((row, rowIndex) => {
+                                        prepareRow(row);
+                                        return (
+                                            <tr {...row.getRowProps()} key={rowIndex} className="hover:bg-gray-50">
+                                                {row.cells.map((cell, cellIndex) => (
+                                                    <td
+                                                        {...cell.getCellProps()}
+                                                        key={cellIndex}
+                                                        className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap"
+                                                    >
+                                                        {cell.render('Cell')}
+                                                    </td>
+                                                ))}
+                                            </tr>
+                                        );
+                                    })
+                                ) : (
+                                    <tr>
+                                        <td
+                                            colSpan={columns.length + 1}
+                                            className="px-6 py-8 text-center text-gray-500"
+                                        >
+                                            <div className="flex flex-col items-center justify-center">
+                                                <svg
+                                                    className="w-12 h-12 mb-4 text-gray-400"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    viewBox="0 0 24 24"
                                                 >
-                                                    {cell.render('Cell')}
-                                                </td>
-                                            ))}
-                                        </tr>
-                                    );
-                                })}
+                                                    <path
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        strokeWidth={2}
+                                                        d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                                    />
+                                                </svg>
+                                                <p className="text-lg font-medium">Data tidak ditemukan</p>
+                                                <p className="mt-1 text-sm">Coba ubah kata kunci pencarian atau tambah data baru</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                )}
                             </tbody>
                         </table>
                     </div>

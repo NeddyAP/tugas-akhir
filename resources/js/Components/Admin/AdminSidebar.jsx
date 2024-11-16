@@ -15,6 +15,7 @@ import {
     UserCog,
     TargetIcon,
     LucideTable2,
+    UserPen,
 } from 'lucide-react';
 import { Link, usePage } from '@inertiajs/react';
 import filkomLogo from '@images/filkomlogo.png';
@@ -34,16 +35,24 @@ const SidebarTooltip = React.memo(({ children, label, show }) =>
 
 const SidebarItem = ({ icon, label, href, isCollapsed }) => {
     const { url } = usePage();
-    // Update isActive check to ignore query parameters
-    const isActive = url.split('?')[0] === new URL(href, window.location.origin).pathname;
+    const urlWithoutParams = url.split('?')[0];
+    const targetUrl = href ? new URL(href, window.location.origin).pathname : '';
+    const urlParams = new URLSearchParams(window.location.search);
+    const currentTab = urlParams.get('tab');
+    const targetParams = href ? new URLSearchParams(new URL(href, window.location.origin).search) : null;
+    const targetTab = targetParams ? targetParams.get('tab') : null;
+
+    // Check if current URL matches href and if tab param matches exactly
+    const isActive = href && urlWithoutParams === targetUrl &&
+        (!targetTab || (currentTab === targetTab));
 
     return (
         <SidebarTooltip label={label} show={isCollapsed}>
             <Link
                 href={href}
                 className={`flex items-center rounded-lg px-4 py-2 transition-colors duration-200
-          ${isActive ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'}
-          ${isCollapsed ? 'justify-center' : ''}`}
+                    ${isActive ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'}
+                    ${isCollapsed ? 'justify-center' : ''}`}
             >
                 {React.cloneElement(icon, {
                     className: `w-5 h-5 ${isActive ? 'text-blue-600' : 'text-gray-700'}`,
@@ -56,12 +65,29 @@ const SidebarItem = ({ icon, label, href, isCollapsed }) => {
 
 const SidebarDropdown = ({ icon, label, children, isCollapsed }) => {
     const { url } = usePage();
-    const childHrefs = React.Children.map(children, (child) =>
-        new URL(child.props.href, window.location.origin).pathname
-    );
-    // Update isActive check to ignore query parameters
-    const isActive = childHrefs.includes(url.split('?')[0]);
+    const urlWithoutParams = url.split('?')[0];
+    const urlParams = new URLSearchParams(window.location.search);
+    const currentTab = urlParams.get('tab');
+
+    // Check if any child route matches exactly
+    const isActive = React.Children.toArray(children).some(child => {
+        if (!child.props.href) return false;
+        const childUrl = new URL(child.props.href, window.location.origin);
+        const childPath = childUrl.pathname;
+        const childParams = new URLSearchParams(childUrl.search);
+        const childTab = childParams.get('tab');
+
+        return urlWithoutParams === childPath &&
+            (!childTab || currentTab === childTab);
+    });
+
     const [isOpen, setIsOpen] = useState(isActive);
+
+    // Keep dropdown open if it contains the active item
+    useEffect(() => {
+        setIsOpen(isActive);
+    }, [isActive]);
+
     const [isPopoverOpen, setIsPopoverOpen] = useState(false);
     const popoverRef = useRef();
 
@@ -175,17 +201,22 @@ const AdminSidebar = ({ onCollapse = () => { } }) => {
         {
             type: 'dropdown',
             icon: <Users />,
-            label: 'Data',
+            label: 'Data User',
             children: [
                 {
                     icon: <GraduationCap />,
                     label: 'Mahasiswa',
-                    href: route('admin.mahasiswas.index'),
+                    href: route('admin.users.index', { tab: 'mahasiswa' }),
+                },
+                {
+                    icon: <UserPen />,
+                    label: 'Dosen',
+                    href: route('admin.users.index', { tab: 'dosen' }),
                 },
                 {
                     icon: <UserCog />,
                     label: 'Admin',
-                    href: route('admin.users.index'),
+                    href: route('admin.users.index', { tab: 'admin' }),
                 },
             ],
         },
