@@ -115,7 +115,7 @@ export default function LogbookPage({ logbooks }) {
             <div className="grid grid-cols-1 mb-8">
                 <div className="flex flex-col gap-8">
                     <header className="flex items-center justify-between">
-                        <h2 className="text-xl font-semibold text-gray-900">Daftar Logbook Mahasiswa</h2>
+                        <h2 className="text-xl font-semibold text-gray-900">Logbook Mahasiswa</h2>
                         <div className="flex gap-2">
                             <button
                                 type="button"

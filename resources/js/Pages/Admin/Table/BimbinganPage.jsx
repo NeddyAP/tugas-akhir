@@ -139,7 +139,7 @@ export default function BimbinganPage({ bimbingans }) {
             <div className="grid grid-cols-1 mb-8">
                 <div className="flex flex-col gap-8">
                     <header className="flex items-center justify-between">
-                        <h2 className="text-xl font-semibold text-gray-900">Daftar Bimbingan Mahasiswa</h2>
+                        <h2 className="text-xl font-semibold text-gray-900">Bimbingan Mahasiswa</h2>
                         <div className="flex gap-2">
                             <button
                                 type="button"
