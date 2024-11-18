@@ -191,7 +191,7 @@ export default function UserPage({ users, dosens, mahasiswas }) {
     }, [activeTab, currentUserRole]);
 
     return (
-        <AdminLayout title="Users Management" currentPage="Users > Table">
+        <AdminLayout title="Users Management" currentPage="Users">
             <div className="grid grid-cols-1 mb-8">
                 <div className="flex flex-col gap-8">
                     <div className="border-b border-gray-200">

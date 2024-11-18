@@ -110,7 +110,7 @@ export default function InformationPage({ informations }) {
     }), [informations]);
 
     return (
-        <AdminLayout title="FAQ Management" currentPage="FAQ > Table">
+        <AdminLayout title="FAQ Management" currentPage="FAQ">
             <div className="grid grid-cols-1 mb-8">
                 <div className="flex flex-col gap-8">
                     <header className="flex items-center justify-between">
