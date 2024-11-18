@@ -41,12 +41,12 @@ class InformationController extends Controller
 
             return redirect()->back()->with('flash', [
                 'type' => 'success',
-                'message' => 'FAQ berhasil ditambahkan'
+                'message' => 'FAQ berhasil ditambahkan',
             ]);
         } catch (\Exception $e) {
             return redirect()->back()->with('flash', [
                 'type' => 'error',
-                'message' => 'Terjadi kesalahan saat menambahkan FAQ'
+                'message' => 'Terjadi kesalahan saat menambahkan FAQ',
             ]);
         }
     }
@@ -64,12 +64,12 @@ class InformationController extends Controller
 
             return redirect()->back()->with('flash', [
                 'type' => 'success',
-                'message' => 'FAQ berhasil diperbarui'
+                'message' => 'FAQ berhasil diperbarui',
             ]);
         } catch (\Exception $e) {
             return redirect()->back()->with('flash', [
                 'type' => 'error',
-                'message' => 'Terjadi kesalahan saat memperbarui FAQ'
+                'message' => 'Terjadi kesalahan saat memperbarui FAQ',
             ]);
         }
     }
@@ -79,14 +79,15 @@ class InformationController extends Controller
         try {
             $question = Question::findOrFail($id);
             $question->delete();
+
             return redirect()->back()->with('flash', [
                 'message' => 'FAQ berhasil dihapus',
-                'type' => 'success'
+                'type' => 'success',
             ]);
         } catch (\Exception $e) {
             return redirect()->back()->with('flash', [
                 'type' => 'error',
-                'message' => 'Terjadi kesalahan saat menghapus FAQ'
+                'message' => 'Terjadi kesalahan saat menghapus FAQ',
             ]);
         }
     }

@@ -1,8 +1,8 @@
 <?php
 
-use App\Http\Controllers\Admin\LogbookController as AdminLogbookController;
 use App\Http\Controllers\Admin\BimbinganController as AdminBimbinganController;
 use App\Http\Controllers\Admin\InformationController as AdminInformationController;
+use App\Http\Controllers\Admin\LogbookController as AdminLogbookController;
 use App\Http\Controllers\BimbinganController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\LogbookController;
@@ -45,4 +45,4 @@ Route::middleware('auth')->group(function () {
     });
 });
 
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';
