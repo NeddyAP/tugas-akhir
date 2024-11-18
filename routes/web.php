@@ -2,17 +2,20 @@
 
 use App\Http\Controllers\Admin\LogbookController as AdminLogbookController;
 use App\Http\Controllers\Admin\BimbinganController as AdminBimbinganController;
+use App\Http\Controllers\Admin\InformationController as AdminInformationController;
 use App\Http\Controllers\BimbinganController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\LogbookController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\AdminMiddleware;
+use App\Models\Question;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::inertia('/', 'Front/Home/Index', [
     'canLogin' => Route::has('login'),
+    'faqs' => Question::all(),
 ])->name('home');
 Route::inertia('/pedomans', 'Front/Pedoman/Index', [
     'canLogin' => Route::has('login'),
@@ -37,6 +40,8 @@ Route::middleware('auth')->group(function () {
         Route::resource('logbooks', AdminLogbookController::class);
         Route::resource('bimbingans', AdminBimbinganController::class);
         Route::get('/laporans', [LaporanController::class, 'index'])->name('laporans.index');
+
+        Route::resource('informations', AdminInformationController::class);
     });
 });
 

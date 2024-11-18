@@ -3,6 +3,25 @@ import { useCallback, useMemo, useState } from 'react';
 import { useGlobalFilter, usePagination, useSortBy, useTable } from 'react-table';
 import { router } from '@inertiajs/react';
 
+const TruncatedCell = ({ text, maxLength = 100 }) => {
+    const [isExpanded, setIsExpanded] = useState(false);
+    const shouldTruncate = text.length > maxLength;
+
+    if (!shouldTruncate) return text;
+
+    return (
+        <div>
+            {isExpanded ? text : `${text.slice(0, maxLength)}...`}
+            <button
+                onClick={() => setIsExpanded(!isExpanded)}
+                className="ml-2 text-blue-600 hover:text-blue-800"
+            >
+                {isExpanded ? 'Show less' : 'Show more'}
+            </button>
+        </div>
+    );
+};
+
 export default function DataTable({ columns: userColumns, data, actions, pagination }) {
     const [searchValue, setSearchValue] = useState('');
 
@@ -231,9 +250,13 @@ export default function DataTable({ columns: userColumns, data, actions, paginat
                                                     <td
                                                         {...cell.getCellProps()}
                                                         key={cellIndex}
-                                                        className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap"
+                                                        className="px-6 py-4 text-sm text-gray-500 whitespace-normal" // Remove whitespace-nowrap
                                                     >
-                                                        {cell.render('Cell')}
+                                                        {cell.column.accessor === 'answer' ? (
+                                                            <TruncatedCell text={cell.value} />
+                                                        ) : (
+                                                            cell.render('Cell')
+                                                        )}
                                                     </td>
                                                 ))}
                                             </tr>

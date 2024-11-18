@@ -8,7 +8,7 @@ const Faq = React.lazy(() => import("./Faq"));
 
 const LoadingFallback = () => <div>Loading...</div>;
 
-export default function Index() {
+export default function Index({ faqs }) {
     return (
         <Layout>
             <Head title="Home" />
@@ -16,7 +16,7 @@ export default function Index() {
                 <Suspense fallback={<LoadingFallback />}>
                     <LandingPage />
                     <Tutorial />
-                    <Faq />
+                    <Faq faqs={faqs} />
                 </Suspense>
             </main>
         </Layout>

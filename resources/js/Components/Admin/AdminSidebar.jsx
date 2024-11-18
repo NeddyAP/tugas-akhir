@@ -260,7 +260,7 @@ const AdminSidebar = ({ onCollapse = () => { } }) => {
                     <div className="mt-auto space-y-4">
                         <div className="flex-1 space-y-1">
                             <SidebarItem
-                                href=""
+                                href={route('admin.informations.index')}
                                 icon={<HelpCircle />}
                                 label="Help & Information"
                                 isCollapsed={isCollapsed}
