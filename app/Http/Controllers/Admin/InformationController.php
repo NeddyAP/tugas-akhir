@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Question;
+use App\Models\Tutorial;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -11,83 +12,101 @@ class InformationController extends Controller
 {
     public function index(Request $request)
     {
-        $search = $request->input('search');
-        $perPage = $request->input('per_page', 10);
-
-        $informations = Question::query()
-            ->select('id', 'question', 'answer', 'created_at')
-            ->when($search, function ($query, $search) {
-                $query->where('question', 'like', "%{$search}%")
-                    ->orWhere('answer', 'like', "%{$search}%");
-            })
-            ->latest()
-            ->paginate($perPage)
-            ->withQueryString();
+        $type = $request->input('type', 'question');
+        $model = $type === 'question' ? Question::class : Tutorial::class;
+        $data = $model::latest()->paginate(10);
 
         return Inertia::render('Admin/Information/InformationPage', [
-            'informations' => $informations,
+            'questions' => $type === 'question' ? $data : null,
+            'tutorials' => $type === 'tutorial' ? $data : null,
+            'type' => $type
         ]);
     }
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'question' => 'required|string|max:255',
-            'answer' => 'required|string',
-        ]);
-
         try {
-            Question::create($validated);
+            if ($request->type === 'question') {
+                Question::create($request->validate([
+                    'question' => 'required|string|max:255',
+                    'answer' => 'required|string'
+                ]));
+            } else {
+                Tutorial::create($request->validate([
+                    'title' => 'required|string|max:255',
+                    'description' => 'required|string',
+                    'link' => 'required|string'
+                ]));
+            }
 
             return redirect()->back()->with('flash', [
                 'type' => 'success',
-                'message' => 'FAQ berhasil ditambahkan',
+                'message' => ($request->type === 'question' ? 'FAQ' : 'Tutorial') . ' berhasil ditambahkan'
             ]);
         } catch (\Exception $e) {
             return redirect()->back()->with('flash', [
                 'type' => 'error',
-                'message' => 'Terjadi kesalahan saat menambahkan FAQ',
+                'message' => 'Gagal menambahkan data'
             ]);
         }
     }
 
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
-        $validated = $request->validate([
-            'question' => 'required|string|max:255',
-            'answer' => 'required|string',
-        ]);
-
         try {
-            $question = Question::findOrFail($id);
-            $question->update($validated);
+            $type = $request->input('type');
+            $validated = $request->validate($type === 'question' ? [
+                'question' => 'required|string|max:255',
+                'answer' => 'required|string',
+                'type' => 'required|string'
+            ] : [
+                'title' => 'required|string|max:255',
+                'description' => 'required|string',
+                'link' => 'required|string',
+                'type' => 'required|string'
+            ]);
+
+            $model = $type === 'question' ? Question::class : Tutorial::class;
+            $item = $model::findOrFail($id);
+
+            // Remove type from validated data
+            unset($validated['type']);
+            $item->update($validated);
 
             return redirect()->back()->with('flash', [
                 'type' => 'success',
-                'message' => 'FAQ berhasil diperbarui',
+                'message' => ($type === 'question' ? 'FAQ' : 'Tutorial') . ' berhasil diperbarui'
             ]);
         } catch (\Exception $e) {
             return redirect()->back()->with('flash', [
                 'type' => 'error',
-                'message' => 'Terjadi kesalahan saat memperbarui FAQ',
+                'message' => 'Gagal memperbarui data'
             ]);
         }
     }
 
-    public function destroy(string $id)
+    public function destroy($id, Request $request)
     {
         try {
-            $question = Question::findOrFail($id);
-            $question->delete();
+            $type = $request->query('type');
+
+            if (!$type) {
+                throw new \Exception('Type parameter is required');
+            }
+
+            $model = $type === 'question' ? Question::class : Tutorial::class;
+            $item = $model::findOrFail($id);
+            $item->delete();
 
             return redirect()->back()->with('flash', [
-                'message' => 'FAQ berhasil dihapus',
                 'type' => 'success',
+                'message' => ($type === 'question' ? 'FAQ' : 'Tutorial') . ' berhasil dihapus'
             ]);
         } catch (\Exception $e) {
+            report($e);
             return redirect()->back()->with('flash', [
                 'type' => 'error',
-                'message' => 'Terjadi kesalahan saat menghapus FAQ',
+                'message' => 'Gagal menghapus data: ' . $e->getMessage()
             ]);
         }
     }

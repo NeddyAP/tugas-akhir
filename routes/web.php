@@ -10,12 +10,14 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\AdminMiddleware;
 use App\Models\Question;
+use App\Models\Tutorial;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::inertia('/', 'Front/Home/Index', [
     'canLogin' => Route::has('login'),
-    'faqs' => Question::all(),
+    'tutorial' => Tutorial::select('title', 'description', 'link')->latest()->first(),
+    'faqs' => Question::select('question', 'answer')->get(),
 ])->name('home');
 Route::inertia('/pedomans', 'Front/Pedoman/Index', [
     'canLogin' => Route::has('login'),
@@ -45,4 +47,4 @@ Route::middleware('auth')->group(function () {
     });
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

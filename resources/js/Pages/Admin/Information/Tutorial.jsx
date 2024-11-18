@@ -1,9 +1,8 @@
-import { useCallback, useMemo, useState, useEffect } from "react";
+import React, { useCallback, useMemo, useState, useEffect } from "react";
 import { useForm, usePage } from "@inertiajs/react";
 import DataTable from "@/Components/Admin/DataTable";
 import GenericModal from "@/Components/Admin/GenericModal";
 import PropTypes from 'prop-types';
-import 'react-toastify/dist/ReactToastify.css';
 
 const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -16,28 +15,68 @@ const formatDate = (dateString) => {
     });
 };
 
-export default function Question({ informations }) {
+const getYouTubeId = (url) => {
+    if (!url) return false;
+    const match = url.match(/^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/);
+    return (match && match[7].length === 11) ? match[7] : url;
+};
+
+const YouTubePreview = React.memo(({ link }) => {
+    if (!link) return <span className="text-gray-500">No video link provided</span>;
+
+    const videoId = getYouTubeId(link);
+    if (!videoId) return <span className="text-red-500">Invalid YouTube URL or ID</span>;
+
+    return (
+        <div className="relative w-full px-20 pt-36">
+            <iframe
+                className="absolute inset-0 w-full h-full"
+                src={`https://www.youtube.com/embed/${videoId}`}
+                title="YouTube video player"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+            />
+        </div>
+    );
+});
+
+export default function Tutorial({ informations }) {
     const { delete: destroy } = useForm();
-    const { flash } = usePage().props;
     const [modalState, setModalState] = useState({ isOpen: false, editingData: null });
     const { data, setData, post, put, processing, errors, reset, clearErrors } = useForm({
-        question: "",
-        answer: "",
-        type: "question",
+        title: "",
+        description: "",
+        link: "",
+        type: "tutorial",
     });
 
     const TABLE_CONFIG = useMemo(() => ({
         columns: [
-            { Header: "Pertanyaan", accessor: "question", sortable: true },
-            { Header: "Jawaban", accessor: "answer", sortable: true },
             {
-                Header: "Tanggal Dibuat", accessor: "created_at", sortable: true,
+                Header: "Video",
+                accessor: "videoPreview", // Changed from "link" to "videoPreview"
+                Cell: ({ row }) => <YouTubePreview link={row.original.link} />
+            },
+            { Header: "Judul", accessor: "title", sortable: true },
+            { Header: "Deskripsi", accessor: "description", sortable: true },
+            {
+                Header: "Kode Youtube",
+                accessor: "link",
+                sortable: true,
+                Cell: ({ value }) => getYouTubeId(value) || value
+            },
+            {
+                Header: "Tanggal Dibuat",
+                accessor: "created_at",
+                sortable: true,
                 Cell: ({ value }) => formatDate(value)
             },
         ],
         modalFields: [
-            { name: "question", label: "Pertanyaan", type: "text" },
-            { name: "answer", label: "Jawaban", type: "textarea", rows: 5 },
+            { name: "title", label: "Judul", type: "text" },
+            { name: "description", label: "Deskripsi", type: "textarea", rows: 3 },
+            { name: "link", label: "Link YouTube", type: "text" },
         ],
         defaultSort: "created_at"
     }), []);
@@ -46,13 +85,13 @@ export default function Question({ informations }) {
         if (modalState.isOpen) {
             if (modalState.editingData) {
                 setData({
-                    question: modalState.editingData.question,
-                    answer: modalState.editingData.answer,
-                    type: 'question'  // Add type here
+                    title: modalState.editingData.title,
+                    description: modalState.editingData.description,
+                    link: modalState.editingData.link,
+                    type: "tutorial"
                 });
             } else {
                 reset();
-                setData({ type: 'question' }); // Set default type
             }
         } else {
             reset();
@@ -67,9 +106,9 @@ export default function Question({ informations }) {
     const tableActions = useMemo(() => ({
         handleEdit: (row) => setModalState({ isOpen: true, editingData: row }),
         handleDelete: (row) => {
-            if (window.confirm('Kamu yakin ingin menghapus FAQ ini?')) {
+            if (window.confirm('Kamu yakin ingin menghapus tutorial ini?')) {
                 // Ubah cara pengiriman parameter
-                destroy(route("admin.informations.destroy", row.id) + `?type=question`, {
+                destroy(route("admin.informations.destroy", row.id) + `?type=tutorial`, {
                     preserveScroll: true,
                     preserveState: true
                 });
@@ -80,9 +119,19 @@ export default function Question({ informations }) {
 
     const handleSubmit = useCallback((e) => {
         e.preventDefault();
+        const videoId = getYouTubeId(data.link);
+        if (!videoId) return;
+
+        const formData = {
+            title: data.title,
+            description: data.description,
+            link: videoId,
+            type: 'tutorial'
+        };
+
         if (modalState.editingData) {
             put(route('admin.informations.update', modalState.editingData.id), {
-                ...data,
+                ...formData,
                 preserveScroll: true,
                 onSuccess: () => {
                     setModalState({ isOpen: false, editingData: null });
@@ -91,7 +140,7 @@ export default function Question({ informations }) {
             });
         } else {
             post(route('admin.informations.store'), {
-                ...data,
+                ...formData,
                 onSuccess: () => {
                     setModalState({ isOpen: false, editingData: null });
                     clearErrors();
@@ -113,13 +162,20 @@ export default function Question({ informations }) {
         <div className="grid grid-cols-1 mb-8">
             <div className="flex flex-col gap-8">
                 <header className="flex items-center justify-between">
-                    <h2 className="text-xl font-semibold text-gray-900">Frequently Asked Questions</h2>
+                    <div className="flex flex-col">
+                        <h2 className="text-xl font-semibold text-gray-900">
+                            Tutorial Videos
+                        </h2>
+                        <i className="text-sm text-gray-400">
+                            hanya satu video terbaru yang akan ditampilkan
+                        </i>
+                    </div>
                     <button
                         type="button"
                         onClick={tableActions.handleAdd}
                         className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                     >
-                        Tambah FAQ
+                        Tambah Tutorial
                     </button>
                 </header>
 
@@ -134,7 +190,7 @@ export default function Question({ informations }) {
                 <GenericModal
                     isOpen={modalState.isOpen}
                     onClose={handleModalClose}
-                    title={`${modalState.editingData ? 'Edit' : 'Tambah'} FAQ`}
+                    title={`${modalState.editingData ? 'Edit' : 'Tambah'} Tutorial`}
                     data={data}
                     setData={setData}
                     errors={errors}
@@ -148,7 +204,7 @@ export default function Question({ informations }) {
     );
 }
 
-Question.propTypes = {
+Tutorial.propTypes = {
     informations: PropTypes.shape({
         data: PropTypes.array.isRequired,
         current_page: PropTypes.number.isRequired,

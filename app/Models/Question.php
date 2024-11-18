@@ -11,7 +11,10 @@ class Question extends Model
 
     protected $table = 'questions';
 
-    protected $fillable = ['question', 'answer'];
+    protected $fillable = [
+        'question',
+        'answer'
+    ];
 
     public function getQuestionAttribute($value)
     {

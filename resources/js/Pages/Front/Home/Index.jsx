@@ -8,14 +8,14 @@ const Faq = React.lazy(() => import("./Faq"));
 
 const LoadingFallback = () => <div>Loading...</div>;
 
-export default function Index({ faqs }) {
+export default function Index({ faqs, tutorial }) {
     return (
         <Layout>
             <Head title="Home" />
             <main className="px-24">
                 <Suspense fallback={<LoadingFallback />}>
                     <LandingPage />
-                    <Tutorial />
+                    <Tutorial tutorial={tutorial} />
                     <Faq faqs={faqs} />
                 </Suspense>
             </main>
