@@ -31,7 +31,7 @@ class UserController extends Controller
         $mahasiswaQuery = User::where('role', 'mahasiswa');
 
         if ($search) {
-            $searchWildcard = '%'.$search.'%';
+            $searchWildcard = '%' . $search . '%';
             $searchCallback = function ($query) use ($searchWildcard) {
                 $query->where('name', 'like', $searchWildcard)
                     ->orWhere('email', 'like', $searchWildcard)
@@ -111,12 +111,12 @@ class UserController extends Controller
             User::create($validated);
 
             return redirect()->back()->with('flash', [
-                'message' => ucfirst($tab).' berhasil ditambahkan',
+                'message' => ucfirst($tab) . ' berhasil ditambahkan',
                 'type' => 'success',
             ]);
         } catch (\Exception $e) {
             return redirect()->back()->with('flash', [
-                'message' => 'Gagal menambahkan '.$tab,
+                'message' => 'Gagal menambahkan ' . $tab,
                 'type' => 'error',
             ]);
         }
@@ -155,12 +155,12 @@ class UserController extends Controller
             $user->update($validated);
 
             return redirect()->back()->with('flash', [
-                'message' => ucfirst($tab).' berhasil diperbarui',
+                'message' => ucfirst($tab) . ' berhasil diperbarui',
                 'type' => 'success',
             ]);
         } catch (\Exception $e) {
             return redirect()->back()->with('flash', [
-                'message' => 'Gagal memperbarui '.$tab,
+                'message' => 'Gagal memperbarui ' . $tab,
                 'type' => 'error',
             ]);
         }
@@ -187,24 +187,22 @@ class UserController extends Controller
                 default => false,
             };
 
-            if (! $roleMatches) {
-                return redirect()->back()->with('flash', [
+            if (!$roleMatches) {
+                return response()->json([
                     'message' => 'Invalid user type',
-                    'type' => 'error',
-                ]);
+                ], 400);
             }
 
             $user->delete();
 
             return redirect()->back()->with('flash', [
-                'message' => ucfirst($tab).' berhasil dihapus',
+                'message' => ucfirst($tab) . ' berhasil dihapus',
                 'type' => 'success',
             ]);
         } catch (\Exception $e) {
-            return redirect()->back()->with('flash', [
-                'message' => 'Gagal menghapus '.$tab,
-                'type' => 'error',
-            ]);
+            return response()->json([
+                'message' => 'Gagal menghapus ' . $tab,
+            ], 500);
         }
     }
 }

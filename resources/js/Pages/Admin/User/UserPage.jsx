@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState, useEffect } from "react";
+import { useCallback, useMemo, useState, useEffect, memo } from "react";
 import { useForm, usePage } from "@inertiajs/react";
 import { toast } from 'react-toastify';
 import AdminLayout from "@/Layouts/AdminLayout";
@@ -11,134 +11,142 @@ const TABS = {
     ADMIN: 'admin',
 };
 
-export default function UserPage({ users, dosens, mahasiswas }) {
-    const { delete: destroyData } = useForm();
-    const { user, url, flash } = usePage().props;
-    const currentUserRole = user.role;
+// Memoized Tab Button Component
+const TabButton = memo(({ tab, activeTab, onClick }) => (
+    <button
+        onClick={() => onClick(tab)}
+        className={`${activeTab === tab
+            ? 'border-blue-500 text-blue-600'
+            : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+            } whitespace-nowrap py-4 px-6 border-b-2 font-medium text-sm capitalize`}
+    >
+        {tab}
+    </button>
+));
 
-    // Get tab from URL parameters
+TabButton.displayName = 'TabButton';
+
+// Memoized Header Component
+const Header = memo(({ activeTab, onDownload, onAdd }) => (
+    <header className="flex items-center justify-between">
+        <h2 className="text-xl font-semibold text-gray-900">Data {activeTab}</h2>
+        <div className="flex gap-2">
+            <button
+                type="button"
+                onClick={onDownload}
+                className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            >
+                Download
+            </button>
+            <button
+                type="button"
+                onClick={onAdd}
+                className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            >
+                Tambah Baru
+            </button>
+        </div>
+    </header>
+));
+
+Header.displayName = 'Header';
+
+const UserPage = ({ users, dosens, mahasiswas }) => {
+    const { user: currentUser, url, flash } = usePage().props;
+    const currentUserRole = currentUser.role;
+
+    // URL and tab management
     const urlParams = new URLSearchParams(window.location.search);
-    const tabParam = urlParams.get('tab');
-
-    // Set initial active tab based on URL parameter or default to ADMIN
     const [activeTab, setActiveTab] = useState(
-        tabParam && Object.values(TABS).includes(tabParam)
-            ? tabParam
+        urlParams.get('tab') && Object.values(TABS).includes(urlParams.get('tab'))
+            ? urlParams.get('tab')
             : TABS.ADMIN
     );
 
-    // Update URL when tab changes
-    const handleTabChange = (tab) => {
+    // Form management
+    const { data, setData, post, put, processing, errors, reset, clearErrors } = useForm({
+        name: "", email: "", password: "", role: "",
+        nim: "", nip: "", phone: "", address: "",
+    });
+
+    // Modal state management
+    const [modalState, setModalState] = useState({ isOpen: false, editingData: null });
+
+    // Create form instance for delete operation
+    const deleteForm = useForm();
+
+    // Tab change handler
+    const handleTabChange = useCallback((tab) => {
         setActiveTab(tab);
         const newUrl = new URL(window.location);
         newUrl.searchParams.set('tab', tab);
         window.history.pushState({}, '', newUrl);
-    };
+    }, []);
 
-    const [modalState, setModalState] = useState({ isOpen: false, editingData: null });
-
-    const { data, setData, post, put, processing, errors, reset, clearErrors } = useForm({
-        name: "",
-        email: "",
-        password: "",
-        role: "",
-        nim: "",
-        nip: "",
-        phone: "",
-        address: "",
-    });
-
-    useEffect(() => {
-        if (modalState.isOpen) {
-            if (modalState.editingData) {
-                setData({
-                    name: modalState.editingData.name,
-                    email: modalState.editingData.email,
-                    role: modalState.editingData.role || "",
-                    nim: modalState.editingData.nim || "",
-                    nip: modalState.editingData.nip || "",
-                    phone: modalState.editingData.phone || "",
-                    address: modalState.editingData.address || "",
-                    password: "",
-                });
-            } else {
-                reset();
-            }
-        } else {
-            reset();
-            clearErrors();
-        }
-    }, [modalState.isOpen, modalState.editingData]);
-
-    useEffect(() => {
-        if (flash.message) {
-            toast[flash.type](flash.message);
-        }
-    }, [flash]);
-
-    const confirmDelete = useCallback((message) => window.confirm(message), []);
-
-    const handleAdd = () => {
+    // Action handlers
+    const handleAdd = useCallback(() => {
         if (currentUserRole !== 'superadmin') {
             toast.error("Role kurang tinggi untuk melakukan action");
             return;
         }
         setModalState({ isOpen: true, editingData: null });
-    };
+    }, [currentUserRole]);
 
-    const handleEdit = (row) => {
+    const handleEdit = useCallback((row) => {
         if (currentUserRole !== 'superadmin') {
             toast.error("Role kurang tinggi untuk melakukan action");
             return;
         }
         setModalState({ isOpen: true, editingData: row });
-    };
+    }, [currentUserRole]);
 
     const handleDelete = useCallback((row) => {
         if (currentUserRole !== 'superadmin') {
+            toast.error("Role kurang tinggi untuk melakukan action");
             return;
         }
 
-        if (confirmDelete(`Kamu yakin ingin menghapus data ${activeTab}?`)) {
-            destroyData(route("admin.users.destroy", row.id) + `?tab=${activeTab}`, {
+        if (window.confirm(`Kamu yakin ingin menghapus data ${activeTab}?`)) {
+            deleteForm.delete(route("admin.users.destroy", row.id) + `?tab=${activeTab}`, {
                 preserveState: true,
-                preserveScroll: true
+                preserveScroll: true,
+                onSuccess: () => {
+                    toast.success(`${activeTab} berhasil dihapus`);
+                },
+                onError: () => {
+                    toast.error(`Gagal menghapus ${activeTab}`);
+                }
             });
         }
-    }, [destroyData, confirmDelete, currentUserRole, activeTab]);
+    }, [currentUserRole, activeTab, deleteForm]);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = useCallback((e) => {
         e.preventDefault();
-
         if (currentUserRole !== 'superadmin') {
+            toast.error("Role kurang tinggi untuk melakukan action");
             return;
         }
 
-        const routeName = modalState.editingData ? 'admin.users.update' : 'admin.users.store';
-        const routeParams = modalState.editingData ? modalState.editingData.id : undefined;
-        const action = modalState.editingData ? put : post;
-        const url = modalState.editingData
-            ? route(routeName, routeParams) + `?tab=${activeTab}`
-            : route(routeName) + `?tab=${activeTab}`;
+        const isEditing = modalState.editingData;
+        const url = route(
+            isEditing ? 'admin.users.update' : 'admin.users.store',
+            isEditing ? modalState.editingData.id : undefined
+        );
 
-        action(url, {
+        const action = isEditing ? put : post;
+        action(url + `?tab=${activeTab}`, {
             preserveState: true,
             onSuccess: () => {
                 setModalState({ isOpen: false, editingData: null });
+                toast.success(`${activeTab} berhasil ${isEditing ? 'diperbarui' : 'ditambahkan'}`);
+            },
+            onError: (errors) => {
+                toast.error(`Gagal ${isEditing ? 'memperbarui' : 'menambahkan'} ${activeTab}`);
             }
         });
-    };
+    }, [currentUserRole, modalState, activeTab, post, put]);
 
-    const tableActions = useMemo(() => ({
-        handleEdit,
-        handleDelete,
-        handleAdd,
-        handleDownload: () => {
-            toast.info(`Mengunduh data ${activeTab}...`);
-            // TODO: Implementasi download
-        },
-    }), [handleEdit, handleDelete, handleAdd, activeTab]);
-
+    // Memoized values
     const columns = useMemo(() => {
         const commonColumns = [
             { Header: "Nama", accessor: "name", sortable: true },
@@ -154,14 +162,11 @@ export default function UserPage({ users, dosens, mahasiswas }) {
         return [...commonColumns, ...specificColumns[activeTab]];
     }, [activeTab]);
 
-    const currentData = useMemo(() => {
-        const dataMap = {
-            [TABS.ADMIN]: users,
-            [TABS.DOSEN]: dosens,
-            [TABS.MAHASISWA]: mahasiswas,
-        };
-        return dataMap[activeTab];
-    }, [users, dosens, mahasiswas, activeTab]);
+    const currentData = useMemo(() => ({
+        [TABS.ADMIN]: users,
+        [TABS.DOSEN]: dosens,
+        [TABS.MAHASISWA]: mahasiswas,
+    })[activeTab], [users, dosens, mahasiswas, activeTab]);
 
     const modalFields = useMemo(() => {
         const commonFields = [
@@ -190,6 +195,26 @@ export default function UserPage({ users, dosens, mahasiswas }) {
         return [...commonFields, ...specificFields[activeTab]];
     }, [activeTab, currentUserRole]);
 
+    // Effects
+    useEffect(() => {
+        if (modalState.isOpen) {
+            if (modalState.editingData) {
+                setData({ ...modalState.editingData, password: "" });
+            } else {
+                reset();
+            }
+        } else {
+            reset();
+            clearErrors();
+        }
+    }, [modalState.isOpen, modalState.editingData]);
+
+    useEffect(() => {
+        if (flash?.message) {
+            toast[flash.type](flash.message);
+        }
+    }, [flash]);
+
     return (
         <AdminLayout title="Users Management" currentPage="Users">
             <div className="grid grid-cols-1 mb-8">
@@ -197,44 +222,26 @@ export default function UserPage({ users, dosens, mahasiswas }) {
                     <div className="border-b border-gray-200">
                         <nav className="flex -mb-px">
                             {Object.values(TABS).map((tab) => (
-                                <button
+                                <TabButton
                                     key={tab}
-                                    onClick={() => handleTabChange(tab)}
-                                    className={`${activeTab === tab
-                                        ? 'border-blue-500 text-blue-600'
-                                        : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
-                                        } whitespace-nowrap py-4 px-6 border-b-2 font-medium text-sm capitalize`}
-                                >
-                                    {tab}
-                                </button>
+                                    tab={tab}
+                                    activeTab={activeTab}
+                                    onClick={handleTabChange}
+                                />
                             ))}
                         </nav>
                     </div>
 
-                    <header className="flex items-center justify-between">
-                        <h2 className="text-xl font-semibold text-gray-900">Data {activeTab}</h2>
-                        <div className="flex gap-2">
-                            <button
-                                type="button"
-                                onClick={tableActions.handleDownload}
-                                className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                            >
-                                Download
-                            </button>
-                            <button
-                                type="button"
-                                onClick={tableActions.handleAdd}
-                                className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                            >
-                                Tambah Baru
-                            </button>
-                        </div>
-                    </header>
+                    <Header
+                        activeTab={activeTab}
+                        onDownload={() => toast.info(`Mengunduh data ${activeTab}...`)}
+                        onAdd={handleAdd}
+                    />
 
                     <DataTable
                         columns={columns}
                         data={currentData.data}
-                        actions={tableActions}
+                        actions={{ handleEdit, handleDelete, handleAdd }}
                         defaultSortBy="name"
                         pagination={{
                             pageIndex: currentData.current_page - 1,
@@ -262,4 +269,6 @@ export default function UserPage({ users, dosens, mahasiswas }) {
             </div>
         </AdminLayout>
     );
-}
+};
+
+export default memo(UserPage);
