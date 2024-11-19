@@ -9,9 +9,21 @@ const AdminLayout = memo(({ children, title, currentPage }) => {
     const { flash } = usePage().props;
     const [isCollapsed, setIsCollapsed] = useState(false);
 
+    // Perbaiki penanganan flash message
     useEffect(() => {
-        if (flash?.message) {
-            toast[flash.type === "success" ? "success" : "error"](flash.message);
+        // Periksa struktur flash yang benar
+        if (flash?.type && flash?.message) {
+            const validTypes = ['success', 'error', 'info', 'warning'];
+            const toastType = validTypes.includes(flash.type) ? flash.type : 'info';
+
+            toast[toastType](flash.message, {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+            });
         }
     }, [flash]);
 
@@ -24,7 +36,7 @@ const AdminLayout = memo(({ children, title, currentPage }) => {
                 <AdminNavbar currentPage={currentPage} />
                 <main className="flex-1 p-8">
                     {children}
-                    <ToastContainer position="top-right" autoClose={3000} />
+                    <ToastContainer />
                 </main>
             </div>
         </div>

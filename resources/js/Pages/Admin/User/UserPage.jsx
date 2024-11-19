@@ -1,6 +1,5 @@
 import { useCallback, useMemo, useState, useEffect, memo } from "react";
 import { useForm, usePage } from "@inertiajs/react";
-import { toast } from 'react-toastify';
 import AdminLayout from "@/Layouts/AdminLayout";
 import DataTable from "@/Components/Admin/DataTable";
 import GenericModal from "@/Components/Admin/GenericModal";
@@ -86,36 +85,27 @@ const UserPage = ({ users, dosens, mahasiswas }) => {
     // Action handlers
     const handleAdd = useCallback(() => {
         if (currentUserRole !== 'superadmin') {
-            toast.error("Role kurang tinggi untuk melakukan action");
-            return;
+            return; // Let the server handle the error message
         }
         setModalState({ isOpen: true, editingData: null });
     }, [currentUserRole]);
 
     const handleEdit = useCallback((row) => {
         if (currentUserRole !== 'superadmin') {
-            toast.error("Role kurang tinggi untuk melakukan action");
-            return;
+            return; // Let the server handle the error message
         }
         setModalState({ isOpen: true, editingData: row });
     }, [currentUserRole]);
 
     const handleDelete = useCallback((row) => {
         if (currentUserRole !== 'superadmin') {
-            toast.error("Role kurang tinggi untuk melakukan action");
-            return;
+            return; // Let the server handle the error message
         }
 
         if (window.confirm(`Kamu yakin ingin menghapus data ${activeTab}?`)) {
             deleteForm.delete(route("admin.users.destroy", row.id) + `?tab=${activeTab}`, {
                 preserveState: true,
-                preserveScroll: true,
-                onSuccess: () => {
-                    toast.success(`${activeTab} berhasil dihapus`);
-                },
-                onError: () => {
-                    toast.error(`Gagal menghapus ${activeTab}`);
-                }
+                preserveScroll: true
             });
         }
     }, [currentUserRole, activeTab, deleteForm]);
@@ -123,8 +113,7 @@ const UserPage = ({ users, dosens, mahasiswas }) => {
     const handleSubmit = useCallback((e) => {
         e.preventDefault();
         if (currentUserRole !== 'superadmin') {
-            toast.error("Role kurang tinggi untuk melakukan action");
-            return;
+            return; // Let the server handle the error message
         }
 
         const isEditing = modalState.editingData;
@@ -138,10 +127,6 @@ const UserPage = ({ users, dosens, mahasiswas }) => {
             preserveState: true,
             onSuccess: () => {
                 setModalState({ isOpen: false, editingData: null });
-                toast.success(`${activeTab} berhasil ${isEditing ? 'diperbarui' : 'ditambahkan'}`);
-            },
-            onError: (errors) => {
-                toast.error(`Gagal ${isEditing ? 'memperbarui' : 'menambahkan'} ${activeTab}`);
             }
         });
     }, [currentUserRole, modalState, activeTab, post, put]);
@@ -209,12 +194,6 @@ const UserPage = ({ users, dosens, mahasiswas }) => {
         }
     }, [modalState.isOpen, modalState.editingData]);
 
-    useEffect(() => {
-        if (flash?.message) {
-            toast[flash.type](flash.message);
-        }
-    }, [flash]);
-
     return (
         <AdminLayout title="Users Management" currentPage="Users">
             <div className="grid grid-cols-1 mb-8">
@@ -234,7 +213,7 @@ const UserPage = ({ users, dosens, mahasiswas }) => {
 
                     <Header
                         activeTab={activeTab}
-                        onDownload={() => toast.info(`Mengunduh data ${activeTab}...`)}
+                        onDownload={() => { }}
                         onAdd={handleAdd}
                     />
 

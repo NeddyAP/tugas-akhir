@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState, useEffect } from "react";
-import { useForm, usePage } from "@inertiajs/react";
+import { useForm } from "@inertiajs/react";
 import DataTable from "@/Components/Admin/DataTable";
 import GenericModal from "@/Components/Admin/GenericModal";
 import PropTypes from 'prop-types';
@@ -18,7 +18,6 @@ const formatDate = (dateString) => {
 
 export default function Question({ informations }) {
     const { delete: destroy } = useForm();
-    const { flash } = usePage().props;
     const [modalState, setModalState] = useState({ isOpen: false, editingData: null });
     const { data, setData, post, put, processing, errors, reset, clearErrors } = useForm({
         question: "",

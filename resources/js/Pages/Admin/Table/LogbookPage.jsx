@@ -3,7 +3,6 @@ import DataTable from "@/Components/Admin/DataTable";
 import AdminLayout from "@/Layouts/AdminLayout";
 import { useForm } from '@inertiajs/react';
 import GenericModal from '@/Components/Admin/GenericModal';
-import { toast } from 'react-toastify';
 
 const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -55,10 +54,6 @@ const LogbookPage = ({ logbooks }) => {
             route(`admin.logbooks.${isEditing ? 'update' : 'store'}`, isEditing?.id), {
             onSuccess: () => {
                 setModalState({ isOpen: false, editingData: null });
-                toast.success(`Logbook berhasil ${isEditing ? 'diperbarui' : 'ditambahkan'}`);
-            },
-            onError: () => {
-                toast.error(`Gagal ${isEditing ? 'memperbarui' : 'menambahkan'} logbook`);
             }
         }
         );
@@ -66,10 +61,7 @@ const LogbookPage = ({ logbooks }) => {
 
     const handleDelete = useCallback((row) => {
         if (window.confirm('Yakin ingin menghapus logbook ini?')) {
-            form.delete(route('admin.logbooks.destroy', row.id), {
-                onSuccess: () => toast.success('Logbook berhasil dihapus'),
-                onError: () => toast.error('Gagal menghapus logbook')
-            });
+            form.delete(route('admin.logbooks.destroy', row.id));
         }
     }, [form]);
 
@@ -114,7 +106,7 @@ const LogbookPage = ({ logbooks }) => {
             <div className="grid grid-cols-1 mb-8">
                 <div className="flex flex-col gap-8">
                     <Header
-                        onDownload={() => toast.info('Mengunduh data logbook...')}
+                        onDownload={() => window.alert('Mengunduh data logbook...')}
                         onAdd={() => setModalState({ isOpen: true, editingData: null })}
                     />
 

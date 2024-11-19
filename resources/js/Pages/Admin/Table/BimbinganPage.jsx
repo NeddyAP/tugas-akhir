@@ -3,7 +3,6 @@ import DataTable from "@/Components/Admin/DataTable";
 import AdminLayout from "@/Layouts/AdminLayout";
 import { useForm } from '@inertiajs/react';
 import GenericModal from '@/Components/Admin/GenericModal';
-import { toast } from 'react-toastify';
 
 const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -75,10 +74,6 @@ const BimbinganPage = ({ bimbingans }) => {
             route(`admin.bimbingans.${isEditing ? 'update' : 'store'}`, isEditing?.id), {
             onSuccess: () => {
                 setModalState({ isOpen: false, editingData: null });
-                toast.success(`Bimbingan berhasil ${isEditing ? 'diperbarui' : 'ditambahkan'}`);
-            },
-            onError: () => {
-                toast.error(`Gagal ${isEditing ? 'memperbarui' : 'menambahkan'} bimbingan`);
             }
         }
         );
@@ -86,10 +81,7 @@ const BimbinganPage = ({ bimbingans }) => {
 
     const handleDelete = useCallback((row) => {
         if (window.confirm('Yakin ingin menghapus data bimbingan ini?')) {
-            form.delete(route('admin.bimbingans.destroy', row.id), {
-                onSuccess: () => toast.success('Bimbingan berhasil dihapus'),
-                onError: () => toast.error('Gagal menghapus bimbingan')
-            });
+            form.delete(route('admin.bimbingans.destroy', row.id));
         }
     }, [form]);
 
@@ -144,7 +136,7 @@ const BimbinganPage = ({ bimbingans }) => {
             setModalState({ isOpen: true, editingData: null });
         },
         handleDownload: () => {
-            // Implement download functionality
+            window.alert('Download functionality not implemented');
         }
     };
 

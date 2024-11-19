@@ -40,13 +40,13 @@ class InformationController extends Controller
             }
 
             return redirect()->back()->with('flash', [
-                'type' => 'success',
+                'type' => 'success', // atau 'error', 'info', 'warning'
                 'message' => ($request->type === 'question' ? 'FAQ' : 'Tutorial') . ' berhasil ditambahkan'
             ]);
         } catch (\Exception $e) {
             return redirect()->back()->with('flash', [
-                'type' => 'error',
-                'message' => 'Gagal menambahkan data'
+                'type' => 'error', // atau 'error', 'info', 'warning'
+                'message' => 'Gagal menambahkan data: ' . $e->getMessage()
             ]);
         }
     }
@@ -74,13 +74,13 @@ class InformationController extends Controller
             $item->update($validated);
 
             return redirect()->back()->with('flash', [
-                'type' => 'success',
+                'type' => 'success', // atau 'error', 'info', 'warning'
                 'message' => ($type === 'question' ? 'FAQ' : 'Tutorial') . ' berhasil diperbarui'
             ]);
         } catch (\Exception $e) {
             return redirect()->back()->with('flash', [
-                'type' => 'error',
-                'message' => 'Gagal memperbarui data'
+                'type' => 'error', // atau 'error', 'info', 'warning'
+                'message' => 'Gagal memperbarui data: ' . $e->getMessage()
             ]);
         }
     }
@@ -99,13 +99,13 @@ class InformationController extends Controller
             $item->delete();
 
             return redirect()->back()->with('flash', [
-                'type' => 'success',
+                'type' => 'success', // atau 'error', 'info', 'warning'
                 'message' => ($type === 'question' ? 'FAQ' : 'Tutorial') . ' berhasil dihapus'
             ]);
         } catch (\Exception $e) {
             report($e);
             return redirect()->back()->with('flash', [
-                'type' => 'error',
+                'type' => 'error', // atau 'error', 'info', 'warning'
                 'message' => 'Gagal menghapus data: ' . $e->getMessage()
             ]);
         }
