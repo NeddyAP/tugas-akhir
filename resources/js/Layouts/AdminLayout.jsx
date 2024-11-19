@@ -1,9 +1,9 @@
 import React, { useEffect, useState, memo } from 'react';
 import { Head, usePage } from '@inertiajs/react';
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import AdminNavbar from '../Components/Admin/AdminNavbar';
 import AdminSidebar from '../Components/Admin/AdminSidebar';
-import "react-toastify/dist/ReactToastify.css";
+import { Toast } from "@/Components/ToastConfig";
 
 const AdminLayout = memo(({ children, title, currentPage }) => {
     const { flash } = usePage().props;
@@ -36,7 +36,7 @@ const AdminLayout = memo(({ children, title, currentPage }) => {
                 <AdminNavbar currentPage={currentPage} />
                 <main className="flex-1 p-8">
                     {children}
-                    <ToastContainer />
+                    <Toast />
                 </main>
             </div>
         </div>

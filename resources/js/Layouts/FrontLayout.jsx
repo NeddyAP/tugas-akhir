@@ -2,23 +2,18 @@ import React, { useEffect } from 'react';
 import Footer from "@/Layouts/Footer";
 import Navbar from "@/Layouts/Navbar";
 import { Head, usePage } from "@inertiajs/react";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
+import { Toast } from "@/Components/ToastConfig";
 
 export default function FrontLayout({ children }) {
-    const { flash } = usePage().props.flash;
+    const { flash } = usePage().props;
 
     useEffect(() => {
-        if (flash && flash.message) {
-            if (flash.type === "success") {
-                toast.success(flash.message, {
-                    className: 'foo-bar'
-                });
-            } else if (flash.type === "error") {
-                toast.error(flash.message, {
-                    className: 'foo-bar'
-                });
-            }
+        if (flash?.type && flash?.message) {
+            const validTypes = ['success', 'error', 'info', 'warning'];
+            const toastType = validTypes.includes(flash.type) ? flash.type : 'info';
+
+            toast[toastType](flash.message);
         }
     }, [flash]);
 
@@ -39,7 +34,7 @@ export default function FrontLayout({ children }) {
                 </main>
                 <Footer />
             </div>
-            <ToastContainer position="bottom-right" autoClose={3000} />
+            <Toast />
         </>
     );
 }
