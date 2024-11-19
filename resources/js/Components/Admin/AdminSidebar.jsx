@@ -69,7 +69,7 @@ const SidebarItem = memo(({ icon, label, href, isCollapsed }) => {
             <Link
                 href={href}
                 className={`flex items-center rounded-lg px-4 py-2 transition-colors duration-200
-                    ${isActive ? 'bg-teal-50 dark:bg-teal-900 text-teal-600 dark:text-teal-300' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'}
+                    ${isActive ? 'bg-teal-50 dark:bg-teal-950 text-teal-600 dark:text-teal-300' : 'text-gray-700 dark:text-gray-300 hover:bg-teal-100 dark:hover:bg-teal-950'}
                     ${isCollapsed ? 'justify-center' : ''}`}
             >
                 {React.cloneElement(icon, {
@@ -122,7 +122,7 @@ const SidebarDropdown = memo(({ icon, label, children, isCollapsed }) => {
 
     const buttonClasses = `
         flex w-full items-center rounded-lg px-4 py-2 transition-colors duration-200 focus:outline-none
-        ${isActive ? 'bg-teal-50 dark:bg-teal-900 text-teal-600 dark:text-teal-300' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'}
+        ${isActive ? 'bg-teal-50 dark:bg-teal-950 text-teal-600 dark:text-teal-300' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'}
         ${isCollapsed ? 'justify-center' : 'justify-between'}
     `;
 

@@ -148,7 +148,7 @@ export default function DataTable({ columns: userColumns, data, actions, paginat
                 key="first"
                 onClick={() => handlePageChange(1)}
                 disabled={currentPage === 1}
-                className="px-3 py-1 text-sm border rounded-md disabled:opacity-50 hover:bg-gray-100"
+                className="px-3 py-1 text-sm border rounded-md disabled:opacity-50 hover:bg-gray-100 dark:hover:bg-teal-500"
             >
                 First
             </button>,
@@ -156,7 +156,7 @@ export default function DataTable({ columns: userColumns, data, actions, paginat
                 key="prev"
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1}
-                className="p-1 rounded-md disabled:opacity-50 hover:bg-gray-100"
+                className="p-1 rounded-md disabled:opacity-50 hover:bg-gray-100 dark:hover:bg-teal-500"
             >
                 <ChevronLeft className="w-5 h-5" />
             </button>
@@ -168,7 +168,7 @@ export default function DataTable({ columns: userColumns, data, actions, paginat
                 <button
                     key={i}
                     onClick={() => handlePageChange(i)}
-                    className={`px-3 py-1 text-sm border rounded-md ${currentPage === i ? 'bg-teal-500 text-white' : 'hover:bg-gray-100'
+                    className={`px-3 py-1 text-sm border rounded-md ${currentPage === i ? 'bg-teal-500 text-white' : 'hover:bg-gray-100  dark:hover:bg-teal-500'
                         }`}
                 >
                     {i}
@@ -182,7 +182,7 @@ export default function DataTable({ columns: userColumns, data, actions, paginat
                 key="next"
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={currentPage === lastPage}
-                className="p-1 rounded-md disabled:opacity-50 hover:bg-gray-100"
+                className="p-1 rounded-md disabled:opacity-50 hover:bg-gray-100 dark:hover:bg-teal-500"
             >
                 <ChevronRight className="w-5 h-5" />
             </button>,
@@ -190,7 +190,7 @@ export default function DataTable({ columns: userColumns, data, actions, paginat
                 key="last"
                 onClick={() => handlePageChange(lastPage)}
                 disabled={currentPage === lastPage}
-                className="px-3 py-1 text-sm border rounded-md disabled:opacity-50 hover:bg-gray-100"
+                className="px-3 py-1 text-sm border rounded-md disabled:opacity-50 hover:bg-gray-100 dark:hover:bg-teal-500"
             >
                 Last
             </button>
