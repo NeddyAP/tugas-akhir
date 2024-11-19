@@ -13,7 +13,7 @@ class Question extends Model
 
     protected $fillable = [
         'question',
-        'answer'
+        'answer',
     ];
 
     public function getQuestionAttribute($value)

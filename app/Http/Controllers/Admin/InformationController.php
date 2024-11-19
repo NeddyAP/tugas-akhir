@@ -19,7 +19,7 @@ class InformationController extends Controller
         return Inertia::render('Admin/Information/InformationPage', [
             'questions' => $type === 'question' ? $data : null,
             'tutorials' => $type === 'tutorial' ? $data : null,
-            'type' => $type
+            'type' => $type,
         ]);
     }
 
@@ -29,24 +29,24 @@ class InformationController extends Controller
             if ($request->type === 'question') {
                 Question::create($request->validate([
                     'question' => 'required|string|max:255',
-                    'answer' => 'required|string'
+                    'answer' => 'required|string',
                 ]));
             } else {
                 Tutorial::create($request->validate([
                     'title' => 'required|string|max:255',
                     'description' => 'required|string',
-                    'link' => 'required|string'
+                    'link' => 'required|string',
                 ]));
             }
 
             return redirect()->back()->with('flash', [
                 'type' => 'success', // atau 'error', 'info', 'warning'
-                'message' => ($request->type === 'question' ? 'FAQ' : 'Tutorial') . ' berhasil ditambahkan'
+                'message' => ($request->type === 'question' ? 'FAQ' : 'Tutorial').' berhasil ditambahkan',
             ]);
         } catch (\Exception $e) {
             return redirect()->back()->with('flash', [
                 'type' => 'error', // atau 'error', 'info', 'warning'
-                'message' => 'Gagal menambahkan data: ' . $e->getMessage()
+                'message' => 'Gagal menambahkan data: '.$e->getMessage(),
             ]);
         }
     }
@@ -58,12 +58,12 @@ class InformationController extends Controller
             $validated = $request->validate($type === 'question' ? [
                 'question' => 'required|string|max:255',
                 'answer' => 'required|string',
-                'type' => 'required|string'
+                'type' => 'required|string',
             ] : [
                 'title' => 'required|string|max:255',
                 'description' => 'required|string',
                 'link' => 'required|string',
-                'type' => 'required|string'
+                'type' => 'required|string',
             ]);
 
             $model = $type === 'question' ? Question::class : Tutorial::class;
@@ -75,12 +75,12 @@ class InformationController extends Controller
 
             return redirect()->back()->with('flash', [
                 'type' => 'success', // atau 'error', 'info', 'warning'
-                'message' => ($type === 'question' ? 'FAQ' : 'Tutorial') . ' berhasil diperbarui'
+                'message' => ($type === 'question' ? 'FAQ' : 'Tutorial').' berhasil diperbarui',
             ]);
         } catch (\Exception $e) {
             return redirect()->back()->with('flash', [
                 'type' => 'error', // atau 'error', 'info', 'warning'
-                'message' => 'Gagal memperbarui data: ' . $e->getMessage()
+                'message' => 'Gagal memperbarui data: '.$e->getMessage(),
             ]);
         }
     }
@@ -90,7 +90,7 @@ class InformationController extends Controller
         try {
             $type = $request->query('type');
 
-            if (!$type) {
+            if (! $type) {
                 throw new \Exception('Type parameter is required');
             }
 
@@ -100,13 +100,14 @@ class InformationController extends Controller
 
             return redirect()->back()->with('flash', [
                 'type' => 'success', // atau 'error', 'info', 'warning'
-                'message' => ($type === 'question' ? 'FAQ' : 'Tutorial') . ' berhasil dihapus'
+                'message' => ($type === 'question' ? 'FAQ' : 'Tutorial').' berhasil dihapus',
             ]);
         } catch (\Exception $e) {
             report($e);
+
             return redirect()->back()->with('flash', [
                 'type' => 'error', // atau 'error', 'info', 'warning'
-                'message' => 'Gagal menghapus data: ' . $e->getMessage()
+                'message' => 'Gagal menghapus data: '.$e->getMessage(),
             ]);
         }
     }

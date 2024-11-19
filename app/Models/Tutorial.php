@@ -14,6 +14,6 @@ class Tutorial extends Model
     protected $fillable = [
         'title',
         'description',
-        'link'
+        'link',
     ];
 }
