@@ -8,7 +8,6 @@ import {
 } from 'lucide-react';
 import filkomLogo from '@images/filkomlogo.png';
 
-// Navigation configuration - moved outside component to prevent recreating on each render
 const NAVIGATION_ITEMS = [
     {
         type: 'item',
@@ -44,7 +43,6 @@ const NAVIGATION_ITEMS = [
     },
 ];
 
-// Tooltip component optimized with memo
 const SidebarTooltip = memo(({ children, label, show }) => (
     show ? (
         <div className="relative group">
@@ -56,14 +54,12 @@ const SidebarTooltip = memo(({ children, label, show }) => (
     ) : children
 ));
 
-// Utility function for URL matching
 const isUrlMatch = (href, currentUrl, currentTab) => {
     if (!href) return false;
     const targetUrl = new URL(href, window.location.origin);
     return currentUrl === targetUrl.pathname && (!targetUrl.searchParams.get('tab') || currentTab === targetUrl.searchParams.get('tab'));
 };
 
-// SidebarItem component optimized with memo
 const SidebarItem = memo(({ icon, label, href, isCollapsed }) => {
     const { url } = usePage();
     const isActive = isUrlMatch(href, url.split('?')[0], new URLSearchParams(window.location.search).get('tab'));
@@ -85,7 +81,6 @@ const SidebarItem = memo(({ icon, label, href, isCollapsed }) => {
     );
 });
 
-// SidebarDropdown component optimized with memo
 const SidebarDropdown = memo(({ icon, label, children, isCollapsed }) => {
     const { url } = usePage();
     const urlWithoutParams = url.split('?')[0];
