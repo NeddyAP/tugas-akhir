@@ -14,7 +14,7 @@ const TruncatedCell = ({ text, maxLength = 100 }) => {
             {isExpanded ? text : `${text.slice(0, maxLength)}...`}
             <button
                 onClick={() => setIsExpanded(!isExpanded)}
-                className="ml-2 text-blue-600 hover:text-blue-800"
+                className="ml-2 text-teal-600 hover:text-teal-800"
             >
                 {isExpanded ? 'Show less' : 'Show more'}
             </button>
@@ -44,7 +44,7 @@ export default function DataTable({ columns: userColumns, data, actions, paginat
                     <div className="flex gap-2">
                         <button
                             onClick={() => actions.handleEdit(row.original)}
-                            className="p-1 text-blue-600 hover:text-blue-800"
+                            className="p-1 text-teal-600 hover:text-teal-800"
                         >
                             <Edit className="w-5 h-5" />
                         </button>
@@ -168,7 +168,7 @@ export default function DataTable({ columns: userColumns, data, actions, paginat
                 <button
                     key={i}
                     onClick={() => handlePageChange(i)}
-                    className={`px-3 py-1 text-sm border rounded-md ${currentPage === i ? 'bg-blue-500 text-white' : 'hover:bg-gray-100'
+                    className={`px-3 py-1 text-sm border rounded-md ${currentPage === i ? 'bg-teal-500 text-white' : 'hover:bg-gray-100'
                         }`}
                 >
                     {i}
@@ -300,7 +300,7 @@ export default function DataTable({ columns: userColumns, data, actions, paginat
                     <select
                         value={pagination?.pageSize}
                         onChange={e => handlePageSizeChange(Number(e.target.value))}
-                        className="px-2 py-1 pr-8 text-gray-900 bg-white border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-100"
+                        className="px-2 py-1 pr-8 text-gray-900 bg-white border rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 dark:bg-gray-700 dark:text-gray-100"
                     >
                         {[10, 20, 30, 40, 50].map(size => (
                             <option key={size} value={size}>

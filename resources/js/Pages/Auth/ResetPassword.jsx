@@ -27,7 +27,7 @@ const ResetPassword = ({ token, email }) => {
                         <input
                             type="email"
                             id="email"
-                            className="w-full px-3 py-2 pl-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full px-3 py-2 pl-10 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
                             value={data.email}
                             onChange={(e) => setData('email', e.target.value)}
                             required
@@ -42,7 +42,7 @@ const ResetPassword = ({ token, email }) => {
                         <input
                             type="password"
                             id="password"
-                            className="w-full px-3 py-2 pl-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full px-3 py-2 pl-10 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
                             value={data.password}
                             onChange={(e) => setData('password', e.target.value)}
                             required
@@ -57,7 +57,7 @@ const ResetPassword = ({ token, email }) => {
                         <input
                             type="password"
                             id="password_confirmation"
-                            className="w-full px-3 py-2 pl-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full px-3 py-2 pl-10 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
                             value={data.password_confirmation}
                             onChange={(e) => setData('password_confirmation', e.target.value)}
                             required
@@ -68,7 +68,7 @@ const ResetPassword = ({ token, email }) => {
                 </div>
                 <button
                     type="submit"
-                    className="w-full px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                    className="w-full px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:bg-blue-500 dark:hover:bg-blue-600"
                     disabled={processing}
                 >
                     Reset Password

@@ -43,28 +43,24 @@ export default function ProfilePage({ mustVerifyEmail, status }) {
     return (
         <FrontLayout>
             <Head title="Profile" />
-            <div className="max-w-6xl p-6 mx-auto mt-8 bg-white rounded-lg shadow-md">
+            <div className="max-w-6xl p-6 mx-auto mt-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
                 <div className="flex items-center mb-6">
-                    <User className="w-6 h-6 mr-2 text-gray-500" />
-                    <h2 className="text-xl font-semibold text-gray-700">Profil Anda</h2>
+                    <User className="w-6 h-6 mr-2 text-gray-500 dark:text-gray-400" />
+                    <h2 className="text-xl font-semibold text-gray-700 dark:text-gray-200">Profil Anda</h2>
                 </div>
 
                 <div className="flex flex-col items-center mb-6">
                     <img
                         src={profileImage}
                         alt="Profile"
-                        className="object-cover w-32 h-32 mb-4 rounded-full"
+                        className="object-cover w-32 h-32 mb-4 rounded-full ring-2 ring-gray-200 dark:ring-gray-700"
                     />
-                    {/* <label className="px-4 py-2 text-white transition duration-300 bg-blue-500 rounded cursor-pointer hover:bg-blue-600">
-                        Select Image
-                        <input type="file" className="hidden" onChange={handleImageChange} accept="image/*" />
-                    </label> */}
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                     {['name', 'nim', 'email', 'dosen_pembimbing', 'tanggal_mulai_kkl', 'kelas_angkatan'].map((field) => (
                         <div key={field}>
-                            <label htmlFor={field} className="block text-sm font-medium text-gray-700">
+                            <label htmlFor={field} className="block text-sm font-medium text-gray-700 dark:text-gray-200">
                                 {field.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')} *
                             </label>
                             <input
@@ -73,10 +69,10 @@ export default function ProfilePage({ mustVerifyEmail, status }) {
                                 name={field}
                                 value={data[field]}
                                 onChange={handleChange}
-                                className="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                className="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                 required
                             />
-                            {errors[field] && <p className="mt-1 text-sm text-red-600">{errors[field]}</p>}
+                            {errors[field] && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors[field]}</p>}
                         </div>
                     ))}
 

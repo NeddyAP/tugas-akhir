@@ -18,7 +18,7 @@ const AccordionItem = React.memo(({ item, isActive, onToggle }) => (
                 />
             </summary>
             {isActive && (
-                <p className="mt-3 animate-fadeIn text-neutral-600">
+                <p className="mt-3 animate-fadeIn text-neutral-600 dark:text-neutral-400">
                     {item.answer}
                 </p>
             )}

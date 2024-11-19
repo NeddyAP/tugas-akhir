@@ -25,12 +25,12 @@ const ForgotPassword = () => {
         <AuthLayout title="Lupa Password">
             <form onSubmit={handleSubmit}>
                 <div className="mb-4">
-                    <label htmlFor="email" className="block mb-1 text-sm font-medium text-gray-700">Email</label>
+                    <label htmlFor="email" className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-200">Email</label>
                     <div className="relative">
                         <input
                             type="email"
                             id="email"
-                            className="w-full px-3 py-2 pl-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full px-3 py-2 pl-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
                             placeholder="nim@unida.ac.id"
                             value={data.email}
                             onChange={(e) => setData('email', e.target.value)}
@@ -41,16 +41,16 @@ const ForgotPassword = () => {
                     </div>
                 </div>
                 <div className="flex justify-end mb-4">
-                    <Link href={route('login')} className="text-sm text-blue-600 hover:underline">
+                    <Link href={route('login')} className="text-sm text-teal-600 hover:underline">
                         Kembali ke Login
                     </Link>
                 </div>
                 <button
                     type="submit"
-                    className="w-full px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                    className="w-full px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:bg-blue-500 dark:hover:bg-blue-600"
                     disabled={processing}
                 >
-                    Send Reset Link
+                    Kirim Reset Link
                 </button>
             </form>
             <ToastContainer position="top-right" autoClose={5000} />

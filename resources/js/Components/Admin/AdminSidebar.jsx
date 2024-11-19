@@ -69,11 +69,11 @@ const SidebarItem = memo(({ icon, label, href, isCollapsed }) => {
             <Link
                 href={href}
                 className={`flex items-center rounded-lg px-4 py-2 transition-colors duration-200
-                    ${isActive ? 'bg-blue-50 dark:bg-blue-900 text-blue-600 dark:text-blue-300' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'}
+                    ${isActive ? 'bg-teal-50 dark:bg-teal-900 text-teal-600 dark:text-teal-300' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'}
                     ${isCollapsed ? 'justify-center' : ''}`}
             >
                 {React.cloneElement(icon, {
-                    className: `w-5 h-5 ${isActive ? 'text-blue-600 dark:text-blue-300' : 'text-gray-700 dark:text-gray-300'}`
+                    className: `w-5 h-5 ${isActive ? 'text-teal-600 dark:text-teal-300' : 'text-gray-700 dark:text-gray-300'}`
                 })}
                 {!isCollapsed && <span className="ml-2">{label}</span>}
             </Link>
@@ -122,7 +122,7 @@ const SidebarDropdown = memo(({ icon, label, children, isCollapsed }) => {
 
     const buttonClasses = `
         flex w-full items-center rounded-lg px-4 py-2 transition-colors duration-200 focus:outline-none
-        ${isActive ? 'bg-blue-50 dark:bg-blue-900 text-blue-600 dark:text-blue-300' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'}
+        ${isActive ? 'bg-teal-50 dark:bg-teal-900 text-teal-600 dark:text-teal-300' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'}
         ${isCollapsed ? 'justify-center' : 'justify-between'}
     `;
 
@@ -132,7 +132,7 @@ const SidebarDropdown = memo(({ icon, label, children, isCollapsed }) => {
                 <button onClick={handleClick} className={buttonClasses}>
                     <div className="flex items-center">
                         {React.cloneElement(icon, {
-                            className: `w-5 h-5 ${isActive ? 'text-blue-600 dark:text-blue-300' : 'text-gray-700 dark:text-gray-300'}`,
+                            className: `w-5 h-5 ${isActive ? 'text-teal-600 dark:text-teal-300' : 'text-gray-700 dark:text-gray-300'}`,
                         })}
                         {!isCollapsed && <span className="ml-2">{label}</span>}
                     </div>

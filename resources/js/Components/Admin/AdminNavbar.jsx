@@ -85,8 +85,8 @@ const AdminNavbar = memo(({ currentPage = 'Dashboard' }) => {
                         onClick={() => setIsProfileOpen(!isProfileOpen)}
                         className="flex items-center space-x-3 focus:outline-none"
                     >
-                        <div className="flex items-center justify-center w-10 h-10 bg-blue-100 rounded-full">
-                            <span className="font-medium text-blue-700">
+                        <div className="flex items-center justify-center w-10 h-10 bg-teal-100 rounded-full">
+                            <span className="font-medium text-teal-700">
                                 {user.name.charAt(0).toUpperCase()}
                             </span>
                         </div>

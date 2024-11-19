@@ -38,11 +38,11 @@ const AuthButton = ({ user }) => {
                 <img className="object-cover w-full h-full" src={avatarProfile} alt="User Avatar" />
             </button>
             {isOpen && (
-                <div className="absolute right-0 z-20 w-48 py-2 mt-2 text-black bg-white rounded-md shadow-xl">
+                <div className="absolute right-0 z-20 w-48 py-2 mt-2 text-black bg-white rounded-md shadow-xl dark:text-white dark:bg-gray-700">
                     <Link
                         href={route('profile.edit')}
                         as="button"
-                        className="block w-full px-4 py-2 text-left transition-colors hover:bg-gray-100"
+                        className="block w-full px-4 py-2 text-left transition-colors hover:bg-gray-100 dark:hover:bg-gray-600"
                     >
                         Profile
                     </Link>
@@ -50,7 +50,7 @@ const AuthButton = ({ user }) => {
                         <Link
                             href={route('admin.dashboard')}
                             as="button"
-                            className="block w-full px-4 py-2 text-left transition-colors hover:bg-gray-100"
+                            className="block w-full px-4 py-2 text-left transition-colors hover:bg-gray-100 dark:hover:bg-gray-600"
                         >
                             Dahsboard
                         </Link>
@@ -59,7 +59,7 @@ const AuthButton = ({ user }) => {
                         method="post"
                         href={route('logout')}
                         as="button"
-                        className="block w-full px-4 py-2 text-left text-red-500 transition-colors hover:bg-gray-100"
+                        className="block w-full px-4 py-2 text-left text-red-500 transition-colors hover:bg-gray-100 dark:hover:bg-gray-600"
                     >
                         Logout
                     </Link>
