@@ -1,11 +1,11 @@
-import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react';
+import React, { useState, useCallback, memo, useMemo, useRef, useEffect } from 'react';
+import { Link, usePage } from '@inertiajs/react';
 import {
     Settings, Users, HelpCircle, LogOut, ChevronDown,
     LayoutDashboard, ChevronRight, Menu as MenuIcon,
     X, FileText, GraduationCap, File, UserCog,
     TargetIcon, LucideTable2, UserPen,
 } from 'lucide-react';
-import { Link, usePage } from '@inertiajs/react';
 import filkomLogo from '@images/filkomlogo.png';
 
 // Navigation configuration - moved outside component to prevent recreating on each render
@@ -45,50 +45,39 @@ const NAVIGATION_ITEMS = [
 ];
 
 // Tooltip component optimized with memo
-const SidebarTooltip = React.memo(({ children, label, show }) => {
-    if (!show) return children;
-
-    return (
+const SidebarTooltip = memo(({ children, label, show }) => (
+    show ? (
         <div className="relative group">
             {children}
             <div className="absolute hidden ml-2 transform -translate-y-1/2 left-full top-1/2 group-hover:block">
                 <span className="px-2 py-1 text-sm text-white bg-gray-800 rounded">{label}</span>
             </div>
         </div>
-    );
-});
+    ) : children
+));
 
 // Utility function for URL matching
 const isUrlMatch = (href, currentUrl, currentTab) => {
     if (!href) return false;
     const targetUrl = new URL(href, window.location.origin);
-    const targetPath = targetUrl.pathname;
-    const targetParams = new URLSearchParams(targetUrl.search);
-    const targetTab = targetParams.get('tab');
-
-    return currentUrl === targetPath && (!targetTab || currentTab === targetTab);
+    return currentUrl === targetUrl.pathname && (!targetUrl.searchParams.get('tab') || currentTab === targetUrl.searchParams.get('tab'));
 };
 
 // SidebarItem component optimized with memo
-const SidebarItem = React.memo(({ icon, label, href, isCollapsed }) => {
+const SidebarItem = memo(({ icon, label, href, isCollapsed }) => {
     const { url } = usePage();
-    const urlWithoutParams = url.split('?')[0];
-    const urlParams = new URLSearchParams(window.location.search);
-    const currentTab = urlParams.get('tab');
-
-    const isActive = isUrlMatch(href, urlWithoutParams, currentTab);
-
-    const itemClasses = `
-        flex items-center rounded-lg px-4 py-2 transition-colors duration-200
-        ${isActive ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'}
-        ${isCollapsed ? 'justify-center' : ''}
-    `;
+    const isActive = isUrlMatch(href, url.split('?')[0], new URLSearchParams(window.location.search).get('tab'));
 
     return (
         <SidebarTooltip label={label} show={isCollapsed}>
-            <Link href={href} className={itemClasses}>
+            <Link
+                href={href}
+                className={`flex items-center rounded-lg px-4 py-2 transition-colors duration-200
+                    ${isActive ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'}
+                    ${isCollapsed ? 'justify-center' : ''}`}
+            >
                 {React.cloneElement(icon, {
-                    className: `w-5 h-5 ${isActive ? 'text-blue-600' : 'text-gray-700'}`,
+                    className: `w-5 h-5 ${isActive ? 'text-blue-600' : 'text-gray-700'}`
                 })}
                 {!isCollapsed && <span className="ml-2">{label}</span>}
             </Link>
@@ -97,7 +86,7 @@ const SidebarItem = React.memo(({ icon, label, href, isCollapsed }) => {
 });
 
 // SidebarDropdown component optimized with memo
-const SidebarDropdown = React.memo(({ icon, label, children, isCollapsed }) => {
+const SidebarDropdown = memo(({ icon, label, children, isCollapsed }) => {
     const { url } = usePage();
     const urlWithoutParams = url.split('?')[0];
     const urlParams = new URLSearchParams(window.location.search);
@@ -178,7 +167,7 @@ const SidebarDropdown = React.memo(({ icon, label, children, isCollapsed }) => {
     );
 });
 
-const AdminSidebar = ({ onCollapse = () => { } }) => {
+const AdminSidebar = memo(({ onCollapse = () => { } }) => {
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [isMobileOpen, setIsMobileOpen] = useState(false);
 
@@ -289,6 +278,7 @@ const AdminSidebar = ({ onCollapse = () => { } }) => {
             )}
         </>
     );
-};
+});
 
-export default React.memo(AdminSidebar);
+AdminSidebar.displayName = 'AdminSidebar';
+export default AdminSidebar;
