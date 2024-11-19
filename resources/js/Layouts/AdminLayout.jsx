@@ -9,9 +9,7 @@ const AdminLayout = memo(({ children, title, currentPage }) => {
     const { flash } = usePage().props;
     const [isCollapsed, setIsCollapsed] = useState(false);
 
-    // Perbaiki penanganan flash message
     useEffect(() => {
-        // Periksa struktur flash yang benar
         if (flash?.type && flash?.message) {
             const validTypes = ['success', 'error', 'info', 'warning'];
             const toastType = validTypes.includes(flash.type) ? flash.type : 'info';
