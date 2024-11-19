@@ -112,7 +112,7 @@ export default function Question({ informations }) {
         <div className="grid grid-cols-1 mb-8">
             <div className="flex flex-col gap-8">
                 <header className="flex items-center justify-between">
-                    <h2 className="text-xl font-semibold text-gray-900">Frequently Asked Questions</h2>
+                    <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-200">Frequently Asked Questions</h2>
                     <button
                         type="button"
                         onClick={tableActions.handleAdd}

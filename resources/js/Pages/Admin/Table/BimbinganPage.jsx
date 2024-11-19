@@ -18,7 +18,7 @@ const formatDate = (dateString) => {
 // Memoized Header Component (same as LogbookPage)
 const Header = memo(({ onDownload, onAdd }) => (
     <header className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold text-gray-900">Bimbingan Mahasiswa</h2>
+        <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-200">Bimbingan Mahasiswa</h2>
         <div className="flex gap-2">
             <button
                 type="button"

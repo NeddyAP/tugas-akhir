@@ -28,7 +28,7 @@ TabButton.displayName = 'TabButton';
 // Memoized Header Component
 const Header = memo(({ activeTab, onDownload, onAdd }) => (
     <header className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold text-gray-900">Data {activeTab}</h2>
+        <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-200">Data {activeTab}</h2>
         <div className="flex gap-2">
             <button
                 type="button"
