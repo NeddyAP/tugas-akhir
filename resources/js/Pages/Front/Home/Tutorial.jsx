@@ -19,7 +19,7 @@ const Tutorial = ({ tutorial }) => (
                 <div className="text-center">
                     <h2 className="mb-4 text-2xl font-bold">{tutorial.title}</h2>
                     <div className="mb-6">
-                        <p className="text-gray-700">
+                        <p className="text-gray-700 dark:text-gray-200">
                             {tutorial.description}
                         </p>
                     </div>
