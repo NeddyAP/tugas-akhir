@@ -69,11 +69,11 @@ const SidebarItem = memo(({ icon, label, href, isCollapsed }) => {
             <Link
                 href={href}
                 className={`flex items-center rounded-lg px-4 py-2 transition-colors duration-200
-                    ${isActive ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'}
+                    ${isActive ? 'bg-blue-50 dark:bg-blue-900 text-blue-600 dark:text-blue-300' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'}
                     ${isCollapsed ? 'justify-center' : ''}`}
             >
                 {React.cloneElement(icon, {
-                    className: `w-5 h-5 ${isActive ? 'text-blue-600' : 'text-gray-700'}`
+                    className: `w-5 h-5 ${isActive ? 'text-blue-600 dark:text-blue-300' : 'text-gray-700 dark:text-gray-300'}`
                 })}
                 {!isCollapsed && <span className="ml-2">{label}</span>}
             </Link>
@@ -122,7 +122,7 @@ const SidebarDropdown = memo(({ icon, label, children, isCollapsed }) => {
 
     const buttonClasses = `
         flex w-full items-center rounded-lg px-4 py-2 transition-colors duration-200 focus:outline-none
-        ${isActive ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'}
+        ${isActive ? 'bg-blue-50 dark:bg-blue-900 text-blue-600 dark:text-blue-300' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'}
         ${isCollapsed ? 'justify-center' : 'justify-between'}
     `;
 
@@ -132,7 +132,7 @@ const SidebarDropdown = memo(({ icon, label, children, isCollapsed }) => {
                 <button onClick={handleClick} className={buttonClasses}>
                     <div className="flex items-center">
                         {React.cloneElement(icon, {
-                            className: `w-5 h-5 ${isActive ? 'text-blue-600' : 'text-gray-700'}`,
+                            className: `w-5 h-5 ${isActive ? 'text-blue-600 dark:text-blue-300' : 'text-gray-700 dark:text-gray-300'}`,
                         })}
                         {!isCollapsed && <span className="ml-2">{label}</span>}
                     </div>
@@ -152,7 +152,7 @@ const SidebarDropdown = memo(({ icon, label, children, isCollapsed }) => {
             )}
 
             {isPopoverOpen && isCollapsed && (
-                <div ref={popoverRef} className="absolute z-50 mt-2 ml-2 bg-white border border-gray-200 rounded-lg shadow-lg left-full">
+                <div ref={popoverRef} className="absolute z-50 mt-2 ml-2 bg-white border border-gray-200 rounded-lg shadow-lg dark:bg-gray-900 dark:border-gray-700 left-full">
                     <div className="p-2 space-y-1">
                         {children}
                     </div>
@@ -179,10 +179,10 @@ const AdminSidebar = memo(({ onCollapse = () => { } }) => {
     }, []);
 
     const sidebarClass = useMemo(() => `
-        ${isCollapsed ? 'w-34' : 'w-64'}
+        ${isCollapsed ? 'w-3xl' : 'w-64'}
         ${isMobileOpen ? 'translate-x-0' : '-translate-x-full'}
         fixed top-0 left-0 md:translate-x-0
-        flex flex-col bg-white border-r border-gray-200 p-4
+        flex flex-col bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 p-4
         transition-all duration-300 ease-in-out z-50 h-screen
     `, [isCollapsed, isMobileOpen]);
 
@@ -190,7 +190,7 @@ const AdminSidebar = memo(({ onCollapse = () => { } }) => {
         <>
             <button
                 onClick={toggleMobileMenu}
-                className="fixed p-2 bg-white rounded-lg shadow-lg top-4 left-4 md:hidden focus:outline-none"
+                className="fixed p-2 bg-white rounded-lg shadow-lg dark:bg-gray-900 top-4 left-4 md:hidden focus:outline-none"
             >
                 {isMobileOpen ? <X size={24} /> : <MenuIcon size={24} />}
             </button>
@@ -203,13 +203,13 @@ const AdminSidebar = memo(({ onCollapse = () => { } }) => {
                             alt="Filkom Logo"
                             className={`h-8 w-8 transition-all duration-200 ${isCollapsed ? 'hidden' : 'block'}`}
                         />
-                        {!isCollapsed && <div className="ml-2 text-2xl font-bold">Dashboard</div>}
+                        {!isCollapsed && <div className="ml-2 text-2xl font-bold text-gray-900 dark:text-white">Dashboard</div>}
                     </div>
                     <button
                         onClick={toggleCollapsed}
-                        className="hidden p-2 rounded-lg hover:bg-gray-100 md:block focus:outline-none"
+                        className="hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 md:block focus:outline-none"
                     >
-                        {isCollapsed ? <ChevronRight size={20} /> : <X size={20} />}
+                        {isCollapsed ? <ChevronRight size={20} className='dark:text-white' /> : <X size={20} className='dark:text-white' />}
                     </button>
                 </div>
 
@@ -254,7 +254,7 @@ const AdminSidebar = memo(({ onCollapse = () => { } }) => {
                                     method="post"
                                     href={route('logout')}
                                     as="button"
-                                    className={`flex w-full items-center rounded-lg px-4 py-2 text-red-700 hover:bg-gray-100 transition-colors duration-200 ${isCollapsed ? 'justify-center' : ''}`}
+                                    className={`flex w-full items-center rounded-lg px-4 py-2 text-red-700 dark:text-red-500 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200 ${isCollapsed ? 'justify-center' : ''}`}
                                 >
                                     <LogOut className="w-5 h-5" />
                                     {!isCollapsed && <span className="ml-2">Logout</span>}

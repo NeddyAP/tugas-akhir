@@ -200,38 +200,38 @@ export default function DataTable({ columns: userColumns, data, actions, paginat
     };
 
     return (
-        <div className="overflow-hidden bg-white border border-gray-200 rounded-lg shadow-sm">
-            <div className="flex items-center justify-end gap-2 px-4 pt-2">
-                <Search className="w-5 h-5 text-gray-400" />
+        <div className="overflow-hidden bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
+            <div className="flex items-center justify-end gap-2 px-4 py-2">
+                <Search className="w-5 h-5 text-gray-400 dark:text-gray-300" />
                 <input
                     type="text"
                     value={searchValue}
                     onChange={handleSearch}
                     placeholder="Search..."
-                    className="px-3 py-2 border border-gray-300 rounded-md w-52"
+                    className="px-3 py-2 text-gray-900 bg-white border border-gray-300 rounded-md dark:border-gray-600 w-52 dark:bg-gray-700 dark:text-gray-100"
                 />
             </div>
 
             <div className="overflow-x-auto">
                 <div className="inline-block min-w-full align-middle">
                     <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
-                        <table {...getTableProps()} className="min-w-full divide-y divide-gray-300">
-                            <thead className="bg-gray-50">
+                        <table {...getTableProps()} className="min-w-full divide-y divide-gray-300 dark:divide-gray-700">
+                            <thead className="bg-gray-50 dark:bg-gray-900">
                                 {headerGroups.map((headerGroup, headerGroupIndex) => (
                                     <tr {...headerGroup.getHeaderGroupProps()} key={headerGroupIndex}>
                                         {headerGroup.headers.map((column, columnIndex) => (
                                             <th
                                                 {...column.getHeaderProps(column.getSortByToggleProps())}
                                                 key={columnIndex}
-                                                className="px-6 py-3 text-sm font-semibold text-left text-gray-900"
+                                                className="px-6 py-3 text-sm font-semibold text-left text-gray-900 dark:text-gray-200"
                                             >
                                                 <div className="flex items-center gap-2">
                                                     {column.render('Header')}
                                                     {column.isSorted && (
                                                         column.isSortedDesc ? (
-                                                            <ChevronDown className="w-4 h-4" />
+                                                            <ChevronDown className="w-4 h-4 text-gray-700 dark:text-gray-300" />
                                                         ) : (
-                                                            <ChevronUp className="w-4 h-4" />
+                                                            <ChevronUp className="w-4 h-4 text-gray-700 dark:text-gray-300" />
                                                         )
                                                     )}
                                                 </div>
@@ -240,17 +240,17 @@ export default function DataTable({ columns: userColumns, data, actions, paginat
                                     </tr>
                                 ))}
                             </thead>
-                            <tbody {...getTableBodyProps()} className="bg-white divide-y divide-gray-200">
+                            <tbody {...getTableBodyProps()} className="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
                                 {data && data.length > 0 ? (
                                     page.map((row, rowIndex) => {
                                         prepareRow(row);
                                         return (
-                                            <tr {...row.getRowProps()} key={rowIndex} className="hover:bg-gray-50">
+                                            <tr {...row.getRowProps()} key={rowIndex} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                                                 {row.cells.map((cell, cellIndex) => (
                                                     <td
                                                         {...cell.getCellProps()}
                                                         key={cellIndex}
-                                                        className="px-6 py-4 text-sm text-gray-500 whitespace-normal" // Remove whitespace-nowrap
+                                                        className="px-6 py-4 text-sm text-gray-500 whitespace-normal dark:text-gray-300" // Remove whitespace-nowrap
                                                     >
                                                         {cell.column.accessor === 'answer' ? (
                                                             <TruncatedCell text={cell.value} />
@@ -266,7 +266,7 @@ export default function DataTable({ columns: userColumns, data, actions, paginat
                                     <tr>
                                         <td
                                             colSpan={columns.length + 1}
-                                            className="px-6 py-8 text-center text-gray-500"
+                                            className="px-6 py-8 text-center text-gray-500 dark:text-gray-300"
                                         >
                                             <div className="flex flex-col items-center justify-center">
                                                 <svg
@@ -294,13 +294,13 @@ export default function DataTable({ columns: userColumns, data, actions, paginat
                 </div>
             </div>
 
-            <div className="flex items-center justify-between px-4 py-3 bg-white border-t">
+            <div className="flex items-center justify-between px-4 py-3 bg-white border-t border-gray-200 dark:bg-gray-800 dark:border-gray-700">
                 <div className="flex items-center gap-4">
-                    <span>Show</span>
+                    <span className="text-gray-700 dark:text-gray-300">Show</span>
                     <select
                         value={pagination?.pageSize}
                         onChange={e => handlePageSizeChange(Number(e.target.value))}
-                        className="px-2 py-1 pr-8 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="px-2 py-1 pr-8 text-gray-900 bg-white border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-100"
                     >
                         {[10, 20, 30, 40, 50].map(size => (
                             <option key={size} value={size}>
@@ -308,9 +308,8 @@ export default function DataTable({ columns: userColumns, data, actions, paginat
                             </option>
                         ))}
                     </select>
-                    <span className="text-sm text-gray-700">
-                        Page {pagination?.pageIndex + 1} of {pagination?.pageCount}{' '}
-                        ({pagination?.total} total records)
+                    <span className="text-sm text-gray-700 dark:text-gray-300">
+                        Page {pagination?.pageIndex + 1} of {pagination?.pageCount} ({pagination?.total} total records)
                     </span>
                 </div>
                 <div className="flex items-center gap-2">

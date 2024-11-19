@@ -4,6 +4,7 @@ import Navbar from "@/Layouts/Navbar";
 import { Head, usePage } from "@inertiajs/react";
 import { toast } from "react-toastify";
 import { Toast } from "@/Components/ToastConfig";
+import { DarkModeProvider } from '@/Contexts/DarkModeContext';
 
 export default function FrontLayout({ children }) {
     const { flash } = usePage().props;
@@ -18,23 +19,23 @@ export default function FrontLayout({ children }) {
     }, [flash]);
 
     return (
-        <>
-            <Head>
-                <meta
-                    head-key="description"
-                    name="description"
-                    content="This is the default description"
-                />
-            </Head>
+        <DarkModeProvider>
+            <div className="flex flex-col min-h-screen bg-white dark:bg-gray-900 dark:text-white">
+                <Head>
+                    <meta
+                        head-key="description"
+                        name="description"
+                        content="This is the default description"
+                    />
+                </Head>
 
-            <div className="flex flex-col min-h-screen">
                 <Navbar />
                 <main className="flex-grow pt-16 sm:mb-20">
                     {children}
                 </main>
                 <Footer />
+                <Toast />
             </div>
-            <Toast />
-        </>
+        </DarkModeProvider>
     );
 }

@@ -1,6 +1,8 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import { Link, usePage } from '@inertiajs/react';
+import { Moon, Sun } from 'lucide-react';
 import avatarProfile from '@images/avatar-profile.jpg';
+import { useDarkMode } from '@/Contexts/DarkModeContext';
 
 const NavLink = ({ href, children }) => (
     <Link
@@ -73,6 +75,23 @@ const AuthButton = ({ user }) => {
     );
 };
 
+const DarkModeToggle = () => {
+    const { darkMode, toggleDarkMode } = useDarkMode();
+
+    return (
+        <button
+            onClick={toggleDarkMode}
+            className="p-2 mr-4 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
+        >
+            {darkMode ? (
+                <Sun className="w-5 h-5" />
+            ) : (
+                <Moon className="w-5 h-5" />
+            )}
+        </button>
+    );
+};
+
 const Navbar = () => {
     const { auth } = usePage().props;
     const [isVisible, setIsVisible] = useState(true);
@@ -91,7 +110,7 @@ const Navbar = () => {
 
     return (
         <nav
-            className={`fixed top-0 left-0 z-50 w-full p-4 px-24 text-white transition-transform duration-300 bg-teal-600 shadow-md ${isVisible ? 'translate-y-0' : '-translate-y-full'
+            className={`fixed top-0 left-0 z-50 w-full p-4 px-24 text-white transition-transform duration-300 bg-teal-600 dark:bg-gray-800 shadow-md ${isVisible ? 'translate-y-0' : '-translate-y-full'
                 }`}
         >
             <div className="container flex items-center justify-between px-4 mx-auto md:px-24">
@@ -102,6 +121,7 @@ const Navbar = () => {
                     <NavLink href="pedomans.index">Buku Pedoman</NavLink>
                     <NavLink href="logbooks.index">Logbook</NavLink>
                     <NavLink href="laporans.index">Laporan</NavLink>
+                    <DarkModeToggle />
                     <AuthButton user={auth.user} />
                 </div>
             </div>

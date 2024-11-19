@@ -50,7 +50,7 @@ const Footer = () => {
     const currentYear = new Date().getFullYear();
 
     return (
-        <footer className="container py-8 mx-auto md:px-24 lg:px-24 md:py-20">
+        <footer className="container py-8 mx-auto md:px-24 lg:px-24 md:py-20 dark:bg-gray-900 dark:text-white">
             <div className="container mx-auto ">
                 <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
                     <div className="col-span-1 md:col-span-2 lg:col-span-1">
@@ -79,8 +79,8 @@ const Footer = () => {
                     <ContactInfo />
                 </div>
 
-                <div className="flex justify-center pt-5 mt-8 border-t">
-                    <p className="text-sm text-gray-600">© {currentYear} made with ❤️ Djuanda University.</p>
+                <div className="flex justify-center pt-5 mt-8 border-t dark:border-gray-700">
+                    <p className="text-sm text-gray-600 dark:text-gray-400">© {currentYear} made with ❤️ Djuanda University.</p>
                 </div>
             </div>
         </footer>

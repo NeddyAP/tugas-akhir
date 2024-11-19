@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import AdminNavbar from '../Components/Admin/AdminNavbar';
 import AdminSidebar from '../Components/Admin/AdminSidebar';
 import { Toast } from "@/Components/ToastConfig";
+import { DarkModeProvider } from '@/Contexts/DarkModeContext';
 
 const AdminLayout = memo(({ children, title, currentPage }) => {
     const { flash } = usePage().props;
@@ -26,18 +27,20 @@ const AdminLayout = memo(({ children, title, currentPage }) => {
     }, [flash]);
 
     return (
-        <div className="flex min-h-screen">
-            <Head title={title} />
-            <AdminSidebar currentLabel={title} onCollapse={setIsCollapsed} />
+        <DarkModeProvider>
+            <div className="flex min-h-screen bg-white dark:bg-gray-900">
+                <Head title={title} />
+                <AdminSidebar currentLabel={title} onCollapse={setIsCollapsed} />
 
-            <div className={`flex flex-col flex-1 transition-all duration-300 ${isCollapsed ? 'ml-20' : 'ml-64'}`}>
-                <AdminNavbar currentPage={currentPage} />
-                <main className="flex-1 p-8">
-                    {children}
-                    <Toast />
-                </main>
+                <div className={`flex flex-col flex-1 transition-all duration-300 dark:text-white ${isCollapsed ? 'ml-20' : 'ml-64'}`}>
+                    <AdminNavbar currentPage={currentPage} />
+                    <main className="flex-1 p-8">
+                        {children}
+                        <Toast />
+                    </main>
+                </div>
             </div>
-        </div>
+        </DarkModeProvider>
     );
 });
 

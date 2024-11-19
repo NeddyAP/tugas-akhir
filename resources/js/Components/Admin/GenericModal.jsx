@@ -24,9 +24,9 @@ export default function GenericModal({
         <Dialog open={isOpen} onClose={onClose} className="relative z-50">
             <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
             <div className="fixed inset-0 flex items-center justify-center p-4">
-                <Dialog.Panel className="w-full max-w-md p-6 overflow-hidden transition-all transform bg-white shadow-xl rounded-2xl">
+                <Dialog.Panel className="w-full max-w-md p-6 overflow-hidden transition-all transform bg-white shadow-xl dark:bg-gray-800 rounded-2xl">
                     <div className="flex items-center justify-between mb-4">
-                        <Dialog.Title className="text-lg font-medium text-gray-900">
+                        <Dialog.Title className="text-lg font-medium text-gray-900 dark:text-gray-100">
                             {title}
                         </Dialog.Title>
                         <button
@@ -35,7 +35,7 @@ export default function GenericModal({
                                 clearErrors();
                                 onClose();
                             }}
-                            className="text-gray-400 hover:text-gray-500"
+                            className="text-gray-400 hover:text-gray-500 dark:text-gray-300 dark:hover:text-gray-400"
                         >
                             <X className="w-6 h-6" />
                         </button>
@@ -44,7 +44,7 @@ export default function GenericModal({
                     <form onSubmit={handleSubmit} className="space-y-4">
                         {fields.map((field) => (
                             <div key={field.name}>
-                                <label className="block text-sm font-medium text-gray-700">
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">
                                     {field.label}
                                 </label>
                                 {field.type === "textarea" ? (
@@ -52,14 +52,14 @@ export default function GenericModal({
                                         value={data[field.name]}
                                         onChange={(e) => setData(field.name, e.target.value)}
                                         rows={field.rows || 3}
-                                        className="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                        className="block w-full mt-1 text-gray-900 bg-white border-gray-300 rounded-md shadow-sm dark:border-gray-600 focus:ring-blue-500 focus:border-blue-500 sm:text-sm dark:bg-gray-700 dark:text-gray-100"
                                     />
                                 ) : field.type === "select" ? (
                                     <select
                                         value={data[field.name]}
                                         onChange={(e) => setData(field.name, e.target.value)}
                                         disabled={field.disabled || false}
-                                        className="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                        className="block w-full mt-1 text-gray-900 bg-white border-gray-300 rounded-md shadow-sm dark:border-gray-600 focus:ring-blue-500 focus:border-blue-500 sm:text-sm dark:bg-gray-700 dark:text-gray-100"
                                     >
                                         {field.options.map((option) => (
                                             <option key={option.value} value={option.value}>
@@ -72,12 +72,12 @@ export default function GenericModal({
                                         type={field.type}
                                         value={data[field.name]}
                                         onChange={(e) => setData(field.name, e.target.value)}
-                                        className="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                        className="block w-full mt-1 text-gray-900 bg-white border-gray-300 rounded-md shadow-sm dark:border-gray-600 focus:ring-blue-500 focus:border-blue-500 sm:text-sm dark:bg-gray-700 dark:text-gray-100"
                                         disabled={field.disabled || false}
                                     />
                                 )}
                                 {errors[field.name] && (
-                                    <p className="mt-1 text-sm text-red-600">{errors[field.name]}</p>
+                                    <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors[field.name]}</p>
                                 )}
                             </div>
                         ))}
@@ -89,14 +89,14 @@ export default function GenericModal({
                                     clearErrors();
                                     onClose();
                                 }}
-                                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm dark:text-gray-200 dark:bg-gray-700 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                             >
                                 Batal
                             </button>
                             <button
                                 type="submit"
                                 disabled={processing}
-                                className="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
+                                className="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm dark:bg-blue-700 hover:bg-blue-700 dark:hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
                             >
                                 {processing ? "Menyimpan..." : "Simpan"}
                             </button>
