@@ -1,6 +1,6 @@
 import React, { Suspense } from "react";
 import { Head } from "@inertiajs/react";
-import Layout from "@/Layouts/Layout";
+import FrontLayout from "@/Layouts/FrontLayout";
 
 const LandingPage = React.lazy(() => import("./LandingPage"));
 const Tutorial = React.lazy(() => import("./Tutorial"));
@@ -10,7 +10,7 @@ const LoadingFallback = () => <div>Loading...</div>;
 
 export default function Index({ faqs, tutorial }) {
     return (
-        <Layout>
+        <FrontLayout>
             <Head title="Home" />
             <main className="px-24">
                 <Suspense fallback={<LoadingFallback />}>
@@ -19,6 +19,6 @@ export default function Index({ faqs, tutorial }) {
                     <Faq faqs={faqs} />
                 </Suspense>
             </main>
-        </Layout>
+        </FrontLayout>
     );
 }

@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { Head, useForm, usePage } from "@inertiajs/react";
 import { User } from 'lucide-react';
-import Layout from "@/Layouts/Layout";
+import FrontLayout from "@/Layouts/FrontLayout";
 import SecondaryButton from "@/Components/Front/SecondaryButton";
 import PrimaryButton from "@/Components/Front/PrimaryButton";
 import avatarProfile from '@images/avatar-profile.jpg';
 
-export default function Edit({ mustVerifyEmail, status }) {
+export default function ProfilePage({ mustVerifyEmail, status }) {
     const user = usePage().props.auth.user;
     const [profileImage, setProfileImage] = useState(avatarProfile);
     const { data, setData, post, processing, errors } = useForm({
@@ -41,7 +41,7 @@ export default function Edit({ mustVerifyEmail, status }) {
     };
 
     return (
-        <Layout>
+        <FrontLayout>
             <Head title="Profile" />
             <div className="max-w-6xl p-6 mx-auto mt-8 bg-white rounded-lg shadow-md">
                 <div className="flex items-center mb-6">
@@ -88,6 +88,6 @@ export default function Edit({ mustVerifyEmail, status }) {
                     </div>
                 </form>
             </div>
-        </Layout>
+        </FrontLayout>
     );
 }

@@ -1,13 +1,13 @@
-import Layout from "@/Layouts/Layout";
+import FrontLayout from "@/Layouts/FrontLayout";
 import { Head } from "@inertiajs/react";
 
-export default function Index() {
+export default function LaporanPage() {
     return (
         <>
             <Head title="Laporan" />
-            <Layout>
+            <FrontLayout>
                 <h1>Laporan</h1>
-            </Layout>
+            </FrontLayout>
         </>
     );
 }

@@ -4,7 +4,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import { createInertiaApp } from '@inertiajs/react';
 import { createRoot, hydrateRoot } from 'react-dom/client';
-import Layout from '@/Layouts/Layout';
+import FrontLayout from '@/Layouts/FrontLayout';
 
 createInertiaApp({
     title: (title) => `${title} - FILKOM`,

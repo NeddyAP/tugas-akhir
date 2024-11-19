@@ -5,7 +5,7 @@ import { Head, usePage } from "@inertiajs/react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-export default function Layout({ children }) {
+export default function FrontLayout({ children }) {
     const { flash } = usePage().props.flash;
 
     useEffect(() => {

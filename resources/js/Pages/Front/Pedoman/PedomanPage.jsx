@@ -1,7 +1,7 @@
 import React from 'react';
 import { MessageCircle } from 'lucide-react';
 import { Head, Link } from '@inertiajs/react';
-import Layout from '@/Layouts/Layout';
+import FrontLayout from '@/Layouts/FrontLayout';
 
 const Card = React.memo(({ title, description }) => (
     <div className="flex-shrink-0 w-64 p-6 transition-all duration-300 bg-white rounded-lg shadow-xl cursor-pointer group ring-1 ring-gray-900/5 hover:-translate-y-1 hover:shadow-2xl">
@@ -32,7 +32,7 @@ const CardGrid = React.memo(({ cards }) => (
     </div>
 ));
 
-export default function Index() {
+export default function PedomanPage() {
     const cardData = React.useMemo(() => [
         {
             title: "Card 1",
@@ -45,9 +45,9 @@ export default function Index() {
     ], []);
 
     return (
-        <Layout>
+        <FrontLayout>
             <Head title="Pedoman" />
             <CardGrid cards={cardData} />
-        </Layout>
+        </FrontLayout>
     );
 }

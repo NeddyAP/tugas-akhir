@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import { Head, useForm } from "@inertiajs/react";
-import Layout from "@/Layouts/Layout";
+import FrontLayout from "@/Layouts/FrontLayout";
 import TableSection from '@/Components/Front/TableSection';
 import LogbookModal from '@/Pages/Front/Logbook/LogbookModal';
 import BimbinganModal from '@/Pages/Front/Logbook/BimbinganModal';
@@ -97,7 +97,7 @@ export default function Index({ logbooks, bimbingans }) {
     };
 
     return (
-        <Layout>
+        <FrontLayout>
             <Head title="Logbook" />
             <div>
                 <div className="flex justify-center mt-20">
@@ -165,6 +165,6 @@ export default function Index({ logbooks, bimbingans }) {
                     </div>
                 </div>
             </div>
-        </Layout>
+        </FrontLayout>
     );
 }

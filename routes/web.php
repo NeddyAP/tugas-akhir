@@ -19,7 +19,7 @@ Route::inertia('/', 'Front/Home/Index', [
     'tutorial' => Tutorial::select('title', 'description', 'link')->latest()->first(),
     'faqs' => Question::select('question', 'answer')->get(),
 ])->name('home');
-Route::inertia('/pedomans', 'Front/Pedoman/Index', [
+Route::inertia('/pedomans', 'Front/Pedoman/PedomanPage', [
     'canLogin' => Route::has('login'),
 ])->name('pedomans.index');
 
