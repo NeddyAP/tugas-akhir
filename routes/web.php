@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\BimbinganController as AdminBimbinganController;
+use App\Http\Controllers\Admin\ExportController as AdminExportController;
 use App\Http\Controllers\Admin\InformationController as AdminInformationController;
 use App\Http\Controllers\Admin\LogbookController as AdminLogbookController;
 use App\Http\Controllers\BimbinganController;
@@ -26,6 +27,7 @@ Route::inertia('/pedomans', 'Front/Pedoman/PedomanPage', [
 ])->name('pedomans.index');
 
 Route::middleware('auth')->group(function () {
+
     Route::resource('bimbingans', BimbinganController::class);
     Route::resource('logbooks', LogbookController::class);
     Route::resource('laporans', LaporanController::class);
@@ -40,13 +42,16 @@ Route::middleware('auth')->group(function () {
             return Inertia::render('Admin/Dashboard');
         })->name('dashboard');
 
-        Route::resource('users', UserController::class);
         Route::resource('logbooks', AdminLogbookController::class);
         Route::resource('bimbingans', AdminBimbinganController::class);
+
+        Route::get('users/export', [AdminExportController::class, 'export'])
+            ->name('users.export');
+        Route::resource('users', UserController::class);
         Route::get('/laporans', [LaporanController::class, 'index'])->name('laporans.index');
 
         Route::resource('informations', AdminInformationController::class);
     });
 });
 
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';

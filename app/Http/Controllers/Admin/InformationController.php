@@ -3,18 +3,19 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Panduan;
 use App\Models\Question;
 use App\Models\Tutorial;
-use App\Models\Panduan;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Validation\ValidationException;
+use Inertia\Inertia;
 
 class InformationController extends Controller
 {
     private const TYPE_QUESTION = 'question';
+
     private const TYPE_TUTORIAL = 'tutorial';
+
     private const TYPE_PANDUAN = 'panduan';
 
     private array $modelMap = [
@@ -147,6 +148,7 @@ class InformationController extends Controller
     private function successResponse(string $type, string $action): \Illuminate\Http\RedirectResponse
     {
         $label = $this->getTypeLabel($type);
+
         return redirect()
             ->route('admin.informations.index', ['type' => $type])
             ->with('flash', [
@@ -158,11 +160,12 @@ class InformationController extends Controller
     private function errorResponse(\Exception $e): \Illuminate\Http\RedirectResponse
     {
         report($e);
+
         return redirect()
             ->back()
             ->with('flash', [
                 'type' => 'error',
-                'message' => 'Gagal memproses data: ' . $e->getMessage(),
+                'message' => 'Gagal memproses data: '.$e->getMessage(),
             ]);
     }
 }

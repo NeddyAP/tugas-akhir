@@ -20,15 +20,25 @@ class UserController extends Controller
         $perPage = $request->input('per_page', 10);
         $search = $request->input('search');
 
+        // Base query for all users
+        $baseQuery = User::query();
+
         // Query for admins/superadmins
-        $adminQuery = User::where('role', 'admin')
+        $adminQuery = clone $baseQuery;
+        $adminQuery->where('role', 'admin')
             ->orWhere('role', 'superadmin');
 
         // Query for dosen
-        $dosenQuery = User::where('role', 'dosen');
+        $dosenQuery = clone $baseQuery;
+        $dosenQuery->where('role', 'dosen');
 
         // Query for mahasiswa
-        $mahasiswaQuery = User::where('role', 'mahasiswa');
+        $mahasiswaQuery = clone $baseQuery;
+        $mahasiswaQuery->where('role', 'mahasiswa');
+
+        // Query for all users with identifier
+        $allUsersQuery = clone $baseQuery;
+        $allUsersQuery->selectRaw('*, COALESCE(nim, nip) as identifier');
 
         if ($search) {
             $searchWildcard = '%'.$search.'%';
@@ -42,12 +52,14 @@ class UserController extends Controller
             $adminQuery->where($searchCallback);
             $dosenQuery->where($searchCallback);
             $mahasiswaQuery->where($searchCallback);
+            $allUsersQuery->where($searchCallback);
         }
 
         return Inertia::render('Admin/User/UserPage', [
             'users' => $adminQuery->latest()->paginate($perPage)->withQueryString(),
             'dosens' => $dosenQuery->latest()->paginate($perPage)->withQueryString(),
             'mahasiswas' => $mahasiswaQuery->latest()->paginate($perPage)->withQueryString(),
+            'allUsers' => $allUsersQuery->latest()->paginate($perPage)->withQueryString(),
             'filters' => $request->only(['search']),
         ]);
     }
