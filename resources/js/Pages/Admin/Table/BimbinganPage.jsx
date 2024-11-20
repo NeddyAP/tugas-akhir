@@ -16,17 +16,10 @@ const formatDate = (dateString) => {
 };
 
 // Memoized Header Component (same as LogbookPage)
-const Header = memo(({ onDownload, onAdd }) => (
+const Header = memo(({ onAdd }) => (
     <header className="flex items-center justify-between">
         <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-200">Bimbingan Mahasiswa</h2>
         <div className="flex gap-2">
-            <button
-                type="button"
-                onClick={onDownload}
-                className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
-            >
-                Download
-            </button>
             <button
                 type="button"
                 onClick={onAdd}
@@ -135,9 +128,6 @@ const BimbinganPage = ({ bimbingans }) => {
         handleAdd: () => {
             setModalState({ isOpen: true, editingData: null });
         },
-        handleDownload: () => {
-            window.alert('Download functionality not implemented');
-        }
     };
 
     const columns = [
@@ -168,7 +158,7 @@ const BimbinganPage = ({ bimbingans }) => {
         <AdminLayout title="Bimbingan Management" currentPage="Bimbingan">
             <div className="grid grid-cols-1 mb-8">
                 <div className="flex flex-col gap-8">
-                    <Header onDownload={tableActions.handleDownload} onAdd={tableActions.handleAdd} />
+                    <Header onAdd={tableActions.handleAdd} />
 
                     <DataTable
                         columns={columns}
