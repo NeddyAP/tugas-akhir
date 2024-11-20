@@ -1,8 +1,8 @@
 import React, { useState, useCallback, memo } from 'react';
-import DataTable from "@/Components/Admin/DataTable";
+import DataTable from "@/Components/DataTable";
 import AdminLayout from "@/Layouts/AdminLayout";
 import { useForm } from '@inertiajs/react';
-import GenericModal from '@/Components/Admin/GenericModal';
+import GenericModal from '@/Components/GenericModal';
 
 const formatDate = (dateString) => {
     const date = new Date(dateString);

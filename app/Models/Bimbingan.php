@@ -12,7 +12,6 @@ class Bimbingan extends Model
     protected $table = 'bimbingans';
 
     protected $fillable = [
-        'id',
         'tanggal',
         'keterangan',
         'status',

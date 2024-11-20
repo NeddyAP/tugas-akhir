@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useState, useEffect } from "react";
 import { useForm } from "@inertiajs/react";
-import DataTable from "@/Components/Admin/DataTable";
-import GenericModal from "@/Components/Admin/GenericModal";
+import DataTable from "@/Components/DataTable";
+import GenericModal from "@/Components/GenericModal";
 import PropTypes from 'prop-types';
 
 const formatDate = (dateString) => {

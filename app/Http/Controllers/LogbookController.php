@@ -18,8 +18,16 @@ class LogbookController extends Controller
         $user = Auth::user();
 
         return Inertia::render('Front/Logbook/Index', [
-            'logbooks' => Logbook::where('user_id', $user->id)->get(),
-            'bimbingans' => Bimbingan::where('user_id', $user->id)->get(),
+            'logbooks' => Logbook::where('user_id', $user->id)->select(
+                'tanggal',
+                'catatan',
+                'keterangan',
+            )->paginate(10),
+            'bimbingans' => Bimbingan::where('user_id', $user->id)->select(
+                'tanggal',
+                'keterangan',
+                'status',
+            )->paginate(10),
         ]);
     }
 

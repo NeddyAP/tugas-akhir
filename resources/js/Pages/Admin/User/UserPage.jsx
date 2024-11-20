@@ -1,8 +1,8 @@
 import { useCallback, useMemo, useState, useEffect, memo } from "react";
 import { useForm, usePage } from "@inertiajs/react";
 import AdminLayout from "@/Layouts/AdminLayout";
-import DataTable from "@/Components/Admin/DataTable";
-import GenericModal from "@/Components/Admin/GenericModal";
+import DataTable from "@/Components/DataTable";
+import GenericModal from "@/Components/GenericModal";
 
 const TABS = {
     MAHASISWA: 'mahasiswa',
