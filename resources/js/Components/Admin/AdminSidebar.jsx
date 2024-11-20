@@ -5,6 +5,7 @@ import {
     LayoutDashboard, ChevronRight, Menu as MenuIcon,
     X, FileText, GraduationCap, File, UserCog,
     TargetIcon, LucideTable2, UserPen,
+    Home,
 } from 'lucide-react';
 import filkomLogo from '@images/filkomlogo.png';
 
@@ -243,6 +244,12 @@ const AdminSidebar = memo(({ onCollapse = () => { } }) => {
 
                     <div className="mt-auto space-y-4">
                         <div className="flex-1 space-y-1">
+                            <SidebarItem
+                                href={route('home')}
+                                icon={<Home />}
+                                label="Front Page"
+                                isCollapsed={isCollapsed}
+                            />
                             <SidebarItem
                                 href={route('admin.informations.index')}
                                 icon={<HelpCircle />}

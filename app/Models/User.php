@@ -93,4 +93,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(Bimbingan::class);
     }
+
+    public function dataKkl()
+    {
+        return $this->hasOne(DataKkl::class);
+    }
+
+    public function dataKkn()
+    {
+        return $this->hasOne(DataKkn::class);
+    }
 }
