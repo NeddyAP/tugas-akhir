@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from '@inertiajs/react';
-import filkomLogo from '../../images/filkom.png';
+import filkomLogo from '@images/filkom.png';
 
 const SocialIcon = React.memo(({ href, icon }) => (
     <a href={href} target="_blank" rel="noopener noreferrer" className="mr-2">

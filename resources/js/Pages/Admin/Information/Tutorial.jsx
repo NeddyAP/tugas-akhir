@@ -164,7 +164,7 @@ export default function Tutorial({ informations }) {
                 <header className="flex items-center justify-between">
                     <div className="flex flex-col">
                         <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-200">
-                            Tutorial Videos
+                            Tutorial Video
                         </h2>
                         <i className="text-sm text-gray-400">
                             hanya satu video terbaru yang akan ditampilkan

@@ -45,4 +45,5 @@ const AdminLayout = memo(({ children, title, currentPage }) => {
 });
 
 AdminLayout.displayName = 'AdminLayout';
+
 export default AdminLayout;
