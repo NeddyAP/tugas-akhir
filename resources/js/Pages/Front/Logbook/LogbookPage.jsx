@@ -36,7 +36,7 @@ const Header = memo(({ title, onDownload, onAdd }) => (
     </header>
 ));
 
-export default function Index({ logbooks, bimbingans }) {
+export default function LogbookPage({ logbooks, bimbingans }) {
     const [activeTab, setActiveTab] = useState('Logbook');
     const [modalState, setModalState] = useState({
         isOpen: false,

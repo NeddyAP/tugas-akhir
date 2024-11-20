@@ -15,7 +15,7 @@ use App\Models\Tutorial;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::inertia('/', 'Front/Home/Index', [
+Route::inertia('/', 'Front/Home/HomePage', [
     'canLogin' => Route::has('login'),
     'tutorial' => Tutorial::select('title', 'description', 'link')->latest()->first(),
     'faqs' => Question::select('question', 'answer')->get(),

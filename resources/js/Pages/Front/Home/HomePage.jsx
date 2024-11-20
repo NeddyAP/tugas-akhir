@@ -8,7 +8,7 @@ const Faq = React.lazy(() => import("./Faq"));
 
 const LoadingFallback = () => <div>Loading...</div>;
 
-export default function Index({ faqs, tutorial }) {
+export default function HomePage({ faqs, tutorial }) {
     return (
         <FrontLayout>
             <Head title="Home" />
