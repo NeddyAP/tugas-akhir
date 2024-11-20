@@ -55,7 +55,7 @@ export default function Panduan({ informations }) {
             { name: "description", label: "Deskripsi", type: "textarea", rows: 3 },
             {
                 name: "file",
-                label: "File PDF",
+                label: "File PDF (maks. 5MB)",
                 type: "file",
                 accept: ".pdf",
                 required: !modalState.editingData
