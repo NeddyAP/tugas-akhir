@@ -17,7 +17,7 @@ class LogbookController extends Controller
     {
         $user = Auth::user();
 
-        return Inertia::render('Front/Logbook/Index', [
+        return Inertia::render('Front/Logbook/LogbookPage', [
             'logbooks' => Logbook::where('user_id', $user->id)->select(
                 'tanggal',
                 'catatan',
