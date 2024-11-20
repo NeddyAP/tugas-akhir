@@ -3,15 +3,15 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Bimbingan;
+use App\Models\Logbook;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpWord\PhpWord;
-use App\Models\Logbook;
-use App\Models\Bimbingan;
-use Carbon\Carbon;
 
 class ExportController extends Controller
 {
@@ -42,7 +42,7 @@ class ExportController extends Controller
 
         // Get all data without pagination
         $data = $query->latest()->get();
-        $filename = "users-{$tab}-" . date('Y-m-d-His');
+        $filename = "users-{$tab}-".date('Y-m-d-His');
 
         try {
             return match ($format) {
@@ -86,9 +86,9 @@ class ExportController extends Controller
     private function exportPdf($data, $tab, $filename)
     {
         $pdf = PDF::loadView('exports.users', [
-            'title' => 'Data ' . ucfirst($tab),
+            'title' => 'Data '.ucfirst($tab),
             'headers' => $this->getHeaders($tab),
-            'data' => $data->map(fn($item) => $this->getData($item, $tab)),
+            'data' => $data->map(fn ($item) => $this->getData($item, $tab)),
         ]);
 
         return $pdf->setPaper('a4', 'landscape')->download("{$filename}.pdf");
@@ -100,7 +100,7 @@ class ExportController extends Controller
         $section = $phpWord->addSection();
 
         // Add title
-        $section->addText('Data ' . ucfirst($tab), ['bold' => true, 'size' => 16]);
+        $section->addText('Data '.ucfirst($tab), ['bold' => true, 'size' => 16]);
         $section->addTextBreak();
 
         // Create table
@@ -182,7 +182,7 @@ class ExportController extends Controller
 
         // Get filtered data
         $data = $query->with('user')->latest()->get();
-        $filename = "{$type}-{$user->name}-" . date('Y-m-d-His');
+        $filename = "{$type}-{$user->name}-".date('Y-m-d-His');
 
         try {
             return match ($format) {
@@ -227,9 +227,9 @@ class ExportController extends Controller
     {
         $user = auth()->user();
         $pdf = PDF::loadView('exports.logbook', [
-            'title' => 'Data ' . ucfirst($type) . ' - ' . $user->name,
+            'title' => 'Data '.ucfirst($type).' - '.$user->name,
             'headers' => $this->getLogbookHeaders($type),
-            'data' => $data->map(fn($item) => $this->getLogbookData($item, $type)),
+            'data' => $data->map(fn ($item) => $this->getLogbookData($item, $type)),
         ]);
 
         return $pdf->setPaper('a4', 'landscape')->download("{$filename}.pdf");
@@ -242,7 +242,7 @@ class ExportController extends Controller
         $section = $phpWord->addSection();
 
         // Add title with user name
-        $section->addText('Data ' . ucfirst($type) . ' - ' . $user->name, ['bold' => true, 'size' => 16]);
+        $section->addText('Data '.ucfirst($type).' - '.$user->name, ['bold' => true, 'size' => 16]);
         $section->addTextBreak();
 
         // Create table
