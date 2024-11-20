@@ -161,7 +161,7 @@ export default function LogbookPage({ logbooks, bimbingans }) {
                         <div className="flex flex-col gap-8">
                             {/* Add justify-center to center the nav element */}
                             <div className="flex justify-center">
-                                <nav className="flex items-center p-1 space-x-1 overflow-x-auto text-sm text-gray-600 rtl:space-x-reverse bg-gray-500/5 rounded-xl dark:bg-gray-500/20">
+                                <nav className="flex items-center p-1 space-x-1 overflow-x-auto text-sm text-gray-600 bg-gray-200 rtl:space-x-reverse rounded-xl dark:bg-gray-500/20">
                                     {['Logbook', 'Bimbingan'].map((tab) => (
                                         <button
                                             key={tab}
