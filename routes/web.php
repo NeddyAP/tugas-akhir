@@ -9,6 +9,7 @@ use App\Http\Controllers\LogbookController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\AdminMiddleware;
+use App\Models\Panduan;
 use App\Models\Question;
 use App\Models\Tutorial;
 use Illuminate\Support\Facades\Route;
@@ -21,6 +22,7 @@ Route::inertia('/', 'Front/Home/Index', [
 ])->name('home');
 Route::inertia('/pedomans', 'Front/Pedoman/PedomanPage', [
     'canLogin' => Route::has('login'),
+    'panduans' => Panduan::select('title', 'description', 'file')->latest()->get(),
 ])->name('pedomans.index');
 
 Route::middleware('auth')->group(function () {
@@ -47,4 +49,4 @@ Route::middleware('auth')->group(function () {
     });
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

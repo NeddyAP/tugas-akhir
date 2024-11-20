@@ -36,7 +36,7 @@ class InformationController extends Controller
         self::TYPE_PANDUAN => [
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'file' => 'required|file|mimes:pdf|max:10240',
+            'file' => 'required|file|mimes:pdf|max:1024',
         ],
     ];
 
@@ -128,7 +128,7 @@ class InformationController extends Controller
         $rules = $this->validationRules[$type] ?? [];
 
         if ($isUpdate && $type === self::TYPE_PANDUAN) {
-            $rules['file'] = 'nullable|file|mimes:pdf|max:10240';
+            $rules['file'] = 'nullable|file|mimes:pdf|max:1024';
         }
 
         return $rules;
