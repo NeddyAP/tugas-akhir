@@ -1,8 +1,11 @@
-import React, { useState, useCallback, useMemo, memo } from 'react';
+import React, { useState, useCallback, useMemo, memo, Fragment } from 'react';
 import { Head, useForm } from "@inertiajs/react";
 import FrontLayout from "@/Layouts/FrontLayout";
 import DataTable from "@/Components/ui/DataTable";
 import GenericModal from "@/Components/ui/GenericModal";
+import { Menu, Transition } from '@headlessui/react';
+import { ChevronDownIcon } from 'lucide-react';
+import { copyToClipboard, downloadFile } from '@/utils/exportService';
 
 const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -13,18 +16,53 @@ const formatDate = (dateString) => {
     });
 };
 
-// Add Header component at the top level
+const DOWNLOAD_OPTIONS = [
+    { label: 'Excel (.xlsx)', format: 'excel' },
+    { label: 'PDF (.pdf)', format: 'pdf' },
+    { label: 'Word (.docx)', format: 'word' },
+    { label: 'Salin ke Clipboard', format: 'copy' },
+];
+
+// Update Header component
 const Header = memo(({ title, onDownload, onAdd }) => (
     <header className="flex items-center justify-between">
         <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-200">{title}</h2>
         <div className="flex gap-2">
-            <button
-                type="button"
-                onClick={onDownload}
-                className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 dark:hover:bg-gray-600"
-            >
-                Download
-            </button>
+            <Menu as="div" className="relative inline-block text-left">
+                <Menu.Button className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 dark:hover:bg-gray-600">
+                    Download
+                    <ChevronDownIcon className="w-5 h-5 ml-2 -mr-1" aria-hidden="true" />
+                </Menu.Button>
+                <Transition
+                    as={Fragment}
+                    enter="transition ease-out duration-100"
+                    enterFrom="transform opacity-0 scale-95"
+                    enterTo="transform opacity-100 scale-100"
+                    leave="transition ease-in duration-75"
+                    leaveFrom="transform opacity-100 scale-100"
+                    leaveTo="transform opacity-0 scale-95"
+                >
+                    <Menu.Items className="absolute right-0 z-10 w-40 mt-2 origin-top-right bg-white rounded-md shadow-lg dark:bg-gray-700 ring-1 ring-black ring-opacity-5 focus:outline-none">
+                        <div className="py-1">
+                            {DOWNLOAD_OPTIONS.map((item) => (
+                                <Menu.Item key={item.format}>
+                                    {({ active }) => (
+                                        <button
+                                            onClick={() => onDownload(item.format)}
+                                            className={`${active
+                                                ? 'bg-gray-100 dark:bg-gray-600 text-gray-900 dark:text-gray-100'
+                                                : 'text-gray-700 dark:text-gray-200'
+                                                } block w-full text-left px-4 py-2 text-sm`}
+                                        >
+                                            {item.label}
+                                        </button>
+                                    )}
+                                </Menu.Item>
+                            ))}
+                        </div>
+                    </Menu.Items>
+                </Transition>
+            </Menu>
             <button
                 type="button"
                 onClick={onAdd}
@@ -148,9 +186,43 @@ export default function LogbookPage({ logbooks, bimbingans }) {
         });
     }, [activeTab]);
 
-    const handleDownload = useCallback((type) => {
-        console.log(`Downloading ${type} as Word document`);
-    }, []);
+    // Update handleDownload function
+    const handleDownload = useCallback(async (format) => {
+        const type = activeTab.toLowerCase();
+        const data = tableConfigs[activeTab].data;
+
+        try {
+            if (format === 'copy') {
+                const headers = tableConfigs[activeTab].columns.map(col => col.Header);
+                const tableData = data.map(row =>
+                    tableConfigs[activeTab].columns.reduce((acc, col) => ({
+                        ...acc,
+                        [col.Header]: col.accessor === 'tanggal'
+                            ? formatDate(row[col.accessor])
+                            : row[col.accessor]
+                    }), {})
+                );
+
+                const result = await copyToClipboard(headers, tableData);
+                if (!result.success) throw result.error;
+                alert('Data berhasil disalin ke clipboard!');
+                return;
+            }
+
+            // For other formats, make API call to download
+            const url = route('logbook.export', {
+                format,
+                type,
+                search: new URLSearchParams(window.location.search).get('search')
+            });
+
+            const result = await downloadFile(url);
+            if (!result.success) throw result.error;
+        } catch (error) {
+            console.error('Export failed:', error);
+            alert('Gagal mengekspor data. Silakan coba lagi.');
+        }
+    }, [activeTab, tableConfigs]);
 
     return (
         <FrontLayout>
@@ -181,7 +253,7 @@ export default function LogbookPage({ logbooks, bimbingans }) {
 
                             <Header
                                 title={`${activeTab} Mahasiswa`}
-                                onDownload={() => handleDownload(activeTab)}
+                                onDownload={(format) => handleDownload(format)}
                                 onAdd={() => handleAdd(activeTab)}
                             />
 
