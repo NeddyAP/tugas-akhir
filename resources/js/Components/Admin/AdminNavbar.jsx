@@ -4,7 +4,7 @@ import { Link, usePage } from '@inertiajs/react';
 import { useDarkMode } from '@/Contexts/DarkModeContext';
 
 const ProfileDropdown = memo(({ user, isOpen, onClose }) => (
-    <div className="absolute right-0 w-48 py-1 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg dark:bg-gray-800 dark:border-gray-700">
+    <div className="absolute right-0 z-50 w-48 py-1 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg dark:bg-gray-800 dark:border-gray-700">
         <div className="px-4 py-2 border-b border-gray-200 dark:border-gray-700">
             <p className="font-medium text-gray-900 dark:text-white">{user.name}</p>
             <p className="text-sm text-gray-600 dark:text-gray-300">{user.email}</p>
