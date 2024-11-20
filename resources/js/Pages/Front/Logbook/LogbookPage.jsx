@@ -55,18 +55,54 @@ export default function LogbookPage({ logbooks, bimbingans }) {
         keterangan: '',
     });
 
+    // Update handleSubmit to handle both create and update
     const handleSubmit = useCallback((e) => {
         e.preventDefault();
         const isLogbook = modalState.type === 'Logbook';
         const form = isLogbook ? logbookForm : bimbinganForm;
-        const route = isLogbook ? 'logbooks.store' : 'bimbingans.store';
+        const isEditing = modalState.editingData;
+        const baseRoute = isLogbook ? 'logbooks' : 'bimbingans';
 
-        form.post(route(route), {
-            onSuccess: () => {
-                setModalState({ isOpen: false, type: null, editingData: null });
-            },
+        if (isEditing) {
+            form.put(route(`${baseRoute}.update`, isEditing.id), {
+                preserveState: true,
+                onSuccess: () => {
+                    setModalState({ isOpen: false, type: null, editingData: null });
+                },
+            });
+        } else {
+            form.post(route(`${baseRoute}.store`), {
+                preserveState: true,
+                onSuccess: () => {
+                    setModalState({ isOpen: false, type: null, editingData: null });
+                },
+            });
+        }
+    }, [modalState, logbookForm, bimbinganForm]);
+
+    // Add handleDelete
+    const handleDelete = useCallback((row) => {
+        if (!window.confirm('Yakin ingin menghapus data ini?')) return;
+
+        const isLogbook = activeTab === 'Logbook';
+        const form = isLogbook ? logbookForm : bimbinganForm;
+        const baseRoute = isLogbook ? 'logbooks' : 'bimbingans';
+
+        form.delete(route(`${baseRoute}.destroy`, row.id), {
+            preserveState: true,
         });
-    }, [modalState.type, logbookForm, bimbinganForm]);
+    }, [activeTab, logbookForm, bimbinganForm]);
+
+    // Reset/populate form when modalState changes
+    React.useEffect(() => {
+        if (modalState.editingData) {
+            const form = modalState.type === 'Logbook' ? logbookForm : bimbinganForm;
+            form.setData(modalState.editingData);
+        } else {
+            logbookForm.reset();
+            bimbinganForm.reset();
+        }
+    }, [modalState.editingData, modalState.type]);
 
     const tableConfigs = useMemo(() => ({
         Logbook: {
@@ -98,11 +134,19 @@ export default function LogbookPage({ logbooks, bimbingans }) {
         }
     }), [logbooks, bimbingans]);
 
+    // Update handleAdd
     const handleAdd = useCallback((type) => {
         setModalState({ isOpen: true, type, editingData: null });
-        const form = type === 'Logbook' ? logbookForm : bimbinganForm;
-        form.reset();
-    }, [logbookForm, bimbinganForm]);
+    }, []);
+
+    // Add handleEdit
+    const handleEdit = useCallback((row) => {
+        setModalState({
+            isOpen: true,
+            type: activeTab,
+            editingData: row
+        });
+    }, [activeTab]);
 
     const handleDownload = useCallback((type) => {
         console.log(`Downloading ${type} as Word document`);
@@ -154,6 +198,8 @@ export default function LogbookPage({ logbooks, bimbingans }) {
                                 }}
                                 actions={{
                                     handleAdd: () => handleAdd(activeTab),
+                                    handleEdit,
+                                    handleDelete,
                                     handleDownload: () => handleDownload(activeTab),
                                 }}
                             />

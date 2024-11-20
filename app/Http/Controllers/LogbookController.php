@@ -18,25 +18,9 @@ class LogbookController extends Controller
         $user = Auth::user();
 
         return Inertia::render('Front/Logbook/LogbookPage', [
-            'logbooks' => Logbook::where('user_id', $user->id)->select(
-                'tanggal',
-                'catatan',
-                'keterangan',
-            )->paginate(10),
-            'bimbingans' => Bimbingan::where('user_id', $user->id)->select(
-                'tanggal',
-                'keterangan',
-                'status',
-            )->paginate(10),
+            'logbooks' => Logbook::where('user_id', $user->id)->paginate(10),
+            'bimbingans' => Bimbingan::where('user_id', $user->id)->paginate(10),
         ]);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -61,9 +45,20 @@ class LogbookController extends Controller
      */
     public function update(Request $request, Logbook $logbook)
     {
-        $logbook->update($request->validated());
+        // Validate user owns this logbook
+        if ($logbook->user_id !== Auth::id()) {
+            abort(403);
+        }
 
-        return redirect()->back()->with('flash', ['message' => 'Logbook berhasil diubah.', 'type' => 'success']);
+        $validated = $request->validate([
+            'tanggal' => 'required|date',
+            'catatan' => 'required|string',
+            'keterangan' => 'required|string',
+        ]);
+
+        $logbook->update($validated);
+
+        return redirect()->back()->with('flash', ['message' => 'Logbook berhasil diperbarui.', 'type' => 'success']);
     }
 
     /**
@@ -71,6 +66,11 @@ class LogbookController extends Controller
      */
     public function destroy(Logbook $logbook)
     {
+        // Validate user owns this logbook
+        if ($logbook->user_id !== Auth::id()) {
+            abort(403);
+        }
+
         $logbook->delete();
 
         return redirect()->back()->with('flash', ['message' => 'Logbook berhasil dihapus.', 'type' => 'success']);

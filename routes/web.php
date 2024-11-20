@@ -26,7 +26,7 @@ Route::inertia('/pedomans', 'Front/Pedoman/PedomanPage', [
 ])->name('pedomans.index');
 
 Route::middleware('auth')->group(function () {
-    Route::post('bimbingans/store', [BimbinganController::class, 'store'])->name('bimbingans.store');
+    Route::resource('bimbingans', BimbinganController::class);
     Route::resource('logbooks', LogbookController::class);
     Route::resource('laporans', LaporanController::class);
 
