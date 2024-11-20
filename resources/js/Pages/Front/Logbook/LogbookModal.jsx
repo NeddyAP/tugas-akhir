@@ -65,7 +65,7 @@ const LogbookModal = ({ isOpen, onClose, initialData = {} }) => {
                 <div className="flex justify-end space-x-2">
                     <SecondaryButton onClick={onClose}>Close</SecondaryButton>
                     <PrimaryButton type="submit" disabled={processing}>
-                        {processing ? 'Saving...' : 'Save'}
+                        {processing ? 'Menyimpan...' : 'Simpan'}
                     </PrimaryButton>
                 </div>
             </form>

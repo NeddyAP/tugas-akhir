@@ -53,9 +53,9 @@ const BimbinganModal = ({ isOpen, onClose, onSubmit }) => {
                     <InputError message={errors.keterangan} />
                 </div>
                 <div className="flex justify-end space-x-2">
-                    <SecondaryButton onClick={onClose}>Review</SecondaryButton>
+                    <SecondaryButton onClick={onClose}>Close</SecondaryButton>
                     <PrimaryButton type="submit" disabled={processing}>
-                        {processing ? 'Sending...' : 'Send'}
+                        {processing ? 'Menyimpan...' : 'Simpan'}
                     </PrimaryButton>
                 </div>
             </form>

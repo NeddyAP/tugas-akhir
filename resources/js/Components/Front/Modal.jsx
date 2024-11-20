@@ -15,7 +15,7 @@ export default function Modal({ isOpen, onClose, children, title }) {
                     leaveFrom="opacity-100"
                     leaveTo="opacity-0"
                 >
-                    <div className="fixed inset-0 bg-black bg-opacity-25" />
+                    <div className="fixed inset-0 bg-black bg-opacity-25 dark:bg-gray-800 dark:bg-opacity-50" />
                 </Transition.Child>
 
                 <div className="fixed inset-0 overflow-y-auto">
@@ -29,21 +29,21 @@ export default function Modal({ isOpen, onClose, children, title }) {
                             leaveFrom="opacity-100 scale-100"
                             leaveTo="opacity-0 scale-95"
                         >
-                            <Dialog.Panel className="w-full max-w-md p-6 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+                            <Dialog.Panel className="w-full max-w-md p-6 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl dark:bg-gray-800 rounded-2xl">
                                 <Dialog.Title
                                     as="h3"
-                                    className="flex items-center justify-between text-lg font-medium leading-6 text-gray-900"
+                                    className="flex items-center justify-between text-lg font-medium leading-6 text-gray-900 dark:text-gray-100"
                                 >
                                     {title}
                                     <button
                                         type="button"
-                                        className="text-gray-400 hover:text-gray-500"
+                                        className="text-gray-400 hover:text-gray-500 dark:text-gray-300 dark:hover:text-gray-200"
                                         onClick={onClose}
                                     >
                                         <X className="w-6 h-6" aria-hidden="true" />
                                     </button>
                                 </Dialog.Title>
-                                <div className="mt-2">
+                                <div className="mt-2 text-gray-700 dark:text-gray-200">
                                     {children}
                                 </div>
                             </Dialog.Panel>
