@@ -46,7 +46,7 @@ const SocialIcons = React.memo(() => (
     </nav>
 ));
 
-const Footer = () => {
+const FrontFooter = () => {
     const currentYear = new Date().getFullYear();
 
     return (
@@ -87,4 +87,4 @@ const Footer = () => {
     );
 };
 
-export default React.memo(Footer);
+export default React.memo(FrontFooter);

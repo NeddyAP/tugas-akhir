@@ -3,7 +3,7 @@ import { Head, usePage } from '@inertiajs/react';
 import { toast } from "react-toastify";
 import AdminNavbar from '../Components/Admin/AdminNavbar';
 import AdminSidebar from '../Components/Admin/AdminSidebar';
-import { Toast } from "@/Components/ToastConfig";
+import { Toast } from "@/Components/ui/ToastConfig";
 import { DarkModeProvider } from '@/Contexts/DarkModeContext';
 
 const AdminLayout = memo(({ children, title, currentPage }) => {

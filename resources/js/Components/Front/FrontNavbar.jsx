@@ -92,7 +92,7 @@ const DarkModeToggle = () => {
     );
 };
 
-const Navbar = () => {
+const FrontNavbar = () => {
     const { auth } = usePage().props;
     const [isVisible, setIsVisible] = useState(true);
     const [lastScrollY, setLastScrollY] = useState(0);
@@ -129,4 +129,4 @@ const Navbar = () => {
     );
 };
 
-export default Navbar;
+export default FrontNavbar;

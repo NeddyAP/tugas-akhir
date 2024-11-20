@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState, useEffect } from "react";
 import { useForm } from "@inertiajs/react";
-import DataTable from "@/Components/DataTable";
-import GenericModal from "@/Components/GenericModal";
+import DataTable from "@/Components/ui/DataTable";
+import GenericModal from "@/Components/ui/GenericModal";
 import PropTypes from 'prop-types';
 import 'react-toastify/dist/ReactToastify.css';
 

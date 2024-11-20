@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
-import Footer from "@/Layouts/Footer";
-import Navbar from "@/Layouts/Navbar";
+import Footer from "@/Components/Front/FrontFooter";
+import Navbar from "@/Components/Front/FrontNavbar";
 import { Head, usePage } from "@inertiajs/react";
 import { toast } from "react-toastify";
-import { Toast } from "@/Components/ToastConfig";
+import { Toast } from "@/Components/ui/ToastConfig";
 import { DarkModeProvider } from '@/Contexts/DarkModeContext';
 
 export default function FrontLayout({ children }) {

@@ -1,8 +1,8 @@
 import React, { useState, useCallback, useMemo, memo } from 'react';
 import { Head, useForm } from "@inertiajs/react";
 import FrontLayout from "@/Layouts/FrontLayout";
-import DataTable from "@/Components/DataTable";
-import GenericModal from "@/Components/GenericModal";
+import DataTable from "@/Components/ui/DataTable";
+import GenericModal from "@/Components/ui/GenericModal";
 
 const formatDate = (dateString) => {
     const date = new Date(dateString);
