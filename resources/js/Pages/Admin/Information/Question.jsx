@@ -47,11 +47,11 @@ export default function Question({ informations }) {
                 setData({
                     question: modalState.editingData.question,
                     answer: modalState.editingData.answer,
-                    type: 'question'  // Add type here
+                    type: 'question'
                 });
             } else {
                 reset();
-                setData({ type: 'question' }); // Set default type
+                setData({ type: 'question' });
             }
         } else {
             reset();
@@ -67,7 +67,6 @@ export default function Question({ informations }) {
         handleEdit: (row) => setModalState({ isOpen: true, editingData: row }),
         handleDelete: (row) => {
             if (window.confirm('Kamu yakin ingin menghapus FAQ ini?')) {
-                // Ubah cara pengiriman parameter
                 destroy(route("admin.informations.destroy", row.id) + `?type=question`, {
                     preserveScroll: true,
                     preserveState: true

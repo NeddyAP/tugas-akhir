@@ -5,20 +5,51 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Question;
 use App\Models\Tutorial;
+use App\Models\Panduan;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
 
 class InformationController extends Controller
 {
+    private const TYPE_QUESTION = 'question';
+    private const TYPE_TUTORIAL = 'tutorial';
+    private const TYPE_PANDUAN = 'panduan';
+
+    private array $modelMap = [
+        self::TYPE_QUESTION => Question::class,
+        self::TYPE_TUTORIAL => Tutorial::class,
+        self::TYPE_PANDUAN => Panduan::class,
+    ];
+
+    private array $validationRules = [
+        self::TYPE_QUESTION => [
+            'question' => 'required|string|max:255',
+            'answer' => 'required|string',
+        ],
+        self::TYPE_TUTORIAL => [
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'link' => 'required|string',
+        ],
+        self::TYPE_PANDUAN => [
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'file' => 'required|file|mimes:pdf|max:10240',
+        ],
+    ];
+
     public function index(Request $request)
     {
-        $type = $request->input('type', 'question');
-        $model = $type === 'question' ? Question::class : Tutorial::class;
-        $data = $model::latest()->paginate(10);
+        $type = $request->input('type', self::TYPE_QUESTION);
+        $modelClass = $this->getModelClass($type);
+        $data = $modelClass::latest()->paginate(10);
 
         return Inertia::render('Admin/Information/InformationPage', [
-            'questions' => $type === 'question' ? $data : null,
-            'tutorials' => $type === 'tutorial' ? $data : null,
+            'questions' => $type === self::TYPE_QUESTION ? $data : null,
+            'tutorials' => $type === self::TYPE_TUTORIAL ? $data : null,
+            'panduans' => $type === self::TYPE_PANDUAN ? $data : null,
             'type' => $type,
         ]);
     }
@@ -26,89 +57,112 @@ class InformationController extends Controller
     public function store(Request $request)
     {
         try {
-            if ($request->type === 'question') {
-                Question::create($request->validate([
-                    'question' => 'required|string|max:255',
-                    'answer' => 'required|string',
-                ]));
-            } else {
-                Tutorial::create($request->validate([
-                    'title' => 'required|string|max:255',
-                    'description' => 'required|string',
-                    'link' => 'required|string',
-                ]));
+            $type = $request->input('type', self::TYPE_QUESTION);
+            $rules = $this->getValidationRules($type);
+            $validated = $request->validate($rules);
+
+            if ($type === self::TYPE_PANDUAN) {
+                $path = $request->file('file')->store('panduans', 'public');
+                $validated['file'] = $path;
             }
 
-            return redirect()->back()->with('flash', [
-                'type' => 'success', // atau 'error', 'info', 'warning'
-                'message' => ($request->type === 'question' ? 'FAQ' : 'Tutorial').' berhasil ditambahkan',
-            ]);
+            $modelClass = $this->getModelClass($type);
+            $modelClass::create($validated);
+
+            return $this->successResponse($type, 'ditambahkan');
         } catch (\Exception $e) {
-            return redirect()->back()->with('flash', [
-                'type' => 'error', // atau 'error', 'info', 'warning'
-                'message' => 'Gagal menambahkan data: '.$e->getMessage(),
-            ]);
+            return $this->errorResponse($e);
         }
     }
 
     public function update(Request $request, $id)
     {
         try {
-            $type = $request->input('type');
-            $validated = $request->validate($type === 'question' ? [
-                'question' => 'required|string|max:255',
-                'answer' => 'required|string',
-                'type' => 'required|string',
-            ] : [
-                'title' => 'required|string|max:255',
-                'description' => 'required|string',
-                'link' => 'required|string',
-                'type' => 'required|string',
-            ]);
+            $type = $request->input('type', self::TYPE_QUESTION);
+            $rules = $this->getValidationRules($type, true);
+            $validated = $request->validate($rules);
 
-            $model = $type === 'question' ? Question::class : Tutorial::class;
+            $model = $this->getModelClass($type);
             $item = $model::findOrFail($id);
 
-            // Remove type from validated data
-            unset($validated['type']);
+            if ($type === self::TYPE_PANDUAN && $request->hasFile('file')) {
+                Storage::disk('public')->delete($item->file);
+                $path = $request->file('file')->store('panduans', 'public');
+                $validated['file'] = $path;
+            }
+
             $item->update($validated);
 
-            return redirect()->back()->with('flash', [
-                'type' => 'success', // atau 'error', 'info', 'warning'
-                'message' => ($type === 'question' ? 'FAQ' : 'Tutorial').' berhasil diperbarui',
-            ]);
+            return $this->successResponse($type, 'diperbarui');
         } catch (\Exception $e) {
-            return redirect()->back()->with('flash', [
-                'type' => 'error', // atau 'error', 'info', 'warning'
-                'message' => 'Gagal memperbarui data: '.$e->getMessage(),
-            ]);
+            return $this->errorResponse($e);
         }
     }
 
     public function destroy($id, Request $request)
     {
         try {
-            $type = $request->query('type');
+            $type = $request->query('type', self::TYPE_QUESTION);
+            $model = $this->getModelClass($type);
+            $item = $model::findOrFail($id);
 
-            if (! $type) {
-                throw new \Exception('Type parameter is required');
+            if ($type === self::TYPE_PANDUAN) {
+                Storage::disk('public')->delete($item->file);
             }
 
-            $model = $type === 'question' ? Question::class : Tutorial::class;
-            $item = $model::findOrFail($id);
             $item->delete();
 
-            return redirect()->back()->with('flash', [
-                'type' => 'success', // atau 'error', 'info', 'warning'
-                'message' => ($type === 'question' ? 'FAQ' : 'Tutorial').' berhasil dihapus',
-            ]);
+            return $this->successResponse($type, 'dihapus');
         } catch (\Exception $e) {
-            report($e);
-
-            return redirect()->back()->with('flash', [
-                'type' => 'error', // atau 'error', 'info', 'warning'
-                'message' => 'Gagal menghapus data: '.$e->getMessage(),
-            ]);
+            return $this->errorResponse($e);
         }
+    }
+
+    private function getModelClass(string $type): string
+    {
+        return $this->modelMap[$type] ?? Question::class;
+    }
+
+    private function getValidationRules(string $type, bool $isUpdate = false): array
+    {
+        $rules = $this->validationRules[$type] ?? [];
+
+        if ($isUpdate && $type === self::TYPE_PANDUAN) {
+            $rules['file'] = 'nullable|file|mimes:pdf|max:10240';
+        }
+
+        return $rules;
+    }
+
+    private function getTypeLabel(string $type): string
+    {
+        return match ($type) {
+            self::TYPE_QUESTION => 'FAQ',
+            self::TYPE_TUTORIAL => 'Tutorial',
+            self::TYPE_PANDUAN => 'Panduan',
+            default => 'Item'
+        };
+    }
+
+    private function successResponse(string $type, string $action): \Illuminate\Http\RedirectResponse
+    {
+        $label = $this->getTypeLabel($type);
+        return redirect()
+            ->route('admin.informations.index', ['type' => $type])
+            ->with('flash', [
+                'type' => 'success',
+                'message' => "{$label} berhasil {$action}",
+            ]);
+    }
+
+    private function errorResponse(\Exception $e): \Illuminate\Http\RedirectResponse
+    {
+        report($e);
+        return redirect()
+            ->back()
+            ->with('flash', [
+                'type' => 'error',
+                'message' => 'Gagal memproses data: ' . $e->getMessage(),
+            ]);
     }
 }

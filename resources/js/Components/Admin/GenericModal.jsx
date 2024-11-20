@@ -13,6 +13,7 @@ export default function GenericModal({
     handleSubmit,
     clearErrors,
     fields,
+    onFileChange,
 }) {
     useEffect(() => {
         if (!isOpen) {
@@ -53,6 +54,14 @@ export default function GenericModal({
                                         onChange={(e) => setData(field.name, e.target.value)}
                                         rows={field.rows || 3}
                                         className="block w-full mt-1 text-gray-900 bg-white border-gray-300 rounded-md shadow-sm dark:border-gray-600 focus:ring-teal-500 focus:border-teal-500 sm:text-sm dark:bg-gray-700 dark:text-gray-100"
+                                    />
+                                ) : field.type === "file" ? (
+                                    <input
+                                        type="file"
+                                        onChange={onFileChange}
+                                        accept={field.accept}
+                                        className="block w-full mt-1 text-gray-900 bg-white border-gray-300 rounded-md shadow-sm dark:border-gray-600 focus:ring-teal-500 focus:border-teal-500 sm:text-sm dark:bg-gray-700 dark:text-gray-100"
+                                        required={field.required}
                                     />
                                 ) : field.type === "select" ? (
                                     <select
