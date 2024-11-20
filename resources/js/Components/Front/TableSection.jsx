@@ -9,7 +9,7 @@ const TableSection = React.memo(({ columns, data, onAdd, onDownload }) => (
             <div className="space-x-2">
                 <button
                     onClick={onDownload}
-                    className="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600"
+                    className="inline-flex items-center px-4 py-2 text-gray-800 bg-gray-200 border border-gray-300 rounded hover:bg-gray-300"
                 >
                     <Download className="inline-block w-4 h-4 mr-2" />
                     Download

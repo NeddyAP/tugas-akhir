@@ -76,7 +76,7 @@ const Table = ({ columns, data, onAdd, title = columns[0]?.Header }) => {
                     key={i}
                     onClick={() => gotoPage(i - 1)}
                     className={`px-3 py-1 text-sm border rounded-md ${currentPage === i
-                        ? 'bg-blue-500 text-white'
+                        ? 'bg-teal-500 text-white'
                         : 'hover:bg-gray-100 dark:text-gray-300 dark:border-gray-600'
                         }`}
                 >

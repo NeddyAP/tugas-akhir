@@ -25,7 +25,7 @@ const AuthLayout = ({ title, children }) => {
                             <ToastContainer />
                         </div>
                     </div>
-                    <div className="flex items-center justify-center w-1/2 p-8 bg-blue-100 dark:bg-gray-700">
+                    <div className="flex items-center justify-center w-1/2 p-8 bg-teal-100 dark:bg-gray-700">
                         <img
                             src={salyImage}
                             alt={`${title} illustration`}

@@ -131,7 +131,7 @@ export default function Index({ logbooks, bimbingans }) {
                 </div>
 
                 <div className="mt-4">
-                    <div className="space-y-8 md:space-y-12">
+                    <div className="px-32 space-y-8 md:space-y-12">
                         {activeTab === 'Logbook' && (
                             <div>
                                 <TableSection
