@@ -1,19 +1,20 @@
-import { useCallback, useMemo, useState, useEffect, memo, Fragment } from "react";
-import { useForm, usePage } from "@inertiajs/react";
-import AdminLayout from "@/Layouts/AdminLayout";
-import DataTable from "@/Components/ui/DataTable";
-import GenericModal from "@/Components/ui/GenericModal";
-import TableHeader from "@/Components/ui/TableHeader";
+import { useCallback, useMemo, useState, useEffect, memo } from 'react';
+import { useForm, usePage } from '@inertiajs/react';
+
+import AdminLayout from '@/Layouts/AdminLayout';
+import DataTable from '@/Components/ui/DataTable';
+import GenericModal from '@/Components/ui/GenericModal';
+import TableHeader from '@/Components/ui/TableHeader';
+import TabButton from '@/Components/ui/TabButton';
+
 import { copyToClipboard, downloadFile } from '@/utils/exportService';
 import {
-    DOWNLOAD_OPTIONS,
     USER_TABS,
     USER_COMMON_COLUMNS,
     USER_SPECIFIC_COLUMNS,
     USER_COMMON_FIELDS,
     USER_SPECIFIC_FIELDS
 } from '@/utils/constants';
-import TabButton from "@/Components/ui/TabButton";
 
 const UserPage = ({ users, dosens, mahasiswas, allUsers }) => {
     const { user: currentUser } = usePage().props;

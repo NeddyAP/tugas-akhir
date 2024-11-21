@@ -1,50 +1,54 @@
-import React, { Suspense } from "react";
-import AdminLayout from "@/Layouts/AdminLayout";
-import TabButton from "@/Components/ui/TabButton";
-import Question from "./Question";
-import Tutorial from "./Tutorial";
-import Panduan from "./Panduan";
+import { Suspense } from 'react';
 import { router } from '@inertiajs/react';
+
+import AdminLayout from '@/Layouts/AdminLayout';
+import TabButton from '@/Components/ui/TabButton';
+import Question from './Question';
+import Tutorial from './Tutorial';
+import Panduan from './Panduan';
 
 const LoadingFallback = () => <div>Loading...</div>;
 
+const TABS = [
+    { type: 'tutorial', label: 'Tutorial' },
+    { type: 'question', label: 'FAQ' },
+    { type: 'panduan', label: 'Panduan' }
+];
+
 export default function InformationPage({ questions, tutorials, panduans, type = 'question' }) {
     const handleTabClick = (newType) => {
-        router.get(route(route().current(), { type: newType }), {}, {
-            preserveState: true,
-            preserveScroll: true
-        });
+        router.get(
+            route(route().current(), { type: newType }), 
+            {}, 
+            { preserveState: true, preserveScroll: true }
+        );
+    };
+
+    const renderContent = () => {
+        const contents = {
+            question: <Question informations={questions} />,
+            tutorial: <Tutorial informations={tutorials} />,
+            panduan: <Panduan informations={panduans} />
+        };
+        return contents[type];
     };
 
     return (
         <AdminLayout title="Information Management" currentPage="Information">
             <div className="flex gap-4 mb-4 border-b border-gray-200">
-                <TabButton 
-                    active={type === 'tutorial'} 
-                    onClick={() => handleTabClick('tutorial')}
-                    variant="solid"
-                >
-                    Tutorial
-                </TabButton>
-                <TabButton 
-                    active={type === 'question'} 
-                    onClick={() => handleTabClick('question')}
-                    variant="solid"
-                >
-                    FAQ
-                </TabButton>
-                <TabButton 
-                    active={type === 'panduan'} 
-                    onClick={() => handleTabClick('panduan')}
-                    variant="solid"
-                >
-                    Panduan
-                </TabButton>
+                {TABS.map(({ type: tabType, label }) => (
+                    <TabButton
+                        key={tabType}
+                        active={type === tabType}
+                        onClick={() => handleTabClick(tabType)}
+                        variant="solid"
+                    >
+                        {label}
+                    </TabButton>
+                ))}
             </div>
             <Suspense fallback={<LoadingFallback />}>
-                {type === 'question' ? <Question informations={questions} /> :
-                    type === 'tutorial' ? <Tutorial informations={tutorials} /> :
-                        <Panduan informations={panduans} />}
+                {renderContent()}
             </Suspense>
         </AdminLayout>
     );
