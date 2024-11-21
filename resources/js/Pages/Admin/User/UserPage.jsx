@@ -128,8 +128,6 @@ Header.displayName = 'Header';
 const UserPage = ({ users, dosens, mahasiswas, allUsers }) => {
     const { user: currentUser } = usePage().props;
     const currentUserRole = currentUser.role;
-
-
     const urlParams = new URLSearchParams(window.location.search);
     const [activeTab, setActiveTab] = useState(
         urlParams.get('tab') && Object.values(TABS).includes(urlParams.get('tab'))
@@ -137,38 +135,20 @@ const UserPage = ({ users, dosens, mahasiswas, allUsers }) => {
             : TABS.ADMIN
     );
 
-
-    const { data, setData, post, put, processing, errors, reset, clearErrors } = useForm({
-        name: "", email: "", password: "", role: "",
-        nim: "", nip: "", phone: "", address: "",
-    });
-
     const [modalState, setModalState] = useState({ isOpen: false, editingData: null });
+    const { data, setData, post, put, processing, errors, reset, clearErrors } = useForm({
+        name: "",
+        email: "",
+        password: "",
+        role: "admin",
+        nim: "",
+        nip: "",
+        phone: "",
+        address: "",
+    });
     const deleteForm = useForm();
 
-
-    const columns = useMemo(() => [
-        ...COMMON_COLUMNS,
-        ...SPECIFIC_COLUMNS[activeTab]
-    ], [activeTab]);
-
-    const currentData = useMemo(() => ({
-        [TABS.ADMIN]: users,
-        [TABS.DOSEN]: dosens,
-        [TABS.MAHASISWA]: mahasiswas,
-        [TABS.ALL]: allUsers,
-    })[activeTab], [users, dosens, mahasiswas, allUsers, activeTab]);
-
-    const modalFields = useMemo(() => [
-        ...COMMON_FIELDS,
-        ...(SPECIFIC_FIELDS[activeTab] || []).map(field =>
-            activeTab === TABS.ADMIN
-                ? { ...field, disabled: currentUserRole === 'admin' }
-                : field
-        )
-    ], [activeTab, currentUserRole]);
-
-
+    // Define handler functions first
     const handleTabChange = useCallback((tab) => {
         setActiveTab(tab);
         const newUrl = new URL(window.location);
@@ -196,6 +176,28 @@ const UserPage = ({ users, dosens, mahasiswas, allUsers }) => {
         });
     }, [currentUserRole, activeTab, deleteForm]);
 
+    // Then define columns using the handlers
+    const columns = useMemo(() => [
+        ...COMMON_COLUMNS,
+        ...SPECIFIC_COLUMNS[activeTab]
+    ], [activeTab]);
+
+    const currentData = useMemo(() => ({
+        [TABS.ADMIN]: users,
+        [TABS.DOSEN]: dosens,
+        [TABS.MAHASISWA]: mahasiswas,
+        [TABS.ALL]: allUsers,
+    })[activeTab], [users, dosens, mahasiswas, allUsers, activeTab]);
+
+    const modalFields = useMemo(() => [
+        ...COMMON_FIELDS,
+        ...(SPECIFIC_FIELDS[activeTab] || []).map(field =>
+            activeTab === TABS.ADMIN
+                ? { ...field, disabled: currentUserRole === 'admin' }
+                : field
+        )
+    ], [activeTab, currentUserRole]);
+
     const handleSubmit = useCallback((e) => {
         e.preventDefault();
         if (currentUserRole !== 'superadmin') return;
@@ -206,12 +208,24 @@ const UserPage = ({ users, dosens, mahasiswas, allUsers }) => {
             isEditing ? modalState.editingData.id : undefined
         );
 
+        // Filter out empty fields and password if not changed
+        const formData = Object.fromEntries(
+            Object.entries(data).filter(([key, value]) => {
+                if (key === 'password' && isEditing && !value) return false;
+                return value !== '';
+            })
+        );
+
         const action = isEditing ? put : post;
         action(url + `?tab=${activeTab}`, {
+            data: formData,
             preserveState: true,
-            onSuccess: () => setModalState({ isOpen: false, editingData: null })
+            onSuccess: () => {
+                setModalState({ isOpen: false, editingData: null });
+                reset();
+            },
         });
-    }, [currentUserRole, modalState, activeTab, post, put]);
+    }, [currentUserRole, modalState, activeTab, data, post, put, reset]);
 
     const handleDownload = useCallback(async (format) => {
         try {
@@ -254,7 +268,6 @@ const UserPage = ({ users, dosens, mahasiswas, allUsers }) => {
         }
     }, [columns, activeTab]);
 
-
     useEffect(() => {
         if (!modalState.isOpen) {
             reset();
@@ -263,12 +276,26 @@ const UserPage = ({ users, dosens, mahasiswas, allUsers }) => {
         }
 
         if (modalState.editingData) {
-            setData({ ...modalState.editingData, password: "" });
+            // Map the editing data to form fields
+            setData({
+                name: modalState.editingData.name || '',
+                email: modalState.editingData.email || '',
+                password: '', // Clear password on edit
+                role: modalState.editingData.role || 'admin',
+                nim: modalState.editingData.nim || '',
+                nip: modalState.editingData.nip || '',
+                phone: modalState.editingData.phone || '',
+                address: modalState.editingData.address || '',
+            });
         } else {
+            // Set default values for new user
             reset();
+            setData(data => ({
+                ...data,
+                role: activeTab === TABS.ADMIN ? 'admin' : '',
+            }));
         }
-    }, [modalState.isOpen, modalState.editingData, setData, reset, clearErrors]);
-
+    }, [modalState.isOpen, modalState.editingData, activeTab]);
 
     return (
         <AdminLayout title="Users Management" currentPage="Users">
