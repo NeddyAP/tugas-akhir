@@ -2,11 +2,10 @@
 
 namespace Database\Factories;
 
-use App\Models\Laporan;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<Laporan>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Laporan>
  */
 class LaporanFactory extends Factory
 {

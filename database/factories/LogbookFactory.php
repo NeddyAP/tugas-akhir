@@ -2,11 +2,10 @@
 
 namespace Database\Factories;
 
-use App\Models\Logbook;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<Logbook>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Logbook>
  */
 class LogbookFactory extends Factory
 {

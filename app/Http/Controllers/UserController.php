@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -127,7 +126,7 @@ class UserController extends Controller
                 'message' => ucfirst($tab).' berhasil ditambahkan',
                 'type' => 'success',
             ]);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return redirect()->back()->with('flash', [
                 'message' => 'Gagal menambahkan '.$tab,
                 'type' => 'error',
@@ -171,7 +170,7 @@ class UserController extends Controller
                 'message' => ucfirst($tab).' berhasil diperbarui',
                 'type' => 'success',
             ]);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return redirect()->back()->with('flash', [
                 'message' => 'Gagal memperbarui '.$tab,
                 'type' => 'error',
@@ -212,7 +211,7 @@ class UserController extends Controller
                 'message' => ucfirst($tab).' berhasil dihapus',
                 'type' => 'success',
             ]);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Gagal menghapus '.$tab,
             ], 500);

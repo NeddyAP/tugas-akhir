@@ -7,7 +7,7 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<Bimbingan>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Bimbingan>
  */
 class BimbinganFactory extends Factory
 {

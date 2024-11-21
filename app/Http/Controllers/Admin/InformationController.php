@@ -6,8 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Panduan;
 use App\Models\Question;
 use App\Models\Tutorial;
-use Exception;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
@@ -43,7 +41,7 @@ class InformationController extends Controller
         ],
     ];
 
-    public function index(Request $request): \Inertia\Response
+    public function index(Request $request)
     {
         $type = $request->input('type', self::TYPE_QUESTION);
         $modelClass = $this->getModelClass($type);
@@ -57,7 +55,7 @@ class InformationController extends Controller
         ]);
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request)
     {
         try {
             $type = $request->input('type', self::TYPE_QUESTION);
@@ -73,12 +71,12 @@ class InformationController extends Controller
             $modelClass::create($validated);
 
             return $this->successResponse($type, 'ditambahkan');
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return $this->errorResponse($e);
         }
     }
 
-    public function update(Request $request, $id): RedirectResponse
+    public function update(Request $request, $id)
     {
         try {
             $type = $request->input('type', self::TYPE_QUESTION);
@@ -97,7 +95,7 @@ class InformationController extends Controller
             $item->update($validated);
 
             return $this->successResponse($type, 'diperbarui');
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return $this->errorResponse($e);
         }
     }
@@ -116,7 +114,7 @@ class InformationController extends Controller
             $item->delete();
 
             return $this->successResponse($type, 'dihapus');
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return $this->errorResponse($e);
         }
     }
@@ -147,7 +145,7 @@ class InformationController extends Controller
         };
     }
 
-    private function successResponse(string $type, string $action): RedirectResponse
+    private function successResponse(string $type, string $action): \Illuminate\Http\RedirectResponse
     {
         $label = $this->getTypeLabel($type);
 
@@ -155,11 +153,11 @@ class InformationController extends Controller
             ->route('admin.informations.index', ['type' => $type])
             ->with('flash', [
                 'type' => 'success',
-                'message' => "$label berhasil $action",
+                'message' => "{$label} berhasil {$action}",
             ]);
     }
 
-    private function errorResponse(Exception $e): RedirectResponse
+    private function errorResponse(\Exception $e): \Illuminate\Http\RedirectResponse
     {
         report($e);
 
