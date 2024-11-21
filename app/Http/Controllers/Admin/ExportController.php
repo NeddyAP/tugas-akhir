@@ -8,6 +8,7 @@ use App\Models\Logbook;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\Request;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -52,7 +53,7 @@ class ExportController extends Controller
                 'word' => $this->exportWord($data, $tab, $filename),
                 default => response()->json(['error' => 'Invalid format'], 400),
             };
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
@@ -192,7 +193,7 @@ class ExportController extends Controller
                 'word' => $this->exportLogbookWord($data, $type, $filename),
                 default => response()->json(['error' => 'Format tidak valid'], 400),
             };
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
