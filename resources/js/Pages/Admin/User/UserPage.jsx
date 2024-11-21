@@ -1,64 +1,18 @@
 import { useCallback, useMemo, useState, useEffect, memo, Fragment } from "react";
 import { useForm, usePage } from "@inertiajs/react";
-import { Menu, Transition } from "@headlessui/react";
 import AdminLayout from "@/Layouts/AdminLayout";
 import DataTable from "@/Components/ui/DataTable";
 import GenericModal from "@/Components/ui/GenericModal";
-import { ChevronDownIcon } from "lucide-react";
+import Header from "@/utils/Header";
 import { copyToClipboard, downloadFile } from '@/utils/exportService';
-
-const TABS = {
-    MAHASISWA: 'mahasiswa',
-    DOSEN: 'dosen',
-    ADMIN: 'admin',
-    ALL: 'semua',
-};
-
-const DOWNLOAD_OPTIONS = [
-    { label: 'Excel (.xlsx)', format: 'excel' },
-    { label: 'PDF (.pdf)', format: 'pdf' },
-    { label: 'Word (.docx)', format: 'word' },
-    { label: 'Salin ke Clipboard', format: 'copy' },
-];
-
-const COMMON_COLUMNS = [
-    { Header: "Nama", accessor: "name", sortable: true },
-    { Header: "Email", accessor: "email", sortable: true },
-];
-
-const SPECIFIC_COLUMNS = {
-    [TABS.ADMIN]: [{ Header: "Role", accessor: "role", sortable: true }],
-    [TABS.DOSEN]: [{ Header: "NIP", accessor: "nip", sortable: true }],
-    [TABS.MAHASISWA]: [{ Header: "NIM", accessor: "nim", sortable: true }],
-    [TABS.ALL]: [
-        { Header: "Role", accessor: "role", sortable: true },
-        { Header: "NIM/NIP", accessor: "identifier", sortable: true },
-    ],
-};
-
-const COMMON_FIELDS = [
-    { name: "name", label: "Nama", type: "text" },
-    { name: "email", label: "Email", type: "email" },
-    { name: "phone", label: "Telepon", type: "tel" },
-    { name: "address", label: "Alamat", type: "textarea", rows: 3 },
-    { name: "password", label: "Password", type: "password" },
-];
-
-const SPECIFIC_FIELDS = {
-    [TABS.ADMIN]: [{
-        name: "role",
-        label: "Role",
-        type: "select",
-        options: [
-            { value: "admin", label: "Admin" },
-            { value: "superadmin", label: "Superadmin" },
-        ],
-    }],
-    [TABS.DOSEN]: [{ name: "nip", label: "NIP", type: "text" }],
-    [TABS.MAHASISWA]: [{ name: "nim", label: "NIM", type: "text" }],
-};
-
-
+import {
+    DOWNLOAD_OPTIONS,
+    USER_TABS,
+    USER_COMMON_COLUMNS,
+    USER_SPECIFIC_COLUMNS,
+    USER_COMMON_FIELDS,
+    USER_SPECIFIC_FIELDS
+} from '@/utils/constants';
 
 const TabButton = memo(({ tab, activeTab, onClick }) => (
     <button
@@ -74,65 +28,14 @@ const TabButton = memo(({ tab, activeTab, onClick }) => (
 
 TabButton.displayName = 'TabButton';
 
-
-const Header = memo(({ activeTab, onDownload, onAdd }) => (
-    <header className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-200">Data {activeTab}</h2>
-        <div className="flex gap-2">
-            <Menu as="div" className="relative inline-block text-left">
-                <Menu.Button className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2">
-                    Download
-                    <ChevronDownIcon className="w-5 h-5 ml-2 -mr-1" aria-hidden="true" />
-                </Menu.Button>
-                <Transition
-                    as={Fragment}
-                    enter="transition ease-out duration-100"
-                    enterFrom="transform opacity-0 scale-95"
-                    enterTo="transform opacity-100 scale-100"
-                    leave="transition ease-in duration-75"
-                    leaveFrom="transform opacity-100 scale-100"
-                    leaveTo="transform opacity-0 scale-95"
-                >
-                    <Menu.Items className="absolute right-0 z-10 w-40 mt-2 origin-top-right bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                        <div className="py-1">
-                            {DOWNLOAD_OPTIONS.map((item) => (
-                                <Menu.Item key={item.format}>
-                                    {({ active }) => (
-                                        <button
-                                            onClick={() => onDownload(item.format)}
-                                            className={`${active ? 'bg-gray-100 text-gray-900' : 'text-gray-700'
-                                                } block px-4 py-2 text-sm w-full text-left`}
-                                        >
-                                            {item.label}
-                                        </button>
-                                    )}
-                                </Menu.Item>
-                            ))}
-                        </div>
-                    </Menu.Items>
-                </Transition>
-            </Menu>
-            <button
-                type="button"
-                onClick={onAdd}
-                className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-teal-600 border border-transparent rounded-md shadow-sm hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
-            >
-                Tambah Baru
-            </button>
-        </div>
-    </header>
-));
-
-Header.displayName = 'Header';
-
 const UserPage = ({ users, dosens, mahasiswas, allUsers }) => {
     const { user: currentUser } = usePage().props;
     const currentUserRole = currentUser.role;
     const urlParams = new URLSearchParams(window.location.search);
     const [activeTab, setActiveTab] = useState(
-        urlParams.get('tab') && Object.values(TABS).includes(urlParams.get('tab'))
+        urlParams.get('tab') && Object.values(USER_TABS).includes(urlParams.get('tab'))
             ? urlParams.get('tab')
-            : TABS.ADMIN
+            : USER_TABS.ADMIN
     );
 
     const [modalState, setModalState] = useState({ isOpen: false, editingData: null });
@@ -178,21 +81,21 @@ const UserPage = ({ users, dosens, mahasiswas, allUsers }) => {
 
     // Then define columns using the handlers
     const columns = useMemo(() => [
-        ...COMMON_COLUMNS,
-        ...SPECIFIC_COLUMNS[activeTab]
+        ...USER_COMMON_COLUMNS,
+        ...USER_SPECIFIC_COLUMNS[activeTab]
     ], [activeTab]);
 
     const currentData = useMemo(() => ({
-        [TABS.ADMIN]: users,
-        [TABS.DOSEN]: dosens,
-        [TABS.MAHASISWA]: mahasiswas,
-        [TABS.ALL]: allUsers,
+        [USER_TABS.ADMIN]: users,
+        [USER_TABS.DOSEN]: dosens,
+        [USER_TABS.MAHASISWA]: mahasiswas,
+        [USER_TABS.ALL]: allUsers,
     })[activeTab], [users, dosens, mahasiswas, allUsers, activeTab]);
 
     const modalFields = useMemo(() => [
-        ...COMMON_FIELDS,
-        ...(SPECIFIC_FIELDS[activeTab] || []).map(field =>
-            activeTab === TABS.ADMIN
+        ...USER_COMMON_FIELDS,
+        ...(USER_SPECIFIC_FIELDS[activeTab] || []).map(field =>
+            activeTab === USER_TABS.ADMIN
                 ? { ...field, disabled: currentUserRole === 'admin' }
                 : field
         )
@@ -292,7 +195,7 @@ const UserPage = ({ users, dosens, mahasiswas, allUsers }) => {
             reset();
             setData(data => ({
                 ...data,
-                role: activeTab === TABS.ADMIN ? 'admin' : '',
+                role: activeTab === USER_TABS.ADMIN ? 'admin' : '',
             }));
         }
     }, [modalState.isOpen, modalState.editingData, activeTab]);
@@ -303,7 +206,7 @@ const UserPage = ({ users, dosens, mahasiswas, allUsers }) => {
                 <div className="flex flex-col gap-8">
                     <div className="border-b border-gray-200">
                         <nav className="flex -mb-px">
-                            {Object.values(TABS).map((tab) => (
+                            {Object.values(USER_TABS).map((tab) => (
                                 <TabButton
                                     key={tab}
                                     tab={tab}
@@ -315,7 +218,7 @@ const UserPage = ({ users, dosens, mahasiswas, allUsers }) => {
                     </div>
 
                     <Header
-                        activeTab={activeTab}
+                        title={`Data ${activeTab}`}
                         onDownload={handleDownload}
                         onAdd={handleAdd}
                     />
