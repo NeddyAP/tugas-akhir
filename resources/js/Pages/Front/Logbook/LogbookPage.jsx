@@ -4,9 +4,9 @@ import FrontLayout from "@/Layouts/FrontLayout";
 import DataTable from "@/Components/ui/DataTable";
 import GenericModal from "@/Components/ui/GenericModal";
 import { copyToClipboard, downloadFile } from '@/utils/exportService';
-import Header from './Header';
-import { getTableConfigs } from './constants';
-import { formatDate } from '../../../utils/utils';
+import Header from '@/utils/Header';
+import { getTableConfigs } from '@/utils/constants';
+import { formatDate } from '@/utils/utils';
 
 export default function LogbookPage({ logbooks, bimbingans }) {
     const [activeTab, setActiveTab] = useState('Logbook');
