@@ -13,20 +13,9 @@ import {
     USER_COMMON_FIELDS,
     USER_SPECIFIC_FIELDS
 } from '@/utils/constants';
+import TabButton from "@/Components/ui/TabButton";
 
-const TabButton = memo(({ tab, activeTab, onClick }) => (
-    <button
-        onClick={() => onClick(tab)}
-        className={`${activeTab === tab
-            ? 'border-teal-500 text-teal-600'
-            : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700  dark:text-white'
-            } whitespace-nowrap py-4 px-6 border-b-2 font-medium text-sm capitalize`}
-    >
-        {tab}
-    </button>
-));
-
-TabButton.displayName = 'TabButton';
+// TODO: Fix download function
 
 const UserPage = ({ users, dosens, mahasiswas, allUsers }) => {
     const { user: currentUser } = usePage().props;
@@ -209,10 +198,12 @@ const UserPage = ({ users, dosens, mahasiswas, allUsers }) => {
                             {Object.values(USER_TABS).map((tab) => (
                                 <TabButton
                                     key={tab}
-                                    tab={tab}
-                                    activeTab={activeTab}
-                                    onClick={handleTabChange}
-                                />
+                                    active={activeTab === tab}
+                                    onClick={() => handleTabChange(tab)}
+                                    variant="underline"
+                                >
+                                    {tab}
+                                </TabButton>
                             ))}
                         </nav>
                     </div>
