@@ -3,7 +3,7 @@ import { useForm, usePage } from "@inertiajs/react";
 import AdminLayout from "@/Layouts/AdminLayout";
 import DataTable from "@/Components/ui/DataTable";
 import GenericModal from "@/Components/ui/GenericModal";
-import Header from "@/utils/Header";
+import TableHeader from "@/Components/ui/TableHeader";
 import { copyToClipboard, downloadFile } from '@/utils/exportService';
 import {
     DOWNLOAD_OPTIONS,
@@ -14,8 +14,6 @@ import {
     USER_SPECIFIC_FIELDS
 } from '@/utils/constants';
 import TabButton from "@/Components/ui/TabButton";
-
-// TODO: Fix download function
 
 const UserPage = ({ users, dosens, mahasiswas, allUsers }) => {
     const { user: currentUser } = usePage().props;
@@ -208,7 +206,7 @@ const UserPage = ({ users, dosens, mahasiswas, allUsers }) => {
                         </nav>
                     </div>
 
-                    <Header
+                    <TableHeader
                         title={`Data ${activeTab}`}
                         onDownload={handleDownload}
                         onAdd={handleAdd}

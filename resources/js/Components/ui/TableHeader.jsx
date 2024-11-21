@@ -1,9 +1,9 @@
 import React, { Fragment, memo } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import { ChevronDownIcon } from 'lucide-react';
-import { DOWNLOAD_OPTIONS } from './constants';
+import { DOWNLOAD_OPTIONS } from '../../utils/constants';
 
-const Header = memo(({ title, onDownload, onAdd }) => (
+const TableHeader = memo(({ title, onDownload, onAdd }) => (
     <header className="flex items-center justify-between">
         <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-200">{title}</h2>
         <div className="flex gap-2">
@@ -53,4 +53,4 @@ const Header = memo(({ title, onDownload, onAdd }) => (
     </header>
 ));
 
-export default Header;
+export default TableHeader;

@@ -4,7 +4,7 @@ import FrontLayout from "@/Layouts/FrontLayout";
 import DataTable from "@/Components/ui/DataTable";
 import GenericModal from "@/Components/ui/GenericModal";
 import { copyToClipboard, downloadFile } from '@/utils/exportService';
-import Header from '@/utils/Header';
+import TableHeader from '@/Components/ui/TableHeader';
 import { getTableConfigs } from '@/utils/constants';
 import { formatDate } from '@/utils/utils';
 
@@ -160,7 +160,7 @@ export default function LogbookPage({ logbooks, bimbingans }) {
                                 </nav>
                             </div>
 
-                            <Header
+                            <TableHeader
                                 title={`${activeTab} Mahasiswa`}
                                 onDownload={(format) => handleDownload(format)}
                                 onAdd={() => handleAdd(activeTab)}
