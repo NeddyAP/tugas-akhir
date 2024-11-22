@@ -1,63 +1,37 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-    <meta charset="utf-8">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
-
-        h1 {
-            text-align: center;
-            color: #333;
-            margin-bottom: 20px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-
-        th,
-        td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-
-        th {
-            background-color: #f4f4f4;
-            font-weight: bold;
-        }
-
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid black; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
     </style>
 </head>
-
 <body>
-    <h1>{{ $title }}</h1>
+    <h2>Users Data Export</h2>
     <table>
         <thead>
             <tr>
-                @foreach ($headers as $header)
-                    <th>{{ $header }}</th>
-                @endforeach
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>NIM/NIP</th>
+                <th>Phone</th>
+                <th>Address</th>
             </tr>
         </thead>
         <tbody>
-            @foreach ($data as $row)
-                <tr>
-                    @foreach ($row as $cell)
-                        <td>{{ $cell }}</td>
-                    @endforeach
-                </tr>
+            @foreach($data as $item)
+            <tr>
+                <td>{{ $item->name }}</td>
+                <td>{{ $item->email }}</td>
+                <td>{{ $item->role }}</td>
+                <td>{{ $item->nim ?? $item->nip ?? '' }}</td>
+                <td>{{ $item->phone }}</td>
+                <td>{{ $item->address }}</td>
+            </tr>
             @endforeach
         </tbody>
     </table>
 </body>
-
 </html>

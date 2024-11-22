@@ -15,6 +15,7 @@ import {
     USER_COMMON_FIELDS,
     USER_SPECIFIC_FIELDS
 } from '@/utils/constants';
+import { useExport } from '@/Hooks/useExport';
 
 const UserPage = ({ users, dosens, mahasiswas, allUsers }) => {
     const { user: currentUser } = usePage().props;
@@ -118,46 +119,14 @@ const UserPage = ({ users, dosens, mahasiswas, allUsers }) => {
         });
     }, [currentUserRole, modalState, activeTab, data, post, put, reset]);
 
-    const handleDownload = useCallback(async (format) => {
-        try {
-            if (format === 'copy') {
-
-                const response = await fetch(route('admin.users.export', {
-                    format: 'all',
-                    tab: activeTab,
-                    search: new URLSearchParams(window.location.search).get('search'),
-                }));
-
-                if (!response.ok) throw new Error('Failed to fetch data');
-                const { data } = await response.json();
-
-                const headers = columns.map(col => col.Header);
-                const tableData = data.map(row =>
-                    columns.reduce((acc, col) => ({
-                        ...acc,
-                        [col.Header]: row[col.accessor]
-                    }), {})
-                );
-
-                const result = await copyToClipboard(headers, tableData);
-                if (!result.success) throw result.error;
-                alert('Data berhasil disalin ke clipboard!');
-                return;
-            }
-
-            const url = route('admin.users.export', {
-                format,
-                tab: activeTab,
-                search: new URLSearchParams(window.location.search).get('search'),
-            });
-
-            const result = await downloadFile(url);
-            if (!result.success) throw result.error;
-        } catch (error) {
-            console.error('Export failed:', error);
-            alert('Gagal mengekspor data. Silakan coba lagi.');
-        }
-    }, [columns, activeTab]);
+    const handleDownload = useExport({
+        routeName: 'admin.users.export',
+        searchParams: {
+            tab: activeTab,
+            search: new URLSearchParams(window.location.search).get('search')
+        },
+        columns
+    });
 
     useEffect(() => {
         if (!modalState.isOpen) {
