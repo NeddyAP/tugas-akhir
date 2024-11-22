@@ -98,13 +98,14 @@ export default function LogbookPage({ logbooks, bimbingans }) {
 
     const handleDownload = useCallback(async (format) => {
         const type = activeTab.toLowerCase();
-        const data = tableConfigs[activeTab].data;
+        const currentConfig = tableConfigs[activeTab];
+        const data = currentConfig.data;
 
         try {
             if (format === 'copy') {
-                const headers = tableConfigs[activeTab].columns.map(col => col.Header);
+                const headers = currentConfig.columns.map(col => col.Header);
                 const tableData = data.map(row =>
-                    tableConfigs[activeTab].columns.reduce((acc, col) => ({
+                    currentConfig.columns.reduce((acc, col) => ({
                         ...acc,
                         [col.Header]: col.accessor === 'tanggal'
                             ? formatDate(row[col.accessor])
@@ -118,10 +119,9 @@ export default function LogbookPage({ logbooks, bimbingans }) {
                 return;
             }
 
-
-            const url = route('logbook.export', {
+            const exportRoute = type === 'logbook' ? 'logbook.export' : 'bimbingan.export';
+            const url = route(exportRoute, {
                 format,
-                type,
                 search: new URLSearchParams(window.location.search).get('search')
             });
 

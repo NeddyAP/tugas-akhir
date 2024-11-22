@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Logbook;
+use App\Models\Bimbingan;
 use App\Services\ExportService;
 use Illuminate\Http\Request;
 
@@ -47,5 +49,55 @@ class ExportController extends Controller
 
         $fileName = "users-{$tab}-" . date('Y-m-d-His');
         return $this->exportService->export($users, $format, $fileName);
+    }
+
+    public function exportLogbook(Request $request)
+    {
+        $format = $request->query('format', 'excel');
+        $search = $request->query('search');
+
+        $query = Logbook::with('user');
+
+        // Apply search if provided
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where('tanggal', 'like', "%{$search}%")
+                  ->orWhere('catatan', 'like', "%{$search}%")
+                  ->orWhere('keterangan', 'like', "%{$search}%");
+            });
+        }
+
+        $logbooks = $query->get();
+
+        if ($format === 'all') {
+            return response()->json(['data' => $logbooks]);
+        }
+
+        $fileName = "logbooks-" . date('Y-m-d-His');
+        return $this->exportService->exportLogbook($logbooks, $format, $fileName);
+    }
+
+    public function exportBimbingan(Request $request)
+    {
+        $format = $request->query('format', 'excel');
+        $search = $request->query('search');
+
+        $query = Bimbingan::with('user');
+
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where('tanggal', 'like', "%{$search}%")
+                  ->orWhere('keterangan', 'like', "%{$search}%");
+            });
+        }
+
+        $bimbingans = $query->get();
+
+        if ($format === 'all') {
+            return response()->json(['data' => $bimbingans]);
+        }
+
+        $fileName = "bimbingans-" . date('Y-m-d-His');
+        return $this->exportService->exportBimbingan($bimbingans, $format, $fileName);
     }
 }
