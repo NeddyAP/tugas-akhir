@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class User extends Authenticatable
 {
@@ -17,10 +18,6 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
-        'nim',
-        'nip',
-        'phone',
-        'address',
     ];
 
     protected $hidden = [
@@ -66,17 +63,20 @@ class User extends Authenticatable
     // Scope untuk filter berdasarkan role
     public function scopeMahasiswa($query)
     {
-        return $query->where('role', self::ROLE_MAHASISWA);
+        return $query->where('role', self::ROLE_MAHASISWA)
+                    ->with('profilable');
     }
 
     public function scopeDosen($query)
     {
-        return $query->where('role', self::ROLE_DOSEN);
+        return $query->where('role', self::ROLE_DOSEN)
+                    ->with('profilable');
     }
 
     public function scopeAdmin($query)
     {
-        return $query->whereIn('role', [self::ROLE_ADMIN, self::ROLE_SUPERADMIN]);
+        return $query->whereIn('role', [self::ROLE_ADMIN, self::ROLE_SUPERADMIN])
+                    ->with('profilable');
     }
 
     public function logbook()
@@ -102,5 +102,10 @@ class User extends Authenticatable
     public function dataKkn()
     {
         return $this->hasOne(DataKkn::class);
+    }
+
+    public function profilable(): MorphTo
+    {
+        return $this->morphTo();
     }
 }

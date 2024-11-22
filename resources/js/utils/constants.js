@@ -49,11 +49,26 @@ export const USER_COMMON_COLUMNS = [
 
 export const USER_SPECIFIC_COLUMNS = {
     admin: [{ Header: "Role", accessor: "role", sortable: true }],
-    dosen: [{ Header: "NIP", accessor: "nip", sortable: true }],
-    mahasiswa: [{ Header: "NIM", accessor: "nim", sortable: true }],
+    dosen: [{ 
+        Header: "NIP", 
+        accessor: row => row.profilable?.nip, 
+        sortable: true,
+        id: "nip"
+    }],
+    mahasiswa: [{ 
+        Header: "NIM", 
+        accessor: row => row.profilable?.nim, 
+        sortable: true,
+        id: "nim"
+    }],
     semua: [
         { Header: "Role", accessor: "role", sortable: true },
-        { Header: "NIM/NIP", accessor: "identifier", sortable: true },
+        { 
+            Header: "NIM/NIP", 
+            accessor: row => row.profilable?.nim || row.profilable?.nip, 
+            sortable: true,
+            id: "identifier"
+        },
     ],
 };
 

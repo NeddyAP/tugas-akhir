@@ -71,7 +71,7 @@ const UserPage = ({ users, dosens, mahasiswas, allUsers }) => {
     // Then define columns using the handlers
     const columns = useMemo(() => [
         ...USER_COMMON_COLUMNS,
-        ...USER_SPECIFIC_COLUMNS[activeTab]
+        ...USER_SPECIFIC_COLUMNS[activeTab],
     ], [activeTab]);
 
     const currentData = useMemo(() => ({
@@ -136,16 +136,17 @@ const UserPage = ({ users, dosens, mahasiswas, allUsers }) => {
         }
 
         if (modalState.editingData) {
-            // Map the editing data to form fields
+            // Map the editing data to form fields with profilable data
+            const profile = modalState.editingData.profilable || {};
             setData({
                 name: modalState.editingData.name || '',
                 email: modalState.editingData.email || '',
                 password: '', // Clear password on edit
                 role: modalState.editingData.role || 'admin',
-                nim: modalState.editingData.nim || '',
-                nip: modalState.editingData.nip || '',
-                phone: modalState.editingData.phone || '',
-                address: modalState.editingData.address || '',
+                nim: profile.nim || '',
+                nip: profile.nip || '',
+                phone: profile.phone || '',
+                address: profile.address || '',
             });
         } else {
             // Set default values for new user

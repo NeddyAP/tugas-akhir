@@ -12,13 +12,10 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
-            $table->string('nim')->unique()->nullable(); // For mahasiswa
-            $table->string('nip')->unique()->nullable(); // For dosen
             $table->enum('role', ['superadmin', 'admin', 'mahasiswa', 'dosen']);
-            $table->string('phone')->nullable();
-            $table->text('address')->nullable();
-            $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->morphs('profilable');
+            $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();

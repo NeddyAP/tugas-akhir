@@ -8,6 +8,10 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\DB;
+use App\Models\MahasiswaProfile;
+use App\Models\DosenProfile;
+use App\Models\AdminProfile;
 
 class UserController extends Controller
 {
@@ -20,13 +24,15 @@ class UserController extends Controller
         $perPage = $request->input('per_page', 10);
         $search = $request->input('search');
 
-        // Base query for all users
-        $baseQuery = User::query();
+        // Base query for all users with eager loading
+        $baseQuery = User::with('profilable');
 
         // Query for admins/superadmins
         $adminQuery = clone $baseQuery;
-        $adminQuery->where('role', 'admin')
-            ->orWhere('role', 'superadmin');
+        $adminQuery->where(function($q) {
+            $q->where('role', 'admin')
+              ->orWhere('role', 'superadmin');
+        });
 
         // Query for dosen
         $dosenQuery = clone $baseQuery;
@@ -36,17 +42,18 @@ class UserController extends Controller
         $mahasiswaQuery = clone $baseQuery;
         $mahasiswaQuery->where('role', 'mahasiswa');
 
-        // Query for all users with identifier
+        // Query for all users
         $allUsersQuery = clone $baseQuery;
-        $allUsersQuery->selectRaw('*, COALESCE(nim, nip) as identifier');
 
         if ($search) {
             $searchWildcard = '%'.$search.'%';
             $searchCallback = function ($query) use ($searchWildcard) {
                 $query->where('name', 'like', $searchWildcard)
                     ->orWhere('email', 'like', $searchWildcard)
-                    ->orWhere('nim', 'like', $searchWildcard)
-                    ->orWhere('nip', 'like', $searchWildcard);
+                    ->orWhereHas('profilable', function($q) use ($searchWildcard) {
+                        $q->where('nim', 'like', $searchWildcard)
+                          ->orWhere('nip', 'like', $searchWildcard);
+                    });
             };
 
             $adminQuery->where($searchCallback);
@@ -110,17 +117,42 @@ class UserController extends Controller
 
         try {
             $validated = $request->validate($rules);
+            
+            DB::transaction(function () use ($validated, $tab) {
+                // Create profile based on user type
+                $profileData = array_filter([
+                    'phone' => $validated['phone'] ?? null,
+                    'address' => $validated['address'] ?? null,
+                ]);
 
-            // Set role based on tab
-            $validated['role'] = match ($tab) {
-                'admin' => $validated['role'] ?? 'admin',
-                'dosen' => 'dosen',
-                'mahasiswa' => 'mahasiswa',
-                default => 'admin',
-            };
+                if (isset($validated['nim'])) {
+                    $profileData['nim'] = $validated['nim'];
+                }
+                if (isset($validated['nip'])) {
+                    $profileData['nip'] = $validated['nip'];
+                }
 
-            $validated['password'] = Hash::make($validated['password']);
-            User::create($validated);
+                $profile = match ($tab) {
+                    'mahasiswa' => MahasiswaProfile::create($profileData),
+                    'dosen' => DosenProfile::create($profileData),
+                    default => AdminProfile::create($profileData),
+                };
+
+                // Create user
+                $user = new User([
+                    'name' => $validated['name'],
+                    'email' => $validated['email'],
+                    'password' => Hash::make($validated['password']),
+                    'role' => match ($tab) {
+                        'admin' => $validated['role'] ?? 'admin',
+                        'dosen' => 'dosen',
+                        'mahasiswa' => 'mahasiswa',
+                        default => 'admin',
+                    },
+                ]);
+
+                $profile->user()->save($user);
+            });
 
             return redirect()->back()->with('flash', [
                 'message' => ucfirst($tab).' berhasil ditambahkan',
@@ -144,27 +176,34 @@ class UserController extends Controller
         }
 
         try {
-            $user = User::findOrFail($id);
+            $user = User::with('profilable')->findOrFail($id);
             $tab = $request->query('tab', 'admin');
             $rules = $this->getValidationRules($tab, $id);
             $validated = $request->validate($rules);
 
-            // Handle password update
-            if (empty($validated['password'])) {
-                unset($validated['password']);
-            } else {
-                $validated['password'] = Hash::make($validated['password']);
-            }
+            DB::transaction(function () use ($user, $validated, $tab) {
+                // Update user data
+                if (isset($validated['password'])) {
+                    $validated['password'] = Hash::make($validated['password']);
+                } else {
+                    unset($validated['password']);
+                }
 
-            // Set role based on tab
-            $validated['role'] = match ($tab) {
-                'admin' => $validated['role'] ?? 'admin',
-                'dosen' => 'dosen',
-                'mahasiswa' => 'mahasiswa',
-                default => $user->role,
-            };
+                $userFields = array_intersect_key($validated, array_flip(['name', 'email', 'password', 'role']));
+                $user->update($userFields);
 
-            $user->update($validated);
+                // Update profile data
+                $profileFields = array_filter([
+                    'phone' => $validated['phone'] ?? null,
+                    'address' => $validated['address'] ?? null,
+                    'nim' => $validated['nim'] ?? null,
+                    'nip' => $validated['nip'] ?? null,
+                ]);
+
+                if ($user->profilable) {
+                    $user->profilable->update($profileFields);
+                }
+            });
 
             return redirect()->back()->with('flash', [
                 'message' => ucfirst($tab).' berhasil diperbarui',
@@ -191,15 +230,15 @@ class UserController extends Controller
             $user = User::findOrFail($id);
             $tab = $request->query('tab', 'admin');
 
-            // Check if user's role matches the tab
-            $roleMatches = match ($tab) {
+            // Allow deletion from 'semua' tab or check if role matches specific tab
+            $roleMatches = $tab === 'semua' || match ($tab) {
                 'admin' => in_array($user->role, ['admin', 'superadmin']),
                 'dosen' => $user->role === 'dosen',
                 'mahasiswa' => $user->role === 'mahasiswa',
                 default => false,
             };
 
-            if (! $roleMatches) {
+            if (!$roleMatches) {
                 return response()->json([
                     'message' => 'Invalid user type',
                 ], 400);
@@ -208,12 +247,12 @@ class UserController extends Controller
             $user->delete();
 
             return redirect()->back()->with('flash', [
-                'message' => ucfirst($tab).' berhasil dihapus',
+                'message' => $tab === 'semua' ? 'User berhasil dihapus' : ucfirst($tab).' berhasil dihapus',
                 'type' => 'success',
             ]);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Gagal menghapus '.$tab,
+                'message' => $tab === 'semua' ? 'Gagal menghapus user' : 'Gagal menghapus '.$tab,
             ], 500);
         }
     }

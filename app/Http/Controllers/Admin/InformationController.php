@@ -62,7 +62,12 @@ class InformationController extends Controller
             $rules = $this->getValidationRules($type);
             $validated = $request->validate($rules);
 
-            if ($type === self::TYPE_PANDUAN) {
+            // Filter out null values
+            $validated = array_filter($validated, function($value) {
+                return !is_null($value);
+            });
+
+            if ($type === self::TYPE_PANDUAN && isset($validated['file'])) {
                 $path = $request->file('file')->store('panduans', 'public');
                 $validated['file'] = $path;
             }
@@ -83,10 +88,15 @@ class InformationController extends Controller
             $rules = $this->getValidationRules($type, true);
             $validated = $request->validate($rules);
 
+            // Filter out null values
+            $validated = array_filter($validated, function($value) {
+                return !is_null($value);
+            });
+
             $model = $this->getModelClass($type);
             $item = $model::findOrFail($id);
 
-            if ($type === self::TYPE_PANDUAN && $request->hasFile('file')) {
+            if ($type === self::TYPE_PANDUAN && isset($validated['file'])) {
                 Storage::disk('public')->delete($item->file);
                 $path = $request->file('file')->store('panduans', 'public');
                 $validated['file'] = $path;
@@ -128,8 +138,16 @@ class InformationController extends Controller
     {
         $rules = $this->validationRules[$type] ?? [];
 
-        if ($isUpdate && $type === self::TYPE_PANDUAN) {
-            $rules['file'] = 'nullable|file|mimes:pdf|max:5120';
+        if ($isUpdate) {
+            // Make all fields nullable on update
+            $rules = array_map(function($rule) {
+                return 'nullable|' . $rule;
+            }, $rules);
+
+            // Special handling for panduan file
+            if ($type === self::TYPE_PANDUAN) {
+                $rules['file'] = 'nullable|file|mimes:pdf|max:5120';
+            }
         }
 
         return $rules;
