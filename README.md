@@ -50,9 +50,17 @@ Sebelum memulai, pastikan Anda telah memenuhi persyaratan berikut:
 
 7. **Jalankan migrasi database:**
 
+    jika belum memiliki database:
+
     ```sh
-    php artisan migrate:fresh
+    php artisan migrate
     php artisan db:seed
+    ```
+
+    jika sudah memiliki database:
+
+    ```sh
+    php artisan migrate:fresh --seed
     ```
 
 ### Menjalankan Aplikasi
