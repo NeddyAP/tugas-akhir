@@ -165,22 +165,30 @@ const AllData = ({ users }) => {
                 title="Semua Data User"
                 onDownload={handleDownload}
                 onAdd={currentUserRole === 'superadmin' ? handleAdd : undefined}
+                className="flex-col gap-2 sm:flex-row sm:gap-4"
             />
 
-            <DataTable
-                columns={[...USER_COMMON_COLUMNS, ...USER_SPECIFIC_COLUMNS[USER_TYPES.ALL]]}
-                data={users.data}
-                actions={{ handleEdit, handleDelete }}
-                defaultSortBy="name"
-                pagination={{
-                    pageIndex: users.current_page - 1,
-                    pageCount: users.last_page,
-                    pageSize: users.per_page,
-                    total: users.total,
-                    from: users.from,
-                    to: users.to
-                }}
-            />
+            <div className="pb-4 overflow-x-auto">
+                <div className="inline-block min-w-full align-middle">
+                    <div className="overflow-hidden">
+                        <DataTable
+                            columns={[...USER_COMMON_COLUMNS, ...USER_SPECIFIC_COLUMNS[USER_TYPES.ALL]]}
+                            data={users.data}
+                            actions={{ handleEdit, handleDelete }}
+                            defaultSortBy="name"
+                            pagination={{
+                                pageIndex: users.current_page - 1,
+                                pageCount: users.last_page,
+                                pageSize: users.per_page,
+                                total: users.total,
+                                from: users.from,
+                                to: users.to
+                            }}
+                            className="w-full"
+                        />
+                    </div>
+                </div>
+            </div>
 
             <GenericModal
                 isOpen={modalState.isOpen}
@@ -193,6 +201,7 @@ const AllData = ({ users }) => {
                 handleSubmit={handleSubmit}
                 clearErrors={clearErrors}
                 fields={getFields()}
+                className="w-full max-w-lg p-4 mx-auto sm:p-6"
             />
         </div>
     );

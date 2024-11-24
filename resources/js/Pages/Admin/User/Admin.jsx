@@ -111,22 +111,30 @@ const Admin = ({ users }) => {
                 title="Data Admin"
                 onDownload={handleDownload}
                 onAdd={currentUserRole === 'superadmin' ? handleAdd : undefined}
+                className="flex-col gap-2 sm:flex-row sm:gap-4"
             />
 
-            <DataTable
-                columns={[...USER_COMMON_COLUMNS, ...USER_SPECIFIC_COLUMNS[USER_TYPES.ADMIN]]}
-                data={users.data}
-                actions={{ handleEdit, handleDelete, handleAdd }}
-                defaultSortBy="name"
-                pagination={{
-                    pageIndex: users.current_page - 1,
-                    pageCount: users.last_page,
-                    pageSize: users.per_page,
-                    total: users.total,
-                    from: users.from,
-                    to: users.to
-                }}
-            />
+            <div className="pb-4 overflow-x-auto"> {/* Added pb-4 for padding bottom */}
+                <div className="inline-block min-w-full align-middle">
+                    <div className="overflow-hidden"> {/* Added wrapper div */}
+                        <DataTable
+                            columns={[...USER_COMMON_COLUMNS, ...USER_SPECIFIC_COLUMNS[USER_TYPES.ADMIN]]}
+                            data={users.data}
+                            actions={{ handleEdit, handleDelete }}
+                            defaultSortBy="name"
+                            pagination={{
+                                pageIndex: users.current_page - 1,
+                                pageCount: users.last_page,
+                                pageSize: users.per_page,
+                                total: users.total,
+                                from: users.from,
+                                to: users.to
+                            }}
+                            className="w-full" // Add this if not already present
+                        />
+                    </div>
+                </div>
+            </div>
 
             <GenericModal
                 isOpen={modalState.isOpen}
@@ -139,6 +147,7 @@ const Admin = ({ users }) => {
                 handleSubmit={handleSubmit}
                 clearErrors={clearErrors}
                 fields={[...USER_COMMON_FIELDS, ...USER_SPECIFIC_FIELDS[USER_TYPES.ADMIN]]}
+                className="w-full max-w-lg p-4 mx-auto sm:p-6"
             />
         </div>
     );

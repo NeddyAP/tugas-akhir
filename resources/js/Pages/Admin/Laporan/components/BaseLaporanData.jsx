@@ -236,12 +236,18 @@ export default function BaseLaporanData({
                     </button>
                 </header>
 
-                <DataTable
-                    columns={columns}
-                    data={laporans.data || []}
-                    actions={tableActions}
-                    pagination={pagination}
-                />
+                <div className="pb-4 overflow-x-auto">
+                    <div className="inline-block min-w-full align-middle">
+                        <div className="overflow-hidden">
+                            <DataTable
+                                columns={columns}
+                                data={laporans.data || []}
+                                actions={tableActions}
+                                pagination={pagination}
+                            />
+                        </div>
+                    </div>
+                </div>
 
                 <GenericModal
                     isOpen={modalState.isOpen}

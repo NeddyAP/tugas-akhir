@@ -179,13 +179,19 @@ export default function Tutorial({ informations }) {
                     </button>
                 </header>
 
-                <DataTable
-                    columns={TABLE_CONFIG.columns}
-                    data={informations.data || []}
-                    actions={tableActions}
-                    defaultSortBy={TABLE_CONFIG.defaultSort}
-                    pagination={pagination}
-                />
+                <div className="pb-4 overflow-x-auto">
+                    <div className="inline-block min-w-full align-middle">
+                        <div className="overflow-hidden">
+                            <DataTable
+                                columns={TABLE_CONFIG.columns}
+                                data={informations.data || []}
+                                actions={tableActions}
+                                defaultSortBy={TABLE_CONFIG.defaultSort}
+                                pagination={pagination}
+                            />
+                        </div>
+                    </div>
+                </div>
 
                 <GenericModal
                     isOpen={modalState.isOpen}

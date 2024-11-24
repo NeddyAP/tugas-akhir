@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, memo } from 'react';
-import { ChevronRight, Settings, LogOut, User, LucideCalendar, Sun, Moon } from 'lucide-react';
+import { ChevronRight, Settings, LogOut, User, LucideCalendar, Sun, Moon, Menu } from 'lucide-react';
 import { Link, usePage } from '@inertiajs/react';
 import { useDarkMode } from '@/Contexts/DarkModeContext';
 
@@ -35,7 +35,7 @@ const DarkModeToggle = () => {
     return (
         <button
             onClick={toggleDarkMode}
-            className="p-2 mr-4 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
+            className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
         >
             {darkMode ? (
                 <Sun className="w-5 h-5" />
@@ -49,6 +49,7 @@ const DarkModeToggle = () => {
 const AdminNavbar = memo(({ currentPage = 'Dashboard' }) => {
     const { auth: { user } } = usePage().props;
     const [isProfileOpen, setIsProfileOpen] = useState(false);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const profileRef = useRef();
 
     useEffect(() => {
@@ -65,8 +66,17 @@ const AdminNavbar = memo(({ currentPage = 'Dashboard' }) => {
     }, [isProfileOpen]);
 
     return (
-        <nav className="flex items-center justify-between h-16 px-8 bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
-            <div className="flex items-center space-x-8">
+        <nav className="relative flex items-center justify-between h-16 px-4 bg-white border-b border-gray-200 md:px-8 dark:bg-gray-800 dark:border-gray-700">
+            {/* Mobile Menu Button */}
+            <button
+                className="p-2 md:hidden"
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            >
+                <Menu className="w-6 h-6 text-gray-600 dark:text-gray-300" />
+            </button>
+
+            {/* Breadcrumb - Hidden on mobile */}
+            <div className="items-center hidden space-x-8 md:flex">
                 <div className="flex items-center text-gray-500 dark:text-gray-300">
                     <Link href={route('admin.dashboard')} className="hover:text-gray-700 dark:hover:text-gray-200">Admin</Link>
                     <ChevronRight className="w-4 h-4 mx-2 text-gray-500 dark:text-gray-300" />
@@ -74,18 +84,24 @@ const AdminNavbar = memo(({ currentPage = 'Dashboard' }) => {
                 </div>
             </div>
 
-            <div className="flex items-center space-x-4">
-                <span className="text-gray-600 dark:text-gray-300">
-                    {new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
+            {/* Right side items */}
+            <div className="flex items-center space-x-2 md:space-x-4">
+                {/* Date - Hidden on mobile */}
+                <span className="hidden text-gray-600 md:inline dark:text-gray-300">
+                    {new Date().toLocaleDateString('id-ID', { 
+                        day: 'numeric',
+                        month: window.innerWidth > 768 ? 'long' : 'short',
+                        year: 'numeric'
+                    })}
                 </span>
-                <LucideCalendar className="w-4 h-4 text-gray-600 dark:text-gray-300" />
+                <LucideCalendar className="hidden w-4 h-4 text-gray-600 md:block dark:text-gray-300" />
                 <DarkModeToggle />
                 <div className="relative" ref={profileRef}>
                     <button
                         onClick={() => setIsProfileOpen(!isProfileOpen)}
                         className="flex items-center space-x-3 focus:outline-none"
                     >
-                        <div className="flex items-center justify-center w-10 h-10 bg-teal-100 rounded-full">
+                        <div className="flex items-center justify-center w-8 h-8 bg-teal-100 rounded-full md:w-10 md:h-10">
                             <span className="font-medium text-teal-700">
                                 {user.name.charAt(0).toUpperCase()}
                             </span>
@@ -95,6 +111,26 @@ const AdminNavbar = memo(({ currentPage = 'Dashboard' }) => {
                     {isProfileOpen && <ProfileDropdown user={user} isOpen={isProfileOpen} onClose={() => setIsProfileOpen(false)} />}
                 </div>
             </div>
+
+            {/* Mobile Menu - Shown when menu is open */}
+            {isMobileMenuOpen && (
+                <div className="absolute left-0 right-0 z-50 bg-white border-b border-gray-200 top-16 dark:bg-gray-800 dark:border-gray-700 md:hidden">
+                    <div className="p-4">
+                        <div className="flex items-center mb-4 space-x-2 text-gray-500 dark:text-gray-300">
+                            <Link href={route('admin.dashboard')} className="hover:text-gray-700 dark:hover:text-gray-200">Admin</Link>
+                            <ChevronRight className="w-4 h-4" />
+                            <span className="text-gray-900 dark:text-white">{currentPage}</span>
+                        </div>
+                        <div className="text-gray-600 dark:text-gray-300">
+                            {new Date().toLocaleDateString('id-ID', { 
+                                day: 'numeric',
+                                month: 'short',
+                                year: 'numeric'
+                            })}
+                        </div>
+                    </div>
+                </div>
+            )}
         </nav>
     );
 });

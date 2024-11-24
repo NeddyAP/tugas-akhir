@@ -160,20 +160,27 @@ const BimbinganPage = ({ bimbingans }) => {
                 <div className="flex flex-col gap-8">
                     <Header onAdd={tableActions.handleAdd} />
 
-                    <DataTable
-                        columns={columns}
-                        data={bimbingans.data}
-                        actions={tableActions}
-                        defaultSortBy="tanggal"
-                        pagination={{
-                            pageIndex: bimbingans.current_page - 1,
-                            pageCount: bimbingans.last_page,
-                            pageSize: bimbingans.per_page,
-                            total: bimbingans.total,
-                            from: bimbingans.from,
-                            to: bimbingans.to
-                        }}
-                    />
+                    <div className="pb-4 overflow-x-auto">
+                        <div className="inline-block min-w-full align-middle">
+                            <div className="overflow-hidden">
+                                <DataTable
+                                    columns={columns}
+                                    data={bimbingans.data}
+                                    actions={tableActions}
+                                    defaultSortBy="tanggal"
+                                    pagination={{
+                                        pageIndex: bimbingans.current_page - 1,
+                                        pageCount: bimbingans.last_page,
+                                        pageSize: bimbingans.per_page,
+                                        total: bimbingans.total,
+                                        from: bimbingans.from,
+                                        to: bimbingans.to
+                                    }}
+                                    className="w-full"
+                                />
+                            </div>
+                        </div>
+                    </div>
 
                     <GenericModal
                         isOpen={modalState.isOpen}
@@ -189,6 +196,7 @@ const BimbinganPage = ({ bimbingans }) => {
                         handleSubmit={handleSubmit}
                         clearErrors={form.clearErrors}
                         fields={modalFields}
+                        className="w-full max-w-lg p-4 mx-auto sm:p-6"
                     />
                 </div>
             </div>

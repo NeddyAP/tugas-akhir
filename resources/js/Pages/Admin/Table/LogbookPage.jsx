@@ -102,22 +102,29 @@ const LogbookPage = ({ logbooks }) => {
                         onAdd={() => setModalState({ isOpen: true, editingData: null })}
                     />
 
-                    <DataTable
-                        columns={columns}
-                        data={logbooks.data}
-                        actions={{
-                            handleEdit: row => setModalState({ isOpen: true, editingData: row }),
-                            handleDelete,
-                        }}
-                        pagination={{
-                            pageIndex: logbooks.current_page - 1,
-                            pageCount: logbooks.last_page,
-                            pageSize: logbooks.per_page,
-                            total: logbooks.total,
-                            from: logbooks.from,
-                            to: logbooks.to
-                        }}
-                    />
+                    <div className="pb-4 overflow-x-auto">
+                        <div className="inline-block min-w-full align-middle">
+                            <div className="overflow-hidden">
+                                <DataTable
+                                    columns={columns}
+                                    data={logbooks.data}
+                                    actions={{
+                                        handleEdit: row => setModalState({ isOpen: true, editingData: row }),
+                                        handleDelete,
+                                    }}
+                                    pagination={{
+                                        pageIndex: logbooks.current_page - 1,
+                                        pageCount: logbooks.last_page,
+                                        pageSize: logbooks.per_page,
+                                        total: logbooks.total,
+                                        from: logbooks.from,
+                                        to: logbooks.to
+                                    }}
+                                    className="w-full"
+                                />
+                            </div>
+                        </div>
+                    </div>
 
                     <GenericModal
                         isOpen={modalState.isOpen}
@@ -130,6 +137,7 @@ const LogbookPage = ({ logbooks }) => {
                         handleSubmit={handleSubmit}
                         clearErrors={form.clearErrors}
                         fields={modalFields}
+                        className="w-full max-w-lg p-4 mx-auto sm:p-6"
                     />
                 </div>
             </div>

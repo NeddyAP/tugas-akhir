@@ -9,13 +9,11 @@ import { DarkModeProvider } from '@/Contexts/DarkModeContext';
 const AdminLayout = memo(({ children, title, currentPage }) => {
     const { flash } = usePage().props;
     const [isCollapsed, setIsCollapsed] = useState(false);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     useEffect(() => {
         if (flash?.type && flash?.message) {
-            const validTypes = ['success', 'error', 'info', 'warning'];
-            const toastType = validTypes.includes(flash.type) ? flash.type : 'info';
-
-            toast[toastType](flash.message, {
+            toast[flash.type in toast ? flash.type : 'info'](flash.message, {
                 position: "top-right",
                 autoClose: 3000,
                 hideProgressBar: false,
@@ -26,16 +24,32 @@ const AdminLayout = memo(({ children, title, currentPage }) => {
         }
     }, [flash]);
 
+    const handleMobileMenuToggle = () => setIsMobileMenuOpen(!isMobileMenuOpen);
+
     return (
         <DarkModeProvider>
-            <div className="flex min-h-screen bg-white dark:bg-gray-900">
+            <div className="flex min-h-screen max-w-[100vw] overflow-hidden bg-white dark:bg-gray-900">
                 <Head title={title} />
-                <AdminSidebar currentLabel={title} onCollapse={setIsCollapsed} />
+                <AdminSidebar 
+                    currentLabel={title} 
+                    onCollapse={setIsCollapsed}
+                    isMobileMenuOpen={isMobileMenuOpen}
+                    onMobileMenuToggle={handleMobileMenuToggle}
+                />
 
-                <div className={`flex flex-col flex-1 transition-all duration-300 dark:text-white ${isCollapsed ? 'ml-20' : 'ml-64'}`}>
-                    <AdminNavbar currentPage={currentPage} />
-                    <main className="flex-1 p-8">
-                        {children}
+                <div className={`
+                    flex flex-col flex-1 w-full transition-all duration-300 dark:text-white
+                    ${isCollapsed ? 'md:ml-20' : 'md:ml-64'}
+                    ${isMobileMenuOpen ? 'ml-0' : 'ml-0'}
+                `}>
+                    <AdminNavbar 
+                        currentPage={currentPage}
+                        onMobileMenuToggle={handleMobileMenuToggle}
+                    />
+                    <main className="flex-1 p-4 md:p-8 overflow-x-hidden">
+                        <div className="container mx-auto">
+                            {children}
+                        </div>
                         <Toast />
                     </main>
                 </div>
