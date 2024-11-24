@@ -15,6 +15,16 @@ const TABS = [
     { type: 'panduan', label: 'Panduan' }
 ];
 
+const emptyPaginatedData = {
+    data: [],
+    current_page: 1,
+    last_page: 1,
+    per_page: 10,
+    total: 0,
+    from: null,
+    to: null,
+};
+
 export default function InformationPage({ questions, tutorials, panduans, type = 'question' }) {
     const handleTabClick = (newType) => {
         router.get(
@@ -26,9 +36,9 @@ export default function InformationPage({ questions, tutorials, panduans, type =
 
     const renderContent = () => {
         const contents = {
-            question: <Question informations={questions} />,
-            tutorial: <Tutorial informations={tutorials} />,
-            panduan: <Panduan informations={panduans} />
+            question: <Question informations={questions || emptyPaginatedData} />,
+            tutorial: <Tutorial informations={tutorials || emptyPaginatedData} />,
+            panduan: <Panduan informations={panduans || emptyPaginatedData} />
         };
         return contents[type];
     };
