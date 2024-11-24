@@ -11,17 +11,27 @@ class DataKkl extends Model
     protected $fillable = [
         'user_id',
         'dosen_id',
+        'id_laporan',
         'tanggal_mulai',
         'tanggal_selesai',
     ];
+    
+    
 
-    public function user()
+    public function mahasiswa()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id')
+            ->where('role', User::ROLE_MAHASISWA);
     }
 
-    public function dosen()
+    public function pembimbing()
     {
-        return $this->belongsTo(User::class, 'dosen_id');
+        return $this->belongsTo(User::class, 'dosen_id')
+            ->where('role', User::ROLE_DOSEN);
+    }
+
+    public function laporan()
+    {
+        return $this->belongsTo(Laporan::class, 'id_laporan');
     }
 }

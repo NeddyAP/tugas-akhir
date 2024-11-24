@@ -13,10 +13,16 @@ return new class extends Migration
     {
         Schema::create('data_kkls', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users');
-            $table->foreignId('dosen_id')->constrained('users');
-            $table->date('tanggal_mulai');
-            $table->date('tanggal_selesai');
+            $table->foreignId('user_id')->constrained('users')
+                ->onDelete('cascade');
+            $table->foreignId('dosen_id')->nullable()
+                ->constrained('users')->nullOnDelete();
+            $table->foreignId('id_laporan')->nullable()
+                ->constrained('laporans')->nullOnDelete();
+            $table->date('tanggal_mulai')->nullable();
+            $table->date('tanggal_selesai')->nullable();
+            $table->enum('status', ['pending', 'active', 'completed', 'rejected'])
+                ->default('pending')->nullable();
             $table->timestamps();
         });
     }

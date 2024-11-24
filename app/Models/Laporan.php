@@ -13,8 +13,23 @@ class Laporan extends Model
 
     protected $fillable = [
         'id',
-        'tanggal',
-        'catatan',
         'user_id',
+        'file',
+        'keterangan',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function dataKkl()
+    {
+        return $this->hasOne(DataKkl::class, 'id_laporan');
+    }
+
+    public function dataKkn()
+    {
+        return $this->hasOne(DataKkn::class, 'id_laporan');
+    }
 }

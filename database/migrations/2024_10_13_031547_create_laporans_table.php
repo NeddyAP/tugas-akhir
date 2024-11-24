@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('laporans', function (Blueprint $table) {
             $table->id();
-            $table->date('tanggal');
-            $table->text('catatan');
             $table->foreignId('user_id')->constrained('users');
+            $table->string('file');
+            $table->text('keterangan');
             $table->timestamps();
         });
     }

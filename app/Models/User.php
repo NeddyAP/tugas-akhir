@@ -64,44 +64,62 @@ class User extends Authenticatable
     public function scopeMahasiswa($query)
     {
         return $query->where('role', self::ROLE_MAHASISWA)
-                    ->with('profilable');
+            ->with('profilable');
     }
 
     public function scopeDosen($query)
     {
         return $query->where('role', self::ROLE_DOSEN)
-                    ->with('profilable');
+            ->with('profilable');
     }
 
     public function scopeAdmin($query)
     {
         return $query->whereIn('role', [self::ROLE_ADMIN, self::ROLE_SUPERADMIN])
-                    ->with('profilable');
+            ->with('profilable');
     }
 
     public function logbook()
     {
-        return $this->hasMany(Logbook::class);
+        return $this->hasMany(Logbook::class)->latest();
     }
 
     public function laporan()
     {
-        return $this->hasMany(Laporan::class);
+        return $this->hasMany(Laporan::class)->latest();
     }
 
     public function bimbingan()
     {
-        return $this->hasMany(Bimbingan::class);
+        return $this->hasMany(Bimbingan::class)->latest();
     }
 
-    public function dataKkl()
+    public function bimbinganKkl()
     {
-        return $this->hasOne(DataKkl::class);
+        return $this->hasMany(DataKkl::class, 'dosen_id');
     }
 
-    public function dataKkn()
+    public function bimbinganKkn()
     {
-        return $this->hasOne(DataKkn::class);
+        return $this->hasMany(DataKkn::class, 'dosen_id');
+    }
+
+    public function kkl()
+    {
+        return $this->hasOne(DataKkl::class, 'user_id');
+    }
+
+    public function kkn()
+    {
+        return $this->hasOne(DataKkn::class, 'user_id');
+    }
+
+    public function mahasiswaBimbingan()
+    {
+        return $this->hasMany(DataKkl::class, 'dosen_id')
+            ->orWhere(function($query) {
+                $query->hasMany(DataKkn::class, 'dosen_id');
+            });
     }
 
     public function profilable(): MorphTo

@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\DB;
 use App\Models\MahasiswaProfile;
 use App\Models\DosenProfile;
 use App\Models\AdminProfile;
+use App\Models\DataKkl;
+use App\Models\DataKkn;
 
 class UserController extends Controller
 {
@@ -152,6 +154,25 @@ class UserController extends Controller
                 ]);
 
                 $profile->user()->save($user);
+
+                // If user is mahasiswa, create KKL and KKN data
+                if ($tab === 'mahasiswa') {
+                    // Create KKL data
+                    DataKkl::create([
+                        'user_id' => $user->id,
+                        'dosen_id' => null,
+                        'tanggal_mulai' => now(),
+                        'tanggal_selesai' => now()->addMonths(6),
+                    ]);
+
+                    // Create KKN data
+                    DataKkn::create([
+                        'user_id' => $user->id,
+                        'dosen_id' => null,
+                        'tanggal_mulai' => now(),
+                        'tanggal_selesai' => now()->addMonths(6),
+                    ]);
+                }
             });
 
             return redirect()->back()->with('flash', [
