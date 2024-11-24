@@ -218,12 +218,23 @@ export default function BaseLaporanData({
     return (
         <div className="grid grid-cols-1 mb-8">
             <div className="flex flex-col gap-8">
-                <TableHeader
-                    title={title}
-                    description={description}
-                    onDownload={format => window.open(route(`admin.${type}.export`, { format }), '_blank')}
-                    onAdd={tableActions.handleAdd}
-                />
+                <header className="flex items-center justify-between">
+                    <div className="flex flex-col">
+                        <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-200">
+                            {title}
+                        </h2>
+                        <p className="text-sm text-gray-400">
+                            {description}
+                        </p>
+                    </div>
+                    <button
+                        type="button"
+                        onClick={tableActions.handleAdd}
+                        className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-teal-600 border border-transparent rounded-md shadow-sm hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
+                    >
+                        Tambah {title}
+                    </button>
+                </header>
 
                 <DataTable
                     columns={columns}
