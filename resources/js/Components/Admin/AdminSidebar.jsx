@@ -6,6 +6,7 @@ import {
     X, FileText, GraduationCap, File, UserCog,
     TargetIcon, LucideTable2, UserPen,
     Home,
+    User,
 } from 'lucide-react';
 import filkomLogo from '@images/filkomlogo.png';
 
@@ -28,9 +29,10 @@ const NAVIGATION_ITEMS = [
     },
     {
         type: 'dropdown',
-        icon: <Users />,
+        icon: <User />,
         label: 'Data',
         children: [
+            { icon: <Users />, label: 'Semua Data', href: route('admin.users.index', { tab: 'all' }) },
             { icon: <GraduationCap />, label: 'Mahasiswa', href: route('admin.users.index', { tab: 'mahasiswa' }) },
             { icon: <UserPen />, label: 'Dosen', href: route('admin.users.index', { tab: 'dosen' }) },
             { icon: <UserCog />, label: 'Admin', href: route('admin.users.index', { tab: 'admin' }) },

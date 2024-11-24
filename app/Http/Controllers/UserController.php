@@ -19,58 +19,69 @@ class UserController extends Controller
 {
     public function index(Request $request)
     {
-        if (Auth::user()->role !== 'superadmin') {
-            return redirect()->back()->withErrors(['error' => 'Unauthorized access']);
-        }
-
+        $tab = $request->input('tab', 'admin');
         $perPage = $request->input('per_page', 10);
         $search = $request->input('search');
 
-        // Base query for all users with eager loading
-        $baseQuery = User::with('profilable');
-
-        // Query for admins/superadmins
-        $adminQuery = clone $baseQuery;
-        $adminQuery->where(function($q) {
-            $q->where('role', 'admin')
-              ->orWhere('role', 'superadmin');
-        });
-
-        // Query for dosen
-        $dosenQuery = clone $baseQuery;
-        $dosenQuery->where('role', 'dosen');
-
-        // Query for mahasiswa
-        $mahasiswaQuery = clone $baseQuery;
-        $mahasiswaQuery->where('role', 'mahasiswa');
-
-        // Query for all users
-        $allUsersQuery = clone $baseQuery;
+        $query = User::with('profilable');
 
         if ($search) {
-            $searchWildcard = '%'.$search.'%';
-            $searchCallback = function ($query) use ($searchWildcard) {
-                $query->where('name', 'like', $searchWildcard)
+            $searchWildcard = '%' . $search . '%';
+            $query->where(function ($q) use ($searchWildcard) {
+                $q->where('name', 'like', $searchWildcard)
                     ->orWhere('email', 'like', $searchWildcard)
-                    ->orWhereHas('profilable', function($q) use ($searchWildcard) {
+                    ->orWhereHas('profilable', function ($q) use ($searchWildcard) {
                         $q->where('nim', 'like', $searchWildcard)
-                          ->orWhere('nip', 'like', $searchWildcard);
+                            ->orWhere('nip', 'like', $searchWildcard);
                     });
-            };
-
-            $adminQuery->where($searchCallback);
-            $dosenQuery->where($searchCallback);
-            $mahasiswaQuery->where($searchCallback);
-            $allUsersQuery->where($searchCallback);
+            });
         }
 
-        return Inertia::render('Admin/User/UserPage', [
-            'users' => $adminQuery->latest()->paginate($perPage)->withQueryString(),
-            'dosens' => $dosenQuery->latest()->paginate($perPage)->withQueryString(),
-            'mahasiswas' => $mahasiswaQuery->latest()->paginate($perPage)->withQueryString(),
-            'allUsers' => $allUsersQuery->latest()->paginate($perPage)->withQueryString(),
-            'filters' => $request->only(['search']),
-        ]);
+        switch ($tab) {
+            case 'admin':
+                $query->whereIn('role', ['admin', 'superadmin']);
+                $users = $query->latest()->paginate($perPage)->withQueryString();
+                return Inertia::render('Admin/User/UserPage', [
+                    'tab' => $tab,
+                    'users' => $users,
+                    'filters' => $request->only(['search']),
+                ]);
+
+            case 'dosen':
+                $query->where('role', 'dosen');
+                $dosens = $query->latest()->paginate($perPage)->withQueryString();
+                return Inertia::render('Admin/User/UserPage', [
+                    'tab' => $tab,
+                    'dosens' => $dosens,
+                    'filters' => $request->only(['search']),
+                ]);
+
+            case 'mahasiswa':
+                $query->where('role', 'mahasiswa');
+                $mahasiswas = $query->latest()->paginate($perPage)->withQueryString();
+                return Inertia::render('Admin/User/UserPage', [
+                    'tab' => $tab,
+                    'mahasiswas' => $mahasiswas,
+                    'filters' => $request->only(['search']),
+                ]);
+
+            case 'all':
+                $allUsers = $query->latest()->paginate($perPage)->withQueryString();
+                return Inertia::render('Admin/User/UserPage', [
+                    'tab' => $tab,
+                    'allUsers' => $allUsers,
+                    'filters' => $request->only(['search']),
+                ]);
+
+            default:
+                $query->whereIn('role', ['admin', 'superadmin']);
+                $users = $query->latest()->paginate($perPage)->withQueryString();
+                return Inertia::render('Admin/User/UserPage', [
+                    'tab' => 'admin',
+                    'users' => $users,
+                    'filters' => $request->only(['search']),
+                ]);
+        }
     }
 
     private function getValidationRules($userType, $id = null)
@@ -105,6 +116,18 @@ class UserController extends Controller
         return $rules;
     }
 
+    private function getUserTypeLabel($tab)
+    {
+        $labels = [
+            'admin' => 'Admin',
+            'superadmin' => 'Super Admin',
+            'dosen' => 'Dosen',
+            'mahasiswa' => 'Mahasiswa',
+            'all' => 'User',
+        ];
+        return $labels[$tab] ?? 'User';
+    }
+
     public function store(Request $request)
     {
         if (Auth::user()->role !== 'superadmin') {
@@ -114,12 +137,12 @@ class UserController extends Controller
             ]);
         }
 
-        $tab = $request->input('tab', 'admin');
+        $tab = $request->query('tab', 'user');
         $rules = $this->getValidationRules($tab);
 
         try {
             $validated = $request->validate($rules);
-            
+
             DB::transaction(function () use ($validated, $tab) {
                 // Create profile based on user type
                 $profileData = array_filter([
@@ -176,12 +199,12 @@ class UserController extends Controller
             });
 
             return redirect()->back()->with('flash', [
-                'message' => ucfirst($tab).' berhasil ditambahkan',
+                'message' => ucfirst($tab) . ' berhasil ditambahkan',
                 'type' => 'success',
             ]);
         } catch (\Exception $e) {
             return redirect()->back()->with('flash', [
-                'message' => 'Gagal menambahkan '.$tab,
+                'message' => 'Gagal menambahkan ' . $this->getUserTypeLabel($tab),
                 'type' => 'error',
             ]);
         }
@@ -196,9 +219,10 @@ class UserController extends Controller
             ]);
         }
 
+        $tab = $request->query('tab', 'user');
+
         try {
             $user = User::with('profilable')->findOrFail($id);
-            $tab = $request->query('tab', 'admin');
             $rules = $this->getValidationRules($tab, $id);
             $validated = $request->validate($rules);
 
@@ -227,12 +251,12 @@ class UserController extends Controller
             });
 
             return redirect()->back()->with('flash', [
-                'message' => ucfirst($tab).' berhasil diperbarui',
+                'message' => ucfirst($tab) . ' berhasil diperbarui',
                 'type' => 'success',
             ]);
         } catch (\Exception $e) {
             return redirect()->back()->with('flash', [
-                'message' => 'Gagal memperbarui '.$tab,
+                'message' => 'Gagal memperbarui ' . $this->getUserTypeLabel($tab),
                 'type' => 'error',
             ]);
         }
@@ -247,34 +271,28 @@ class UserController extends Controller
             ]);
         }
 
+        $tab = $request->query('tab', 'user');
+
         try {
             $user = User::findOrFail($id);
-            $tab = $request->query('tab', 'admin');
 
-            // Allow deletion from 'semua' tab or check if role matches specific tab
-            $roleMatches = $tab === 'semua' || match ($tab) {
-                'admin' => in_array($user->role, ['admin', 'superadmin']),
-                'dosen' => $user->role === 'dosen',
-                'mahasiswa' => $user->role === 'mahasiswa',
-                default => false,
-            };
-
-            if (!$roleMatches) {
-                return response()->json([
-                    'message' => 'Invalid user type',
-                ], 400);
+            // Delete associated KKL and KKN data if user is mahasiswa
+            if ($user->role === 'mahasiswa') {
+                DataKkl::where('user_id', $id)->delete();
+                DataKkn::where('user_id', $id)->delete();
             }
 
             $user->delete();
 
             return redirect()->back()->with('flash', [
-                'message' => $tab === 'semua' ? 'User berhasil dihapus' : ucfirst($tab).' berhasil dihapus',
+                'message' => ucfirst($tab) . ' berhasil dihapus',
                 'type' => 'success',
             ]);
         } catch (\Exception $e) {
-            return response()->json([
-                'message' => $tab === 'semua' ? 'Gagal menghapus user' : 'Gagal menghapus '.$tab,
-            ], 500);
+            return redirect()->back()->with('flash', [
+                'message' => 'Gagal menghapus ' . $this->getUserTypeLabel($tab),
+                'type' => 'error',
+            ]);
         }
     }
 }

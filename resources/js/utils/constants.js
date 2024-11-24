@@ -47,63 +47,158 @@ export const getTableConfigs = (logbooks, bimbingans, formatDate) => ({
     }
 });
 
-export const USER_TABS = {
-    MAHASISWA: 'mahasiswa',
-    DOSEN: 'dosen',
+// User management constants
+export const USER_TYPES = {
     ADMIN: 'admin',
-    ALL: 'semua',
+    DOSEN: 'dosen',
+    MAHASISWA: 'mahasiswa',
+    ALL: 'all'
 };
 
+export const USER_ROLES = {
+    ADMIN: 'admin',
+    SUPERADMIN: 'superadmin',
+    DOSEN: 'dosen',
+    MAHASISWA: 'mahasiswa'
+};
+
+// Navigation tabs for user management
+export const USER_TABS = [
+    { type: USER_TYPES.ADMIN, label: 'Admin' },
+    { type: USER_TYPES.DOSEN, label: 'Dosen' },
+    { type: USER_TYPES.MAHASISWA, label: 'Mahasiswa' },
+    { type: USER_TYPES.ALL, label: 'Semua User' }
+];
+
+// User table columns
 export const USER_COMMON_COLUMNS = [
-    { Header: "Nama", accessor: "name", sortable: true },
-    { Header: "Email", accessor: "email", sortable: true },
+    { 
+        Header: "Nama",
+        accessor: "name",
+        sortable: true 
+    },
+    { 
+        Header: "Email",
+        accessor: "email",
+        sortable: true 
+    },
+    {
+        Header: "No. Telepon",
+        accessor: row => row.profilable?.phone || '-',
+        sortable: true,
+        id: "phone"
+    },
+    {
+        Header: "Alamat",
+        accessor: row => row.profilable?.address || '-',
+        sortable: true,
+        id: "address"
+    }
 ];
 
 export const USER_SPECIFIC_COLUMNS = {
-    admin: [{ Header: "Role", accessor: "role", sortable: true }],
-    dosen: [{
-        Header: "NIP",
-        accessor: row => row.profilable?.nip,
-        sortable: true,
-        id: "nip"
-    }],
-    mahasiswa: [{
-        Header: "NIM",
-        accessor: row => row.profilable?.nim,
-        sortable: true,
-        id: "nim"
-    }],
-    semua: [
-        { Header: "Role", accessor: "role", sortable: true },
+    [USER_TYPES.ADMIN]: [
+        { 
+            Header: "Role",
+            accessor: "role",
+            sortable: true 
+        }
+    ],
+    [USER_TYPES.DOSEN]: [
+        {
+            Header: "NIP",
+            accessor: row => row.profilable?.nip || '-',
+            sortable: true,
+            id: "nip"
+        }
+    ],
+    [USER_TYPES.MAHASISWA]: [
+        {
+            Header: "NIM",
+            accessor: row => row.profilable?.nim || '-',
+            sortable: true,
+            id: "nim"
+        }
+    ],
+    [USER_TYPES.ALL]: [
+        { 
+            Header: "Role",
+            accessor: "role",
+            sortable: true 
+        },
         {
             Header: "NIM/NIP",
-            accessor: row => row.profilable?.nim || row.profilable?.nip,
+            accessor: row => row.profilable?.nim || row.profilable?.nip || '-',
             sortable: true,
             id: "identifier"
-        },
-    ],
+        }
+    ]
 };
 
+// Form fields for user management
 export const USER_COMMON_FIELDS = [
-    { name: "name", label: "Nama", type: "text" },
-    { name: "email", label: "Email", type: "email" },
-    { name: "phone", label: "Telepon", type: "tel" },
-    { name: "address", label: "Alamat", type: "textarea", rows: 3 },
-    { name: "password", label: "Password", type: "password" },
+    { 
+        name: "name",
+        label: "Nama",
+        type: "text",
+        required: true 
+    },
+    { 
+        name: "email",
+        label: "Email",
+        type: "email",
+        required: true 
+    },
+    { 
+        name: "password",
+        label: "Password",
+        type: "password",
+        required: false 
+    },
+    { 
+        name: "phone",
+        label: "No. Telepon",
+        type: "tel",
+        required: false 
+    },
+    { 
+        name: "address",
+        label: "Alamat",
+        type: "textarea",
+        rows: 3,
+        required: false 
+    }
 ];
 
 export const USER_SPECIFIC_FIELDS = {
-    admin: [{
-        name: "role",
-        label: "Role",
-        type: "select",
-        options: [
-            { value: "admin", label: "Admin" },
-            { value: "superadmin", label: "Superadmin" },
-        ],
-    }],
-    dosen: [{ name: "nip", label: "NIP", type: "text" }],
-    mahasiswa: [{ name: "nim", label: "NIM", type: "text" }],
+    [USER_TYPES.ADMIN]: [
+        {
+            name: "role",
+            label: "Role",
+            type: "select",
+            options: [
+                { value: USER_ROLES.ADMIN, label: "Admin" },
+                { value: USER_ROLES.SUPERADMIN, label: "Superadmin" }
+            ],
+            required: true
+        }
+    ],
+    [USER_TYPES.DOSEN]: [
+        { 
+            name: "nip",
+            label: "NIP",
+            type: "text",
+            required: true
+        }
+    ],
+    [USER_TYPES.MAHASISWA]: [
+        { 
+            name: "nim",
+            label: "NIM",
+            type: "text",
+            required: true
+        }
+    ]
 };
 
 export const LAPORAN_CONFIG = {
