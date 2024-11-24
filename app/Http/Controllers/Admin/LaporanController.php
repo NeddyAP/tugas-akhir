@@ -80,7 +80,7 @@ class LaporanController extends Controller
             'tanggal_mulai' => 'required|date',
             'tanggal_selesai' => 'required|date|after:tanggal_mulai',
             'status' => 'required|in:pending,completed,rejected',
-            'file' => 'nullable|file|mimes:pdf,doc,docx|max:10240',
+            'file' => 'nullable|file|mimes:pdf|max:10240',
             'keterangan' => 'nullable|string',
         ]);
 
@@ -121,7 +121,7 @@ class LaporanController extends Controller
             'tanggal_mulai' => 'required|date',
             'tanggal_selesai' => 'required|date|after:tanggal_mulai',
             'status' => 'required|in:pending,completed,rejected',
-            'file' => 'nullable|file|mimes:pdf,doc,docx|max:10240',
+            'file' => 'nullable|file|mimes:pdf|max:10240',
             'keterangan' => 'nullable|string',
         ]);
 

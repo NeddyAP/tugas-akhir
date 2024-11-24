@@ -183,7 +183,7 @@ export const LAPORAN_CONFIG = {
             },
             {
                 name: "file",
-                label: "File Laporan (PDF/DOC/DOCX)",
+                label: "File Laporan (PDF)",
                 type: "file",
                 accept: ".pdf,.doc,.docx"
             },
@@ -284,7 +284,7 @@ export const getLaporanConfig = (mahasiswas, dosens) => ({
         },
         {
             name: "file",
-            label: "File Laporan (PDF/DOC/DOCX)",
+            label: "File Laporan (PDF)",
             type: "file",
             accept: ".pdf,.doc,.docx"
         },

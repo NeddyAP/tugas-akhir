@@ -194,7 +194,7 @@ export default function BaseLaporanData({
         },
         {
             name: "file",
-            label: "File Laporan (PDF/DOC/DOCX)",
+            label: "File Laporan (PDF)",
             type: "file",
             accept: ".pdf,.doc,.docx"
         },
