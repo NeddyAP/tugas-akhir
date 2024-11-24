@@ -2,12 +2,12 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
 use App\Models\AdminProfile;
-use App\Models\DosenProfile;
-use App\Models\MahasiswaProfile;
 use App\Models\DataKkl;
 use App\Models\DataKkn;
+use App\Models\DosenProfile;
+use App\Models\MahasiswaProfile;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -91,12 +91,12 @@ class UserSeeder extends Seeder
 
             // Create KKL data
             DataKkl::create([
-                'user_id' => $mahasiswa->id
+                'user_id' => $mahasiswa->id,
             ]);
 
             // Create KKN data
             DataKkn::create([
-                'user_id' => $mahasiswa->id
+                'user_id' => $mahasiswa->id,
             ]);
         }
     }

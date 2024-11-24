@@ -2,11 +2,11 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Collection;
+use PDF;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpWord\PhpWord;
-use PDF;
-use Illuminate\Support\Collection;
 
 class ExportService
 {
@@ -22,7 +22,7 @@ class ExportService
 
     protected function exportToExcel(Collection $data, string $fileName)
     {
-        $spreadsheet = new Spreadsheet();
+        $spreadsheet = new Spreadsheet;
         $sheet = $spreadsheet->getActiveSheet();
 
         // Set headers
@@ -53,14 +53,15 @@ class ExportService
     protected function exportToPdf(Collection $data, string $fileName)
     {
         $pdf = PDF::loadView('exports.users', ['data' => $data]);
+
         return $pdf->download("{$fileName}.pdf");
     }
 
     protected function exportToWord(Collection $data, string $fileName)
     {
-        $phpWord = new PhpWord();
+        $phpWord = new PhpWord;
         $section = $phpWord->addSection();
-        
+
         // Add headers
         $section->addText('Users Data Export');
         $section->addTextBreak();
@@ -100,7 +101,7 @@ class ExportService
 
     protected function exportLogbookToExcel(Collection $data, string $fileName)
     {
-        $spreadsheet = new Spreadsheet();
+        $spreadsheet = new Spreadsheet;
         $sheet = $spreadsheet->getActiveSheet();
 
         // Set headers
@@ -128,14 +129,15 @@ class ExportService
     protected function exportLogbookToPdf(Collection $data, string $fileName)
     {
         $pdf = PDF::loadView('exports.logbooks', ['data' => $data]);
+
         return $pdf->download("{$fileName}.pdf");
     }
 
     protected function exportLogbookToWord(Collection $data, string $fileName)
     {
-        $phpWord = new PhpWord();
+        $phpWord = new PhpWord;
         $section = $phpWord->addSection();
-        
+
         // Add headers
         $section->addText('Logbook Data Export');
         $section->addTextBreak();
@@ -172,7 +174,7 @@ class ExportService
 
     protected function exportBimbinganToExcel(Collection $data, string $fileName)
     {
-        $spreadsheet = new Spreadsheet();
+        $spreadsheet = new Spreadsheet;
         $sheet = $spreadsheet->getActiveSheet();
 
         $headers = ['Tanggal Bimbingan', 'Keterangan Bimbingan', 'Status'];
@@ -198,14 +200,15 @@ class ExportService
     protected function exportBimbinganToPdf(Collection $data, string $fileName)
     {
         $pdf = PDF::loadView('exports.bimbingans', ['data' => $data]);
+
         return $pdf->download("{$fileName}.pdf");
     }
 
     protected function exportBimbinganToWord(Collection $data, string $fileName)
     {
-        $phpWord = new PhpWord();
+        $phpWord = new PhpWord;
         $section = $phpWord->addSection();
-        
+
         $section->addText('Bimbingan Data Export');
         $section->addTextBreak();
 

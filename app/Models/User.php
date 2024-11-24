@@ -3,11 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class User extends Authenticatable
 {
@@ -117,7 +117,7 @@ class User extends Authenticatable
     public function mahasiswaBimbingan()
     {
         return $this->hasMany(DataKkl::class, 'dosen_id')
-            ->orWhere(function($query) {
+            ->orWhere(function ($query) {
                 $query->hasMany(DataKkn::class, 'dosen_id');
             });
     }

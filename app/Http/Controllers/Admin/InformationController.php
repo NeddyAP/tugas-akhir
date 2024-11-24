@@ -63,8 +63,8 @@ class InformationController extends Controller
             $validated = $request->validate($rules);
 
             // Filter out null values
-            $validated = array_filter($validated, function($value) {
-                return !is_null($value);
+            $validated = array_filter($validated, function ($value) {
+                return ! is_null($value);
             });
 
             if ($type === self::TYPE_PANDUAN && isset($validated['file'])) {
@@ -89,8 +89,8 @@ class InformationController extends Controller
             $validated = $request->validate($rules);
 
             // Filter out null values
-            $validated = array_filter($validated, function($value) {
-                return !is_null($value);
+            $validated = array_filter($validated, function ($value) {
+                return ! is_null($value);
             });
 
             $model = $this->getModelClass($type);
@@ -140,8 +140,8 @@ class InformationController extends Controller
 
         if ($isUpdate) {
             // Make all fields nullable on update
-            $rules = array_map(function($rule) {
-                return 'nullable|' . $rule;
+            $rules = array_map(function ($rule) {
+                return 'nullable|'.$rule;
             }, $rules);
 
             // Special handling for panduan file

@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
 use App\Models\DataKkl;
 use App\Models\DataKkn;
 use App\Models\Laporan;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -18,16 +18,13 @@ class LaporanController extends Controller
     {
         $type = $request->input('type', 'kkl');
 
-
         $mahasiswas = User::mahasiswa()
             ->select('id', 'name')
             ->get();
 
-
         $dosens = User::dosen()
             ->select('id', 'name')
             ->get();
-
 
         $search = $request->input('search');
 
@@ -47,18 +44,17 @@ class LaporanController extends Controller
             }
         };
 
-
         $kklData = $type === 'kkl' ?
             DataKkl::with(['mahasiswa:id,name', 'pembimbing:id,name', 'laporan'])
-            ->when($search, $baseQuery)
-            ->latest()
-            ->paginate(10) : null;
+                ->when($search, $baseQuery)
+                ->latest()
+                ->paginate(10) : null;
 
         $kknData = $type === 'kkn' ?
             DataKkn::with(['mahasiswa:id,name', 'pembimbing:id,name', 'laporan'])
-            ->when($search, $baseQuery)
-            ->latest()
-            ->paginate(10) : null;
+                ->when($search, $baseQuery)
+                ->latest()
+                ->paginate(10) : null;
 
         return Inertia::render('Admin/Laporan/LaporanPage', [
             'type' => $type,
@@ -95,7 +91,6 @@ class LaporanController extends Controller
                 ]);
             }
 
-
             $data = [
                 'user_id' => $validated['user_id'],
                 'dosen_id' => $validated['dosen_id'],
@@ -108,7 +103,7 @@ class LaporanController extends Controller
             $model = $validated['type'] === 'kkl' ? DataKkl::class : DataKkn::class;
             $model::create($data);
 
-            return redirect()->back()->with('flash', ['message' => 'Data ' . $validated['type'] . ' berhasil ditambahkan.', 'type' => 'success']);
+            return redirect()->back()->with('flash', ['message' => 'Data '.$validated['type'].' berhasil ditambahkan.', 'type' => 'success']);
         });
     }
 
@@ -128,7 +123,6 @@ class LaporanController extends Controller
         return DB::transaction(function () use ($validated, $id, $request) {
             $model = $validated['type'] === 'kkl' ? DataKkl::class : DataKkn::class;
             $data = $model::findOrFail($id);
-
 
             if ($request->hasFile('file')) {
                 if ($data->laporan) {
@@ -157,14 +151,14 @@ class LaporanController extends Controller
                 'status' => $validated['status'],
             ]);
 
-            return redirect()->back()->with('flash', ['message' => 'Data ' . $validated['type'] . ' berhasil diperbarui.', 'type' => 'success']);
+            return redirect()->back()->with('flash', ['message' => 'Data '.$validated['type'].' berhasil diperbarui.', 'type' => 'success']);
         });
     }
 
     public function destroy(Request $request, $id)  // Add Request parameter
     {
         $type = $request->query('type'); // Get type from query string
-        if (!$type) {
+        if (! $type) {
             return redirect()->back()->with('flash', ['message' => 'Tipe data tidak valid.', 'type' => 'error']);
         }
 
@@ -178,7 +172,8 @@ class LaporanController extends Controller
             }
 
             $data->delete();
-            return redirect()->back()->with('flash', ['message' => 'Data ' . $type . ' berhasil dihapus.', 'type' => 'success']);
+
+            return redirect()->back()->with('flash', ['message' => 'Data '.$type.' berhasil dihapus.', 'type' => 'success']);
         });
     }
 }

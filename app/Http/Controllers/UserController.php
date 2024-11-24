@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rule;
-use Inertia\Inertia;
-use Illuminate\Support\Facades\DB;
-use App\Models\MahasiswaProfile;
-use App\Models\DosenProfile;
 use App\Models\AdminProfile;
 use App\Models\DataKkl;
 use App\Models\DataKkn;
+use App\Models\DosenProfile;
+use App\Models\MahasiswaProfile;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
+use Inertia\Inertia;
 
 class UserController extends Controller
 {
@@ -26,7 +26,7 @@ class UserController extends Controller
         $query = User::with('profilable');
 
         if ($search) {
-            $searchWildcard = '%' . $search . '%';
+            $searchWildcard = '%'.$search.'%';
             $query->where(function ($q) use ($searchWildcard) {
                 $q->where('name', 'like', $searchWildcard)
                     ->orWhere('email', 'like', $searchWildcard)
@@ -41,6 +41,7 @@ class UserController extends Controller
             case 'admin':
                 $query->whereIn('role', ['admin', 'superadmin']);
                 $users = $query->latest()->paginate($perPage)->withQueryString();
+
                 return Inertia::render('Admin/User/UserPage', [
                     'tab' => $tab,
                     'users' => $users,
@@ -50,6 +51,7 @@ class UserController extends Controller
             case 'dosen':
                 $query->where('role', 'dosen');
                 $dosens = $query->latest()->paginate($perPage)->withQueryString();
+
                 return Inertia::render('Admin/User/UserPage', [
                     'tab' => $tab,
                     'dosens' => $dosens,
@@ -59,6 +61,7 @@ class UserController extends Controller
             case 'mahasiswa':
                 $query->where('role', 'mahasiswa');
                 $mahasiswas = $query->latest()->paginate($perPage)->withQueryString();
+
                 return Inertia::render('Admin/User/UserPage', [
                     'tab' => $tab,
                     'mahasiswas' => $mahasiswas,
@@ -67,6 +70,7 @@ class UserController extends Controller
 
             case 'all':
                 $allUsers = $query->latest()->paginate($perPage)->withQueryString();
+
                 return Inertia::render('Admin/User/UserPage', [
                     'tab' => $tab,
                     'allUsers' => $allUsers,
@@ -76,6 +80,7 @@ class UserController extends Controller
             default:
                 $query->whereIn('role', ['admin', 'superadmin']);
                 $users = $query->latest()->paginate($perPage)->withQueryString();
+
                 return Inertia::render('Admin/User/UserPage', [
                     'tab' => 'admin',
                     'users' => $users,
@@ -125,6 +130,7 @@ class UserController extends Controller
             'mahasiswa' => 'Mahasiswa',
             'all' => 'User',
         ];
+
         return $labels[$tab] ?? 'User';
     }
 
@@ -144,7 +150,6 @@ class UserController extends Controller
             $validated = $request->validate($rules);
 
             DB::transaction(function () use ($validated, $tab) {
-                // Create profile based on user type
                 $profileData = array_filter([
                     'phone' => $validated['phone'] ?? null,
                     'address' => $validated['address'] ?? null,
@@ -163,7 +168,6 @@ class UserController extends Controller
                     default => AdminProfile::create($profileData),
                 };
 
-                // Create user
                 $user = new User([
                     'name' => $validated['name'],
                     'email' => $validated['email'],
@@ -178,9 +182,7 @@ class UserController extends Controller
 
                 $profile->user()->save($user);
 
-                // If user is mahasiswa, create KKL and KKN data
                 if ($tab === 'mahasiswa') {
-                    // Create KKL data
                     DataKkl::create([
                         'user_id' => $user->id,
                         'dosen_id' => null,
@@ -188,7 +190,6 @@ class UserController extends Controller
                         'tanggal_selesai' => now()->addMonths(6),
                     ]);
 
-                    // Create KKN data
                     DataKkn::create([
                         'user_id' => $user->id,
                         'dosen_id' => null,
@@ -199,12 +200,12 @@ class UserController extends Controller
             });
 
             return redirect()->back()->with('flash', [
-                'message' => ucfirst($tab) . ' berhasil ditambahkan',
+                'message' => ucfirst($tab).' berhasil ditambahkan',
                 'type' => 'success',
             ]);
         } catch (\Exception $e) {
             return redirect()->back()->with('flash', [
-                'message' => 'Gagal menambahkan ' . $this->getUserTypeLabel($tab),
+                'message' => 'Gagal menambahkan '.$this->getUserTypeLabel($tab),
                 'type' => 'error',
             ]);
         }
@@ -226,7 +227,7 @@ class UserController extends Controller
             $rules = $this->getValidationRules($tab, $id);
             $validated = $request->validate($rules);
 
-            DB::transaction(function () use ($user, $validated, $tab) {
+            DB::transaction(function () use ($user, $validated) {
                 // Update user data
                 if (isset($validated['password'])) {
                     $validated['password'] = Hash::make($validated['password']);
@@ -237,7 +238,6 @@ class UserController extends Controller
                 $userFields = array_intersect_key($validated, array_flip(['name', 'email', 'password', 'role']));
                 $user->update($userFields);
 
-                // Update profile data
                 $profileFields = array_filter([
                     'phone' => $validated['phone'] ?? null,
                     'address' => $validated['address'] ?? null,
@@ -251,12 +251,12 @@ class UserController extends Controller
             });
 
             return redirect()->back()->with('flash', [
-                'message' => ucfirst($tab) . ' berhasil diperbarui',
+                'message' => ucfirst($tab).' berhasil diperbarui',
                 'type' => 'success',
             ]);
         } catch (\Exception $e) {
             return redirect()->back()->with('flash', [
-                'message' => 'Gagal memperbarui ' . $this->getUserTypeLabel($tab),
+                'message' => 'Gagal memperbarui '.$this->getUserTypeLabel($tab),
                 'type' => 'error',
             ]);
         }
@@ -285,12 +285,12 @@ class UserController extends Controller
             $user->delete();
 
             return redirect()->back()->with('flash', [
-                'message' => ucfirst($tab) . ' berhasil dihapus',
+                'message' => ucfirst($tab).' berhasil dihapus',
                 'type' => 'success',
             ]);
         } catch (\Exception $e) {
             return redirect()->back()->with('flash', [
-                'message' => 'Gagal menghapus ' . $this->getUserTypeLabel($tab),
+                'message' => 'Gagal menghapus '.$this->getUserTypeLabel($tab),
                 'type' => 'error',
             ]);
         }

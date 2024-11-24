@@ -45,7 +45,7 @@ class LogbookController extends Controller
      */
     public function update(Request $request, Logbook $logbook)
     {
-        // Validate user owns this logbook
+
         if ($logbook->user_id !== Auth::id()) {
             abort(403);
         }
@@ -66,7 +66,7 @@ class LogbookController extends Controller
      */
     public function destroy(Logbook $logbook)
     {
-        // Validate user owns this logbook
+
         if ($logbook->user_id !== Auth::id()) {
             abort(403);
         }

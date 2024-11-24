@@ -67,7 +67,7 @@ const AdminNavbar = memo(({ currentPage = 'Dashboard' }) => {
 
     return (
         <nav className="relative flex items-center justify-between h-16 px-4 bg-white border-b border-gray-200 md:px-8 dark:bg-gray-800 dark:border-gray-700">
-            {/* Mobile Menu Button */}
+
             <button
                 className="p-2 md:hidden"
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -75,7 +75,6 @@ const AdminNavbar = memo(({ currentPage = 'Dashboard' }) => {
                 <Menu className="w-6 h-6 text-gray-600 dark:text-gray-300" />
             </button>
 
-            {/* Breadcrumb - Hidden on mobile */}
             <div className="items-center hidden space-x-8 md:flex">
                 <div className="flex items-center text-gray-500 dark:text-gray-300">
                     <Link href={route('admin.dashboard')} className="hover:text-gray-700 dark:hover:text-gray-200">Admin</Link>
@@ -84,11 +83,11 @@ const AdminNavbar = memo(({ currentPage = 'Dashboard' }) => {
                 </div>
             </div>
 
-            {/* Right side items */}
+
             <div className="flex items-center space-x-2 md:space-x-4">
-                {/* Date - Hidden on mobile */}
+
                 <span className="hidden text-gray-600 md:inline dark:text-gray-300">
-                    {new Date().toLocaleDateString('id-ID', { 
+                    {new Date().toLocaleDateString('id-ID', {
                         day: 'numeric',
                         month: window.innerWidth > 768 ? 'long' : 'short',
                         year: 'numeric'
@@ -112,7 +111,7 @@ const AdminNavbar = memo(({ currentPage = 'Dashboard' }) => {
                 </div>
             </div>
 
-            {/* Mobile Menu - Shown when menu is open */}
+
             {isMobileMenuOpen && (
                 <div className="absolute left-0 right-0 z-50 bg-white border-b border-gray-200 top-16 dark:bg-gray-800 dark:border-gray-700 md:hidden">
                     <div className="p-4">
@@ -122,7 +121,7 @@ const AdminNavbar = memo(({ currentPage = 'Dashboard' }) => {
                             <span className="text-gray-900 dark:text-white">{currentPage}</span>
                         </div>
                         <div className="text-gray-600 dark:text-gray-300">
-                            {new Date().toLocaleDateString('id-ID', { 
+                            {new Date().toLocaleDateString('id-ID', {
                                 day: 'numeric',
                                 month: 'short',
                                 year: 'numeric'

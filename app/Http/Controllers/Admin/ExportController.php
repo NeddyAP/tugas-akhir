@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
-use App\Models\Logbook;
 use App\Models\Bimbingan;
+use App\Models\Logbook;
+use App\Models\User;
 use App\Services\ExportService;
 use Illuminate\Http\Request;
 
@@ -33,11 +33,11 @@ class ExportController extends Controller
 
         // Apply search if provided
         if ($search) {
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%")
-                  ->orWhere('nim', 'like', "%{$search}%")
-                  ->orWhere('nip', 'like', "%{$search}%");
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhere('nim', 'like', "%{$search}%")
+                    ->orWhere('nip', 'like', "%{$search}%");
             });
         }
 
@@ -47,7 +47,8 @@ class ExportController extends Controller
             return response()->json(['data' => $users]);
         }
 
-        $fileName = "users-{$tab}-" . date('Y-m-d-His');
+        $fileName = "users-{$tab}-".date('Y-m-d-His');
+
         return $this->exportService->export($users, $format, $fileName);
     }
 
@@ -60,10 +61,10 @@ class ExportController extends Controller
 
         // Apply search if provided
         if ($search) {
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('tanggal', 'like', "%{$search}%")
-                  ->orWhere('catatan', 'like', "%{$search}%")
-                  ->orWhere('keterangan', 'like', "%{$search}%");
+                    ->orWhere('catatan', 'like', "%{$search}%")
+                    ->orWhere('keterangan', 'like', "%{$search}%");
             });
         }
 
@@ -73,7 +74,8 @@ class ExportController extends Controller
             return response()->json(['data' => $logbooks]);
         }
 
-        $fileName = "logbooks-" . date('Y-m-d-His');
+        $fileName = 'logbooks-'.date('Y-m-d-His');
+
         return $this->exportService->exportLogbook($logbooks, $format, $fileName);
     }
 
@@ -85,9 +87,9 @@ class ExportController extends Controller
         $query = Bimbingan::with('user');
 
         if ($search) {
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('tanggal', 'like', "%{$search}%")
-                  ->orWhere('keterangan', 'like', "%{$search}%");
+                    ->orWhere('keterangan', 'like', "%{$search}%");
             });
         }
 
@@ -97,7 +99,8 @@ class ExportController extends Controller
             return response()->json(['data' => $bimbingans]);
         }
 
-        $fileName = "bimbingans-" . date('Y-m-d-His');
+        $fileName = 'bimbingans-'.date('Y-m-d-His');
+
         return $this->exportService->exportBimbingan($bimbingans, $format, $fileName);
     }
 }

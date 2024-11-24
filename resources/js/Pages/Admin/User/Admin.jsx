@@ -114,9 +114,9 @@ const Admin = ({ users }) => {
                 className="flex-col gap-2 sm:flex-row sm:gap-4"
             />
 
-            <div className="pb-4 overflow-x-auto"> {/* Added pb-4 for padding bottom */}
+            <div className="pb-4 overflow-x-auto"> 
                 <div className="inline-block min-w-full align-middle">
-                    <div className="overflow-hidden"> {/* Added wrapper div */}
+                    <div className="overflow-hidden"> 
                         <DataTable
                             columns={[...USER_COMMON_COLUMNS, ...USER_SPECIFIC_COLUMNS[USER_TYPES.ADMIN]]}
                             data={users.data}
