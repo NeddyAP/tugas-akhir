@@ -7,16 +7,16 @@ export const downloadFile = async (url) => {
         const downloadUrl = window.URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = downloadUrl;
-        
+
         const contentDisposition = response.headers.get('Content-Disposition');
         const filenameMatch = contentDisposition && contentDisposition.match(/filename="(.+)"/);
         link.download = filenameMatch ? filenameMatch[1] : 'download';
-        
+
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
         window.URL.revokeObjectURL(downloadUrl);
-        
+
         return { success: true };
     } catch (error) {
         return { success: false, error };
@@ -27,7 +27,7 @@ export const copyToClipboard = async (headers, data) => {
     try {
         // Convert data to tab-separated text
         const headerRow = headers.join('\t');
-        const dataRows = data.map(row => 
+        const dataRows = data.map(row =>
             headers.map(header => row[header] || '').join('\t')
         );
         const text = [headerRow, ...dataRows].join('\n');
@@ -45,7 +45,7 @@ export const copyToClipboard = async (headers, data) => {
         textarea.style.left = '-999999px';
         document.body.appendChild(textarea);
         textarea.select();
-        
+
         try {
             document.execCommand('copy');
             return { success: true };
@@ -84,7 +84,6 @@ export const createExportHandler = ({ route, format, params = {}, columns }) => 
         const result = await downloadFile(url);
         if (!result.success) throw result.error;
     } catch (error) {
-        console.error('Export failed:', error);
         alert('Gagal mengekspor data. Silakan coba lagi.');
     }
 };

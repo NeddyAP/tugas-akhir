@@ -128,7 +128,6 @@ export default function LogbookPage({ logbooks, bimbingans }) {
             const result = await downloadFile(url);
             if (!result.success) throw result.error;
         } catch (error) {
-            console.error('Export failed:', error);
             alert('Gagal mengekspor data. Silakan coba lagi.');
         }
     }, [activeTab, tableConfigs]);

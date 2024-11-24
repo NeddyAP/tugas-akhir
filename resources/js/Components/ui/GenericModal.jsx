@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { Dialog } from "@headlessui/react";
 import { X } from "lucide-react";
+import Select from "react-select"; // Add this import
 
 export default function GenericModal({
     isOpen,
@@ -20,6 +21,77 @@ export default function GenericModal({
             clearErrors();
         }
     }, [isOpen]);
+
+    const renderField = (field) => {
+        switch (field.type) {
+            case "hidden":
+                return (
+                    <input
+                        type="hidden"
+                        value={field.value}
+                        name={field.name}
+                    />
+                );
+            case "searchableSelect":
+                return (
+                    <Select
+                        value={field.options.find(option => option.value === data[field.name])}
+                        onChange={(selected) => setData(field.name, selected ? selected.value : '')}
+                        options={field.options}
+                        className="mt-1"
+                        classNamePrefix="select"
+                        isClearable
+                        isSearchable
+                        placeholder={`Pilih ${field.label}`}
+                    />
+                );
+            case "textarea":
+                return (
+                    <textarea
+                        value={data[field.name] || ''}
+                        onChange={(e) => setData(field.name, e.target.value)}
+                        rows={field.rows || 3}
+                        className="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-teal-500 focus:ring-teal-500 sm:text-sm"
+                        required={field.required}
+                    />
+                );
+            case "file":
+                return (
+                    <input
+                        type="file"
+                        onChange={onFileChange}
+                        accept={field.accept}
+                        className="block w-full mt-1 text-sm text-gray-900 border border-gray-300 rounded-md cursor-pointer bg-gray-50 focus:outline-none dark:text-gray-400 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                    />
+                );
+            case "select":
+                return (
+                    <select
+                        value={field.value || data[field.name] || ''} // Add field.value support
+                        onChange={(e) => setData(field.name, e.target.value)}
+                        disabled={field.disabled || false}
+                        className="block w-full mt-1 text-gray-900 bg-white border-gray-300 rounded-md shadow-sm dark:border-gray-600 focus:ring-teal-500 focus:border-teal-500 sm:text-sm dark:bg-gray-700 dark:text-gray-100 disabled:bg-gray-100 dark:disabled:bg-gray-600"
+                    >
+                        <option value="">Pilih {field.label}</option>
+                        {field.options.map((option) => (
+                            <option key={option.value} value={option.value}>
+                                {option.label}
+                            </option>
+                        ))}
+                    </select>
+                );
+            default:
+                return (
+                    <input
+                        type={field.type}
+                        value={data[field.name]}
+                        onChange={(e) => setData(field.name, e.target.value)}
+                        className="block w-full mt-1 text-gray-900 bg-white border-gray-300 rounded-md shadow-sm dark:border-gray-600 focus:ring-teal-500 focus:border-teal-500 sm:text-sm dark:bg-gray-700 dark:text-gray-100"
+                        disabled={field.disabled || false}
+                    />
+                );
+        }
+    };
 
     return (
         <Dialog open={isOpen} onClose={onClose} className="relative z-50">
@@ -45,48 +117,12 @@ export default function GenericModal({
                     <form onSubmit={handleSubmit} className="space-y-4">
                         {fields.map((field) => (
                             <div key={field.name}>
-                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">
+                                <label className="block text-sm font-medium text-gray-700">
                                     {field.label}
                                 </label>
-                                {field.type === "textarea" ? (
-                                    <textarea
-                                        value={data[field.name]}
-                                        onChange={(e) => setData(field.name, e.target.value)}
-                                        rows={field.rows || 3}
-                                        className="block w-full mt-1 text-gray-900 bg-white border-gray-300 rounded-md shadow-sm dark:border-gray-600 focus:ring-teal-500 focus:border-teal-500 sm:text-sm dark:bg-gray-700 dark:text-gray-100"
-                                    />
-                                ) : field.type === "file" ? (
-                                    <input
-                                        type="file"
-                                        onChange={onFileChange}
-                                        accept={field.accept}
-                                        className="block w-full mt-1 text-gray-900 bg-white border-gray-300 rounded-md shadow-sm dark:border-gray-600 focus:ring-teal-500 focus:border-teal-500 sm:text-sm dark:bg-gray-700 dark:text-gray-100"
-                                        required={field.required}
-                                    />
-                                ) : field.type === "select" ? (
-                                    <select
-                                        value={data[field.name]}
-                                        onChange={(e) => setData(field.name, e.target.value)}
-                                        disabled={field.disabled || false}
-                                        className="block w-full mt-1 text-gray-900 bg-white border-gray-300 rounded-md shadow-sm dark:border-gray-600 focus:ring-teal-500 focus:border-teal-500 sm:text-sm dark:bg-gray-700 dark:text-gray-100"
-                                    >
-                                        {field.options.map((option) => (
-                                            <option key={option.value} value={option.value}>
-                                                {option.label}
-                                            </option>
-                                        ))}
-                                    </select>
-                                ) : (
-                                    <input
-                                        type={field.type}
-                                        value={data[field.name]}
-                                        onChange={(e) => setData(field.name, e.target.value)}
-                                        className="block w-full mt-1 text-gray-900 bg-white border-gray-300 rounded-md shadow-sm dark:border-gray-600 focus:ring-teal-500 focus:border-teal-500 sm:text-sm dark:bg-gray-700 dark:text-gray-100"
-                                        disabled={field.disabled || false}
-                                    />
-                                )}
+                                {renderField(field)}
                                 {errors[field.name] && (
-                                    <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors[field.name]}</p>
+                                    <p className="mt-1 text-sm text-red-600">{errors[field.name]}</p>
                                 )}
                             </div>
                         ))}

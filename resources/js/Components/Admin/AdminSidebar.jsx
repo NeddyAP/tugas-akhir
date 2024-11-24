@@ -23,7 +23,7 @@ const NAVIGATION_ITEMS = [
         children: [
             { icon: <FileText />, label: 'Logbook', href: route('admin.logbooks.index') },
             { icon: <TargetIcon />, label: 'Bimbingan', href: route('admin.bimbingans.index') },
-            { icon: <File />, label: 'Laporan', href: '' },
+            { icon: <File />, label: 'Laporan', href: route('admin.laporans.index') },
         ],
     },
     {

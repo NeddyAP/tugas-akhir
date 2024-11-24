@@ -28,6 +28,8 @@ const TableHeader = memo(({ title, onDownload, onAdd }) => (
                                     {({ active }) => (
                                         <button
                                             onClick={() => onDownload(item.format)}
+                                            // Update the route in BaseLaporanData where this is called:
+                                            // format => window.open(route('admin.laporans.export', { format, type }), '_blank')
                                             className={`${active
                                                 ? 'bg-gray-100 dark:bg-gray-600 text-gray-900 dark:text-gray-100'
                                                 : 'text-gray-700 dark:text-gray-200'
