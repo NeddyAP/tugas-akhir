@@ -1,13 +1,13 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import { Link, usePage } from '@inertiajs/react';
-import { Moon, Sun } from 'lucide-react';
+import { Moon, Sun, Menu, X } from 'lucide-react';
 import avatarProfile from '@images/avatar-profile.jpg';
 import { useDarkMode } from '@/Contexts/DarkModeContext';
 
 const NavLink = ({ href, children }) => (
     <Link
         href={route(href)}
-        className="mr-4 transition-all duration-300 ease-in-out hover:underline-offset-2 hover:underline"
+        className="text-white transition-all duration-300 ease-in-out  hover:underline-offset-2 hover:underline"
     >
         {children}
     </Link>
@@ -92,10 +92,40 @@ const DarkModeToggle = () => {
     );
 };
 
+const MobileMenu = ({ isOpen, onClose, user }) => (
+    <div className={`fixed inset-0 z-50 transform ${isOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out lg:hidden`}>
+        <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose}></div>
+        <div className="absolute inset-y-0 left-0 px-6 py-4 bg-white shadow-lg w-72 dark:bg-gray-800">
+            <div className="flex flex-col h-full">
+                <div className="flex items-center justify-between mb-8">
+                    <Link href={route('home')} className="text-2xl font-bold text-teal-600 dark:text-white">
+                        FILKOM
+                    </Link>
+                    <button onClick={onClose} className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700">
+                        <X className="w-6 h-6" />
+                    </button>
+                </div>
+                <nav className="flex flex-col space-y-4">
+                    <Link href={route('pedomans.index')} className="text-gray-800 dark:text-white hover:text-teal-600 dark:hover:text-teal-400">
+                        Buku Pedoman
+                    </Link>
+                    <Link href={route('logbooks.index')} className="text-gray-800 dark:text-white hover:text-teal-600 dark:hover:text-teal-400">
+                        Logbook
+                    </Link>
+                    <Link href={route('laporans.index')} className="text-gray-800 dark:text-white hover:text-teal-600 dark:hover:text-teal-400">
+                        Laporan
+                    </Link>
+                </nav>
+            </div>
+        </div>
+    </div>
+);
+
 const FrontNavbar = () => {
     const { auth } = usePage().props;
     const [isVisible, setIsVisible] = useState(true);
     const [lastScrollY, setLastScrollY] = useState(0);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     const controlNavbar = useCallback(() => {
         const currentScrollY = window.scrollY;
@@ -109,23 +139,41 @@ const FrontNavbar = () => {
     }, [controlNavbar]);
 
     return (
-        <nav
-            className={`fixed top-0 left-0 z-50 w-full p-4 px-24 text-white transition-transform duration-300 bg-teal-600 dark:bg-gray-800 shadow-md ${isVisible ? 'translate-y-0' : '-translate-y-full'
-                }`}
-        >
-            <div className="container flex items-center justify-between px-4 mx-auto md:px-24">
-                <Link href={route('home')} className="text-2xl font-bold">
-                    FILKOM
-                </Link>
-                <div className="items-center hidden md:flex">
-                    <NavLink href="pedomans.index">Buku Pedoman</NavLink>
-                    <NavLink href="logbooks.index">Logbook</NavLink>
-                    <NavLink href="laporans.index">Laporan</NavLink>
-                    <DarkModeToggle />
-                    <AuthButton user={auth.user} />
+        <>
+            <nav
+                className={`fixed top-0 left-0 z-40 w-full transition-transform duration-300 bg-teal-600 dark:bg-gray-800 shadow-md ${isVisible ? 'translate-y-0' : '-translate-y-full'
+                    }`}
+            >
+                <div className="container mx-auto max-w-6xl px-8 sm:px-12 md:px-16 lg:px-24 xl:px-32 py-3">
+                    <div className="flex items-center justify-between">
+                        <Link href={route('home')} className="text-xl font-bold text-white sm:text-2xl">
+                            FILKOM
+                        </Link>
+
+                        <div className="flex items-center space-x-2 sm:space-x-4">
+                            <div className="hidden lg:flex lg:items-center lg:space-x-4">
+                                <NavLink href="pedomans.index">Buku Pedoman</NavLink>
+                                <NavLink href="logbooks.index">Logbook</NavLink>
+                                <NavLink href="laporans.index">Laporan</NavLink>
+                            </div>
+                            <DarkModeToggle />
+                            <AuthButton user={auth.user} />
+                            <button
+                                className="p-2 text-white rounded-md lg:hidden hover:bg-teal-700 dark:hover:bg-gray-700"
+                                onClick={() => setIsMobileMenuOpen(true)}
+                            >
+                                <Menu className="w-6 h-6" />
+                            </button>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </nav>
+            </nav>
+            <MobileMenu
+                isOpen={isMobileMenuOpen}
+                onClose={() => setIsMobileMenuOpen(false)}
+                user={auth.user}
+            />
+        </>
     );
 };
 

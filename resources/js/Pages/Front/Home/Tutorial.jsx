@@ -13,48 +13,49 @@ const Tutorial = ({ tutorial }) => {
     const data = tutorial || placeholderData;
 
     return (
-        <div className="container px-4 py-12 mx-auto md:px-8 lg:px-16 md:py-20">
-            <div className="grid grid-cols-1 gap-8 md:grid-cols-3 md:gap-12">
-                <div className="md:col-span-2">
-                    <div className="mb-6 aspect-w-16 h-96 md:mb-0">
-                        {data.link && !videoError ? (
-                            <iframe
-                                src={`https://www.youtube.com/embed/${data.link}`}
-                                title="Tutorial Video"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                allowFullScreen
-                                className="w-full h-full rounded-xl"
-                                onError={() => setVideoError(true)}
-                            />
-                        ) : (
-                            <div className="flex items-center justify-center w-full h-full bg-gray-100 dark:bg-gray-800 rounded-xl">
-                                <div className="text-center">
-                                    <svg className="w-16 h-16 mx-auto mb-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                    </svg>
-                                    <p className="text-gray-500 dark:text-gray-400">
-                                        Video tidak tersedia
-                                    </p>
+        <section id="tutorial" className="w-full py-12 sm:py-16 lg:py-20 scroll-mt-20">
+            <div className="container mx-auto max-w-6xl px-8 sm:px-12 md:px-16 lg:px-24 xl:px-32">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
+                    <div className="lg:col-span-2">
+                        <div className="relative w-full overflow-hidden rounded-2xl bg-gray-100 dark:bg-gray-800 shadow-lg transition-colors duration-200" 
+                             style={{ paddingTop: '56.25%' }}> {/* 16:9 Aspect Ratio */}
+                            {data.link && !videoError ? (
+                                <iframe
+                                    src={`https://www.youtube.com/embed/${data.link}`}
+                                    title="Tutorial Video"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allowFullScreen
+                                    className="absolute inset-0 w-full h-full"
+                                    onError={() => setVideoError(true)}
+                                />
+                            ) : (
+                                <div className="absolute inset-0 flex items-center justify-center">
+                                    <div className="text-center">
+                                        <svg className="w-12 h-12 mx-auto mb-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                        </svg>
+                                        <p className="text-gray-500 dark:text-gray-400">
+                                            Video tidak tersedia
+                                        </p>
+                                    </div>
                                 </div>
-                            </div>
-                        )}
-                    </div>
-                </div>
-                <div className="flex items-center justify-center md:col-span-1">
-                    <div className="text-center">
-                        <h2 className="mb-4 text-2xl font-bold">{data.title}</h2>
-                        <div className="mb-6">
-                            <p className="text-gray-700 dark:text-gray-200">
-                                {data.description}
-                            </p>
+                            )}
                         </div>
-                        <PrimaryButton href={route('login')}>
-                            Login
-                        </PrimaryButton>
+                    </div>
+                    <div className="flex flex-col justify-center">
+                        <div className="text-center lg:text-left space-y-6">
+                            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">{data.title}</h2>
+                            <p className="text-gray-600 dark:text-gray-300">{data.description}</p>
+                            <div className="flex justify-center lg:justify-start">
+                                <PrimaryButton href={route('login')}>
+                                    Login
+                                </PrimaryButton>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
     );
 };
 

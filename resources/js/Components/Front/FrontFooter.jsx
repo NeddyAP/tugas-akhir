@@ -50,13 +50,14 @@ const FrontFooter = () => {
     const currentYear = new Date().getFullYear();
 
     return (
-        <footer className="container py-8 mx-auto md:px-24 lg:px-24 md:py-20 dark:bg-gray-900 dark:text-white">
-            <div className="container mx-auto ">
-                <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
-                    <div className="col-span-1 md:col-span-2 lg:col-span-1">
-                        <div className="flex flex-col items-center widget md:items-start">
+        <footer className="w-full py-8 mt-auto bg-white dark:bg-gray-900 dark:text-white">
+            <div className="container mx-auto max-w-6xl px-8 sm:px-12 md:px-16 lg:px-24 xl:px-32">
+                <div className="grid grid-cols-1 gap-8 md:grid-cols-12">
+                    {/* Logo and Social Section */}
+                    <div className="md:col-span-4 lg:col-span-3">
+                        <div className="flex flex-col items-center md:items-start space-y-4">
                             <img
-                                className="mb-4 w-full max-w-[300px] h-auto object-contain"
+                                className="h-16 w-auto object-contain"
                                 src={filkomLogo}
                                 alt="Fakultas Ilmu Komputer"
                             />
@@ -64,23 +65,27 @@ const FrontFooter = () => {
                         </div>
                     </div>
 
-                    <FooterSection
-                        title="Sistem Online"
-                        links={[
-                            { href: "", text: "Pendaftaran Online" },
-                            { href: "", text: "E-Learning" },
-                            { href: "", text: "Jurnal" },
-                            { href: "", text: "Jurnal Internasional" },
-                        ]}
-                    />
-
-                    <FooterSection title="Link Relasi" links={[]} />
-
-                    <ContactInfo />
+                    {/* Links Sections */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 md:col-span-8 lg:col-span-9">
+                        <FooterSection
+                            title="Sistem Online"
+                            links={[
+                                { href: "", text: "Pendaftaran Online" },
+                                { href: "", text: "E-Learning" },
+                                { href: "", text: "Jurnal" },
+                                { href: "", text: "Jurnal Internasional" },
+                            ]}
+                        />
+                        <FooterSection title="Link Relasi" links={[]} />
+                        <ContactInfo />
+                    </div>
                 </div>
 
-                <div className="flex justify-center pt-5 mt-8 border-t dark:border-gray-700">
-                    <p className="text-sm text-gray-600 dark:text-gray-400">© {currentYear} made with ❤️ Djuanda University.</p>
+                {/* Copyright */}
+                <div className="pt-8 mt-8 border-t dark:border-gray-800">
+                    <p className="text-sm text-center text-gray-600 dark:text-gray-400">
+                        © {currentYear} made with ❤️ Djuanda University.
+                    </p>
                 </div>
             </div>
         </footer>

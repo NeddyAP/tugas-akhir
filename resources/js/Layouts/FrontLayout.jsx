@@ -20,21 +20,24 @@ export default function FrontLayout({ children }) {
 
     return (
         <DarkModeProvider>
-            <div className="flex flex-col min-h-screen bg-white dark:bg-gray-900 dark:text-white">
+            <div className="flex flex-col min-h-screen overflow-hidden bg-white transition-colors duration-200 dark:bg-gray-900 dark:text-white">
                 <Head>
                     <meta
                         head-key="description"
                         name="description"
                         content="This is the default description"
                     />
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+                    <meta name="theme-color" content="#0F172A" media="(prefers-color-scheme: dark)" />
+                    <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)" />
                 </Head>
 
                 <Navbar />
-                <main className="flex-grow pt-16 sm:mb-20">
+                <main className="flex-grow w-full">
                     {children}
                 </main>
                 <Footer />
-                <Toast />
+                <Toast position="bottom-right" theme="colored" />
             </div>
         </DarkModeProvider>
     );

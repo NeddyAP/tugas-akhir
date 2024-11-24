@@ -5,7 +5,7 @@ import FrontLayout from '@/Layouts/FrontLayout';
 import PropTypes from 'prop-types';
 
 const SearchBar = React.memo(({ onSearch }) => (
-    <div className="relative mb-6">
+    <div className="relative my-10">
         <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
             <Search className="w-5 h-5 text-gray-400" />
         </div>

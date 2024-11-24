@@ -6,19 +6,23 @@ const LandingPage = React.lazy(() => import("./LandingPage"));
 const Tutorial = React.lazy(() => import("./Tutorial"));
 const Faq = React.lazy(() => import("./Faq"));
 
-const LoadingFallback = () => <div>Loading...</div>;
+const LoadingFallback = () => (
+    <div className="fixed inset-0 flex items-center justify-center bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm">
+        <div className="w-16 h-16 border-4 border-teal-600 border-t-transparent rounded-full animate-spin dark:border-teal-400" />
+    </div>
+);
 
 export default function HomePage({ faqs, tutorial }) {
     return (
         <FrontLayout>
             <Head title="Home" />
-            <main className="px-24">
+            <div className="flex flex-col">
                 <Suspense fallback={<LoadingFallback />}>
                     <LandingPage />
                     <Tutorial tutorial={tutorial} />
                     <Faq faqs={faqs} />
                 </Suspense>
-            </main>
+            </div>
         </FrontLayout>
     );
 }
