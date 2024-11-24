@@ -63,6 +63,12 @@ Sebelum memulai, pastikan Anda telah memenuhi persyaratan berikut:
     php artisan migrate:fresh --seed
     ```
 
+8. **Konfigurasi storage:**
+
+    ```sh
+    php artisan storage:link
+    ```
+
 ### Menjalankan Aplikasi
 
 1.  **Mulai server pengembangan Laravel:**
