@@ -14,6 +14,7 @@ class DataKkn extends Model
         'id_laporan',
         'tanggal_mulai',
         'tanggal_selesai',
+        'status',
     ];
 
     public function mahasiswa()
