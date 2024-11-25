@@ -29,7 +29,7 @@ Route::inertia('/pedomans', 'Front/Pedoman/PedomanPage', [
 ])->name('pedomans.index');
 
 Route::get('files/laporan/{filename}', function ($filename) {
-    $path = 'laporans/'.$filename;  // Keep consistent path structure
+    $path = 'laporans/'.$filename;
     if (! Storage::disk('private')->exists($path)) {
         abort(404);
     }

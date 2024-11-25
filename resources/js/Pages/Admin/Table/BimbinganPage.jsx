@@ -15,7 +15,6 @@ const formatDate = (dateString) => {
     });
 };
 
-// Memoized Header Component (same as LogbookPage)
 const Header = memo(({ onAdd }) => (
     <header className="flex items-center justify-between">
         <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-200">Bimbingan Mahasiswa</h2>
@@ -31,7 +30,6 @@ const Header = memo(({ onAdd }) => (
     </header>
 ));
 
-// Memoized Status Badge Component
 const StatusBadge = memo(({ status = 'pending' }) => {
     const styles = {
         approved: 'bg-green-100 text-green-800',

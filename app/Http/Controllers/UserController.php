@@ -229,7 +229,6 @@ class UserController extends Controller
             $validated = $request->validate($rules);
 
             DB::transaction(function () use ($user, $validated) {
-                // Update user data
                 if (isset($validated['password'])) {
                     $validated['password'] = Hash::make($validated['password']);
                 } else {

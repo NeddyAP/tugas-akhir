@@ -26,13 +26,11 @@ class ExportService
         $spreadsheet = new Spreadsheet;
         $sheet = $spreadsheet->getActiveSheet();
 
-        // Set headers
         $headers = ['Name', 'Email', 'Role', 'NIM/NIP', 'Phone', 'Address'];
         foreach ($headers as $index => $header) {
             $sheet->setCellValueByColumnAndRow($index + 1, 1, $header);
         }
 
-        // Set data
         $row = 2;
         foreach ($data as $item) {
             $sheet->setCellValueByColumnAndRow(1, $row, $item->name);
@@ -63,11 +61,9 @@ class ExportService
         $phpWord = new PhpWord;
         $section = $phpWord->addSection();
 
-        // Add headers
         $section->addText('Users Data Export');
         $section->addTextBreak();
 
-        // Add table
         $table = $section->addTable();
         $table->addRow();
         foreach (['Name', 'Email', 'Role', 'NIM/NIP', 'Phone', 'Address'] as $header) {
@@ -105,13 +101,11 @@ class ExportService
         $spreadsheet = new Spreadsheet;
         $sheet = $spreadsheet->getActiveSheet();
 
-        // Set headers
         $headers = ['Tanggal', 'Catatan Kegiatan', 'Keterangan Kegiatan'];
         foreach ($headers as $index => $header) {
             $sheet->setCellValueByColumnAndRow($index + 1, 1, $header);
         }
 
-        // Set data
         $row = 2;
         foreach ($data as $item) {
             $sheet->setCellValueByColumnAndRow(1, $row, $item->tanggal);
@@ -139,11 +133,9 @@ class ExportService
         $phpWord = new PhpWord;
         $section = $phpWord->addSection();
 
-        // Add headers
         $section->addText('Logbook Data Export');
         $section->addTextBreak();
 
-        // Add table
         $table = $section->addTable();
         $table->addRow();
         foreach (['Tanggal', 'Catatan Kegiatan', 'Keterangan Kegiatan'] as $header) {

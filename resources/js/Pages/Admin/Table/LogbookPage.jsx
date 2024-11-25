@@ -15,7 +15,6 @@ const formatDate = (dateString) => {
     });
 };
 
-// Memoized Header Component
 const Header = memo(({ onAdd }) => (
     <header className="flex items-center justify-between">
         <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-200">Logbook Mahasiswa</h2>
@@ -81,7 +80,6 @@ const LogbookPage = ({ logbooks }) => {
         { name: 'keterangan', label: 'Keterangan', type: 'text', required: true },
     ];
 
-    // Reset form when modal state changes
     React.useEffect(() => {
         if (modalState.editingData) {
             form.setData({

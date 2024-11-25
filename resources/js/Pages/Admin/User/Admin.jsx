@@ -130,7 +130,7 @@ const Admin = ({ users }) => {
                                 from: users.from,
                                 to: users.to
                             }}
-                            className="w-full" // Add this if not already present
+                            className="w-full"
                         />
                     </div>
                 </div>

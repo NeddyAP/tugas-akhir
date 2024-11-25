@@ -13,7 +13,6 @@ class BimbinganController extends Controller
     {
         $query = Bimbingan::with('user');
 
-        // Handle search from DataTable
         if ($request->has('search')) {
             $searchTerm = $request->search;
             $query->where(function ($q) use ($searchTerm) {
@@ -25,7 +24,6 @@ class BimbinganController extends Controller
             });
         }
 
-        // Get paginated results
         $bimbingans = $query->latest()->paginate($request->input('per_page', 10));
 
         return Inertia::render('Admin/Table/BimbinganPage', [

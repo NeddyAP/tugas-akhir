@@ -40,7 +40,7 @@ class PasswordResetLinkController extends Controller
 
         if ($status == Password::RESET_LINK_SENT) {
             $message = __($status);
-            Log::info('Password reset link sent. Flash message: '.$message); // Add this log
+            Log::info('Password reset link sent. Flash message: '.$message);
 
             return back()->with('flash', ['status' => __($status)]);
         }

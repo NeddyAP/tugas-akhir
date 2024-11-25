@@ -13,7 +13,6 @@ class LogbookController extends Controller
     {
         $query = Logbook::with('user');
 
-        // Handle search from DataTable
         if ($request->has('search')) {
             $searchTerm = $request->search;
             $query->where(function ($q) use ($searchTerm) {
@@ -25,7 +24,6 @@ class LogbookController extends Controller
             });
         }
 
-        // Get paginated results
         $logbooks = $query->latest()->paginate($request->input('per_page', 10));
 
         return Inertia::render('Admin/Table/LogbookPage', [

@@ -1,4 +1,3 @@
-// src/components/admin/TaskCard.jsx
 import React from 'react';
 
 const TaskCard = ({ icon, title, status, duration }) => {

@@ -2,7 +2,6 @@ import React from 'react';
 import { Dialog } from '@headlessui/react';
 import { X } from 'lucide-react';
 import Select from 'react-select';
-import { useForm } from '@inertiajs/react'; // Import useForm
 
 const FieldLabel = ({ label }) => (
     <label className="block text-sm font-medium text-gray-700 dark:text-gray-100">
@@ -69,7 +68,7 @@ const SearchableSelect = ({ field, value, onChange, options }) => (
             noOptionsMessage: () => "text-gray-500 dark:text-gray-400 p-3"
         }}
         components={{
-            IndicatorSeparator: () => null // Remove the separator
+            IndicatorSeparator: () => null
         }}
     />
 );
@@ -124,9 +123,7 @@ const GenericModal = ({
     processing,
     handleSubmit
 }) => {
-    // Remove the useForm hook and related code since we're getting form state from props
-
-    // Adjust handleClose
+    
     const handleClose = () => {
         onClose();
     };

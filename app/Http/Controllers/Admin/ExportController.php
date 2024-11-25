@@ -31,7 +31,6 @@ class ExportController extends Controller
             $query->where('role', $tab);
         }
 
-        // Apply search if provided
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%$search%")
@@ -59,7 +58,6 @@ class ExportController extends Controller
 
         $query = Logbook::with('user');
 
-        // Apply search if provided
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('tanggal', 'like', "%$search%")

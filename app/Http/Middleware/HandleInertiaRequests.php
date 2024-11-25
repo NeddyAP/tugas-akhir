@@ -40,8 +40,7 @@ class HandleInertiaRequests extends Middleware
                 'location' => $request->url(),
             ],
             'canLogin' => $request->session()->get('canLogin', true),
-            // Perbaiki struktur flash message
-            'flash' => $request->session()->get('flash'),  // Hapus nested closure
+            'flash' => $request->session()->get('flash'),
         ]);
     }
 }

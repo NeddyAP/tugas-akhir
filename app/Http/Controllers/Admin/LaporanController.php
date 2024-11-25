@@ -86,7 +86,7 @@ class LaporanController extends Controller
             if ($request->hasFile('file')) {
                 $laporan = Laporan::create([
                     'user_id' => $validated['user_id'],
-                    'file' => $request->file('file')->store('laporans', 'private'), // Change to private disk
+                    'file' => $request->file('file')->store('laporans', 'private'),
                     'keterangan' => $validated['keterangan'],
                 ]);
             }
@@ -126,15 +126,15 @@ class LaporanController extends Controller
 
             if ($request->hasFile('file')) {
                 if ($data->laporan) {
-                    Storage::disk('private')->delete($data->laporan->file); // Change to private disk
+                    Storage::disk('private')->delete($data->laporan->file);
                     $data->laporan->update([
-                        'file' => $request->file('file')->store('laporans', 'private'), // Change to private disk
+                        'file' => $request->file('file')->store('laporans', 'private'),
                         'keterangan' => $validated['keterangan'],
                     ]);
                 } else {
                     $laporan = Laporan::create([
                         'user_id' => $validated['user_id'],
-                        'file' => $request->file('file')->store('laporans', 'private'), // Change to private disk
+                        'file' => $request->file('file')->store('laporans', 'private'),
                         'keterangan' => $validated['keterangan'],
                     ]);
                     $data->id_laporan = $laporan->id;
@@ -155,9 +155,9 @@ class LaporanController extends Controller
         });
     }
 
-    public function destroy(Request $request, $id)  // Add Request parameter
+    public function destroy(Request $request, $id)
     {
-        $type = $request->query('type'); // Get type from query string
+        $type = $request->query('type');
         if (! $type) {
             return redirect()->back()->with('flash', ['message' => 'Tipe data tidak valid.', 'type' => 'error']);
         }
@@ -167,7 +167,7 @@ class LaporanController extends Controller
             $data = $model::with('laporan')->findOrFail($id);
 
             if ($data->laporan) {
-                Storage::disk('private')->delete($data->laporan->file); // Change to private disk
+                Storage::disk('private')->delete($data->laporan->file);
                 $data->laporan->delete();
             }
 

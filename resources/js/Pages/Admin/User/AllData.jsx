@@ -21,7 +21,7 @@ const AllData = ({ users }) => {
         name: "",
         email: "",
         password: "",
-        userType: USER_TYPES.ADMIN,  // Add this
+        userType: USER_TYPES.ADMIN,
         role: "admin",
         nim: "",
         nip: "",
@@ -69,7 +69,7 @@ const AllData = ({ users }) => {
                 if (key === 'password' && isEditing && !value) return false;
                 if (key === 'nim' && data.userType !== USER_TYPES.MAHASISWA) return false;
                 if (key === 'nip' && data.userType !== USER_TYPES.DOSEN) return false;
-                if (key === 'userType') return false; // Don't send userType to backend
+                if (key === 'userType') return false;
                 return value !== '';
             })
         );
@@ -116,14 +116,14 @@ const AllData = ({ users }) => {
 
     const getFields = () => {
         if (modalState.editingData) {
-            // For editing, just show fields based on existing role
+
             return [
                 ...USER_COMMON_FIELDS,
                 ...USER_SPECIFIC_FIELDS[modalState.editingData.role]
             ];
         }
 
-        // For adding new user
+
         const userTypeField = {
             name: "userType",
             label: "Tipe User",
@@ -140,14 +140,14 @@ const AllData = ({ users }) => {
                     ...prev,
                     userType: newUserType,
                     role: newUserType === USER_TYPES.ADMIN ? 'admin' : newUserType,
-                    // Reset specific fields
+
                     nim: '',
                     nip: ''
                 }));
             }
         };
 
-        // Get specific fields based on selected user type
+
         const specificFields = data.userType === USER_TYPES.ADMIN
             ? USER_SPECIFIC_FIELDS[USER_TYPES.ADMIN]
             : USER_SPECIFIC_FIELDS[data.userType] || [];

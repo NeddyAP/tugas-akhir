@@ -9,11 +9,9 @@ import { getTableConfigs } from '@/utils/constants';
 import { formatDate } from '@/utils/utils';
 
 export default function LogbookPage({ logbooks, bimbingans }) {
-    // Move tableConfigs before everything else
     const tableConfigs = useMemo(() =>
         getTableConfigs(logbooks, bimbingans, formatDate)
-        , [logbooks?.data, bimbingans?.data]); // Only depend on the data arrays
-
+        , [logbooks?.data, bimbingans?.data]);
     const [activeTab, setActiveTab] = useState('Logbook');
     const [modalState, setModalState] = useState({
         isOpen: false,
@@ -21,7 +19,6 @@ export default function LogbookPage({ logbooks, bimbingans }) {
         editingData: null
     });
 
-    // Memoize the current table data and columns
     const currentTableConfig = useMemo(() => ({
         columns: tableConfigs[activeTab].columns,
         data: tableConfigs[activeTab].data,
@@ -35,12 +32,10 @@ export default function LogbookPage({ logbooks, bimbingans }) {
         }
     }), [activeTab, tableConfigs]);
 
-    // Adjust handleAdd
     const handleAdd = useCallback(() => {
         setModalState({ isOpen: true, type: activeTab, editingData: null });
     }, [activeTab]);
 
-    // Adjust handleEdit
     const handleEdit = useCallback((row) => {
         setModalState({
             isOpen: true,
@@ -96,7 +91,6 @@ export default function LogbookPage({ logbooks, bimbingans }) {
         }
     }, [activeTab, tableConfigs]);
 
-    // Memoize actions object
     const tableActions = useMemo(() => ({
         handleAdd,
         handleEdit,

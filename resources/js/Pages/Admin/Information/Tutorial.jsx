@@ -55,7 +55,7 @@ export default function Tutorial({ informations }) {
         columns: [
             {
                 Header: "Video",
-                accessor: "videoPreview", // Changed from "link" to "videoPreview"
+                accessor: "videoPreview",
                 Cell: ({ row }) => <YouTubePreview link={row.original.link} />
             },
             { Header: "Judul", accessor: "title", sortable: true },
@@ -107,7 +107,6 @@ export default function Tutorial({ informations }) {
         handleEdit: (row) => setModalState({ isOpen: true, editingData: row }),
         handleDelete: (row) => {
             if (window.confirm('Kamu yakin ingin menghapus tutorial ini?')) {
-                // Ubah cara pengiriman parameter
                 destroy(route("admin.informations.destroy", row.id) + `?type=tutorial`, {
                     preserveScroll: true,
                     preserveState: true

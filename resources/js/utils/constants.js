@@ -47,7 +47,6 @@ export const getTableConfigs = (logbooks, bimbingans, formatDate) => ({
     }
 });
 
-// User management constants
 export const USER_TYPES = {
     ADMIN: 'admin',
     DOSEN: 'dosen',
@@ -62,7 +61,6 @@ export const USER_ROLES = {
     MAHASISWA: 'mahasiswa'
 };
 
-// Navigation tabs for user management
 export const USER_TABS = [
     { type: USER_TYPES.ADMIN, label: 'Admin' },
     { type: USER_TYPES.DOSEN, label: 'Dosen' },
@@ -70,7 +68,6 @@ export const USER_TABS = [
     { type: USER_TYPES.ALL, label: 'Semua User' }
 ];
 
-// User table columns
 export const USER_COMMON_COLUMNS = [
     { 
         Header: "Nama",
@@ -135,7 +132,6 @@ export const USER_SPECIFIC_COLUMNS = {
     ]
 };
 
-// Form fields for user management
 export const USER_COMMON_FIELDS = [
     { 
         name: "name",

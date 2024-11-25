@@ -25,7 +25,6 @@ const AdminLayout = memo(({ children, title, currentPage }) => {
     }, [flash]);
 
     useEffect(() => {
-        // Close mobile menu when route changes
         const handleRouteChange = () => setIsMobileMenuOpen(false);
         document.addEventListener('inertia:navigate', handleRouteChange);
         return () => document.removeEventListener('inertia:navigate', handleRouteChange);

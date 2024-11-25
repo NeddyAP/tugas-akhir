@@ -5,7 +5,7 @@ import TableHeader from "@/Components/ui/TableHeader";
 import GenericModal from "@/Components/ui/GenericModal";
 import { formatDate, getStatusColor } from "@/utils/helpers";
 import PropTypes from 'prop-types';
-import { format } from 'date-fns'; // Add this import if not already present
+import { format } from 'date-fns';
 
 export default function BaseLaporanData({
     type,
@@ -97,13 +97,13 @@ export default function BaseLaporanData({
         },
         handleDelete: (row) => {
             if (window.confirm('Apakah Anda yakin ingin menghapus data ini?')) {
-                // Change how we send the delete request
+
                 destroy(route('admin.laporans.destroy', [row.id, { type }]));
             }
         },
         handleAdd: () => {
             setModalState({ isOpen: true, editingData: null });
-            reset(); // Reset form when adding new data
+            reset();
         },
     }), [destroy, type, setData, reset]);
 
@@ -137,7 +137,7 @@ export default function BaseLaporanData({
             Cell: ({ row }) => {
                 const laporan = row.original.laporan;
                 return laporan?.file ? (
-                    <a href={route('files.laporan', laporan.file.split('/').pop())}  // Update this line
+                    <a href={route('files.laporan', laporan.file.split('/').pop())}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-blue-600 hover:text-blue-800"
