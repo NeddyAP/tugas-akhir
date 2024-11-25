@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Illuminate\Support\Collection;
+use InvalidArgumentException;
 use PDF;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -16,7 +17,7 @@ class ExportService
             'excel' => $this->exportToExcel($data, $fileName),
             'pdf' => $this->exportToPdf($data, $fileName),
             'word' => $this->exportToWord($data, $fileName),
-            default => throw new \InvalidArgumentException('Unsupported format'),
+            default => throw new InvalidArgumentException('Unsupported format'),
         };
     }
 
@@ -95,7 +96,7 @@ class ExportService
             'excel' => $this->exportLogbookToExcel($data, $fileName),
             'pdf' => $this->exportLogbookToPdf($data, $fileName),
             'word' => $this->exportLogbookToWord($data, $fileName),
-            default => throw new \InvalidArgumentException('Unsupported format'),
+            default => throw new InvalidArgumentException('Unsupported format'),
         };
     }
 
@@ -168,7 +169,7 @@ class ExportService
             'excel' => $this->exportBimbinganToExcel($data, $fileName),
             'pdf' => $this->exportBimbinganToPdf($data, $fileName),
             'word' => $this->exportBimbinganToWord($data, $fileName),
-            default => throw new \InvalidArgumentException('Unsupported format'),
+            default => throw new InvalidArgumentException('Unsupported format'),
         };
     }
 

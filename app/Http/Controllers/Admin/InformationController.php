@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Panduan;
 use App\Models\Question;
 use App\Models\Tutorial;
+use Exception;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
@@ -76,7 +78,7 @@ class InformationController extends Controller
             $modelClass::create($validated);
 
             return $this->successResponse($type, 'ditambahkan');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $this->errorResponse($e);
         }
     }
@@ -105,7 +107,7 @@ class InformationController extends Controller
             $item->update($validated);
 
             return $this->successResponse($type, 'diperbarui');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $this->errorResponse($e);
         }
     }
@@ -124,7 +126,7 @@ class InformationController extends Controller
             $item->delete();
 
             return $this->successResponse($type, 'dihapus');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $this->errorResponse($e);
         }
     }
@@ -163,7 +165,7 @@ class InformationController extends Controller
         };
     }
 
-    private function successResponse(string $type, string $action): \Illuminate\Http\RedirectResponse
+    private function successResponse(string $type, string $action): RedirectResponse
     {
         $label = $this->getTypeLabel($type);
 
@@ -175,7 +177,7 @@ class InformationController extends Controller
             ]);
     }
 
-    private function errorResponse(\Exception $e): \Illuminate\Http\RedirectResponse
+    private function errorResponse(Exception $e): RedirectResponse
     {
         report($e);
 

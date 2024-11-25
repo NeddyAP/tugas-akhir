@@ -2,6 +2,7 @@ import React from 'react';
 import { Dialog } from '@headlessui/react';
 import { X } from 'lucide-react';
 import Select from 'react-select';
+import { useForm } from '@inertiajs/react'; // Import useForm
 
 const FieldLabel = ({ label }) => (
     <label className="block text-sm font-medium text-gray-700 dark:text-gray-100">
@@ -114,28 +115,25 @@ const GenericModal = ({
     isOpen,
     onClose,
     title,
+    type,
+    editingData,
+    fields = [],
     data,
     setData,
-    errors = {},
-    processing = false,
-    handleSubmit,
-    clearErrors,
-    fields = [],
-    onFileChange
+    errors,
+    processing,
+    handleSubmit
 }) => {
-    React.useEffect(() => {
-        if (!isOpen) {
-            clearErrors?.();
-        }
-    }, [isOpen, clearErrors]);
+    // Remove the useForm hook and related code since we're getting form state from props
 
+    // Adjust handleClose
     const handleClose = () => {
-        clearErrors?.();
         onClose();
     };
 
     const renderField = (field) => {
         const handleChange = (e) => setData(field.name, e.target.value);
+        const handleFileChange = (e) => setData(field.name, e.target.files[0]);
 
         switch (field.type) {
             case 'hidden':
@@ -158,7 +156,7 @@ const GenericModal = ({
                     />
                 );
             case 'file':
-                return <FileInput field={field} onChange={onFileChange} />;
+                return <FileInput field={field} onChange={handleFileChange} />;
             case 'select':
                 return (
                     <SelectField
@@ -180,7 +178,7 @@ const GenericModal = ({
     };
 
     return (
-        <Dialog open={isOpen} onClose={onClose} className="relative z-50">
+        <Dialog open={isOpen} onClose={handleClose} className="relative z-50">
             <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
             <div className="fixed inset-0 flex items-center justify-center p-4">
                 <Dialog.Panel className="w-full max-w-md max-h-[90vh] flex flex-col bg-white shadow-xl rounded-2xl dark:bg-gray-800">

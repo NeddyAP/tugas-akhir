@@ -3,6 +3,7 @@ import createServer from '@inertiajs/react/server';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import ReactDOMServer from 'react-dom/server';
 import { route } from '../../vendor/tightenco/ziggy';
+import { StrictMode } from 'react';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -24,7 +25,9 @@ createServer((page) =>
                 });
 
             return (
-                <App {...props} />
+                <StrictMode>
+                    <App {...props} />
+                </StrictMode>
             );
         },
     }),

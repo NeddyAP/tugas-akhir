@@ -8,6 +8,7 @@ use App\Models\DataKkn;
 use App\Models\DosenProfile;
 use App\Models\MahasiswaProfile;
 use App\Models\User;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -203,7 +204,7 @@ class UserController extends Controller
                 'message' => ucfirst($tab).' berhasil ditambahkan',
                 'type' => 'success',
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return redirect()->back()->with('flash', [
                 'message' => 'Gagal menambahkan '.$this->getUserTypeLabel($tab),
                 'type' => 'error',
@@ -254,7 +255,7 @@ class UserController extends Controller
                 'message' => ucfirst($tab).' berhasil diperbarui',
                 'type' => 'success',
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return redirect()->back()->with('flash', [
                 'message' => 'Gagal memperbarui '.$this->getUserTypeLabel($tab),
                 'type' => 'error',
@@ -288,7 +289,7 @@ class UserController extends Controller
                 'message' => ucfirst($tab).' berhasil dihapus',
                 'type' => 'success',
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return redirect()->back()->with('flash', [
                 'message' => 'Gagal menghapus '.$this->getUserTypeLabel($tab),
                 'type' => 'error',

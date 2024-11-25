@@ -1,5 +1,5 @@
-import React, { useState, useCallback, useMemo } from 'react';
-import { Head, useForm } from "@inertiajs/react";
+import React, { useState, useCallback, useMemo, useEffect } from 'react';
+import { Head } from "@inertiajs/react";
 import FrontLayout from "@/Layouts/FrontLayout";
 import DataTable from "@/Components/ui/DataTable";
 import GenericModal from "@/Components/ui/GenericModal";
@@ -9,6 +9,11 @@ import { getTableConfigs } from '@/utils/constants';
 import { formatDate } from '@/utils/utils';
 
 export default function LogbookPage({ logbooks, bimbingans }) {
+    // Move tableConfigs before everything else
+    const tableConfigs = useMemo(() =>
+        getTableConfigs(logbooks, bimbingans, formatDate)
+        , [logbooks?.data, bimbingans?.data]); // Only depend on the data arrays
+
     const [activeTab, setActiveTab] = useState('Logbook');
     const [modalState, setModalState] = useState({
         isOpen: false,
@@ -16,77 +21,26 @@ export default function LogbookPage({ logbooks, bimbingans }) {
         editingData: null
     });
 
-    const logbookForm = useForm({
-        tanggal: '',
-        catatan: '',
-        keterangan: '',
-    });
-
-    const bimbinganForm = useForm({
-        tanggal: '',
-        keterangan: '',
-    });
-
-
-    const handleSubmit = useCallback((e) => {
-        e.preventDefault();
-        const isLogbook = modalState.type === 'Logbook';
-        const form = isLogbook ? logbookForm : bimbinganForm;
-        const isEditing = modalState.editingData;
-        const baseRoute = isLogbook ? 'logbooks' : 'bimbingans';
-
-        if (isEditing) {
-            form.put(route(`${baseRoute}.update`, isEditing.id), {
-                preserveState: true,
-                onSuccess: () => {
-                    setModalState({ isOpen: false, type: null, editingData: null });
-                },
-            });
-        } else {
-            form.post(route(`${baseRoute}.store`), {
-                preserveState: true,
-                onSuccess: () => {
-                    setModalState({ isOpen: false, type: null, editingData: null });
-                },
-            });
+    // Memoize the current table data and columns
+    const currentTableConfig = useMemo(() => ({
+        columns: tableConfigs[activeTab].columns,
+        data: tableConfigs[activeTab].data,
+        pagination: {
+            pageIndex: tableConfigs[activeTab].pagination.current_page - 1,
+            pageCount: tableConfigs[activeTab].pagination.last_page,
+            pageSize: tableConfigs[activeTab].pagination.per_page,
+            total: tableConfigs[activeTab].pagination.total,
+            from: tableConfigs[activeTab].pagination.from,
+            to: tableConfigs[activeTab].pagination.to
         }
-    }, [modalState, logbookForm, bimbinganForm]);
+    }), [activeTab, tableConfigs]);
 
+    // Adjust handleAdd
+    const handleAdd = useCallback(() => {
+        setModalState({ isOpen: true, type: activeTab, editingData: null });
+    }, [activeTab]);
 
-    const handleDelete = useCallback((row) => {
-        if (!window.confirm('Yakin ingin menghapus data ini?')) return;
-
-        const isLogbook = activeTab === 'Logbook';
-        const form = isLogbook ? logbookForm : bimbinganForm;
-        const baseRoute = isLogbook ? 'logbooks' : 'bimbingans';
-
-        form.delete(route(`${baseRoute}.destroy`, row.id), {
-            preserveState: true,
-        });
-    }, [activeTab, logbookForm, bimbinganForm]);
-
-
-    React.useEffect(() => {
-        if (modalState.editingData) {
-            const form = modalState.type === 'Logbook' ? logbookForm : bimbinganForm;
-            form.setData(modalState.editingData);
-        } else {
-            logbookForm.reset();
-            bimbinganForm.reset();
-        }
-    }, [modalState.editingData, modalState.type]);
-
-    const tableConfigs = useMemo(() =>
-        getTableConfigs(logbooks, bimbingans, formatDate),
-        [logbooks, bimbingans]
-    );
-
-
-    const handleAdd = useCallback((type) => {
-        setModalState({ isOpen: true, type, editingData: null });
-    }, []);
-
-
+    // Adjust handleEdit
     const handleEdit = useCallback((row) => {
         setModalState({
             isOpen: true,
@@ -95,6 +49,16 @@ export default function LogbookPage({ logbooks, bimbingans }) {
         });
     }, [activeTab]);
 
+    const handleDelete = useCallback((row) => {
+        if (!window.confirm('Yakin ingin menghapus data ini?')) return;
+
+        const isLogbook = activeTab === 'Logbook';
+        const baseRoute = isLogbook ? 'logbooks' : 'bimbingans';
+
+        form.delete(route(`${baseRoute}.destroy`, row.id), {
+            preserveState: true,
+        });
+    }, [activeTab]);
 
     const handleDownload = useCallback(async (format) => {
         const type = activeTab.toLowerCase();
@@ -132,6 +96,14 @@ export default function LogbookPage({ logbooks, bimbingans }) {
         }
     }, [activeTab, tableConfigs]);
 
+    // Memoize actions object
+    const tableActions = useMemo(() => ({
+        handleAdd,
+        handleEdit,
+        handleDelete,
+        handleDownload,
+    }), [handleAdd, handleEdit, handleDelete, handleDownload]);
+
     return (
         <FrontLayout>
             <Head title="Logbook" />
@@ -158,42 +130,20 @@ export default function LogbookPage({ logbooks, bimbingans }) {
                                 </nav>
                             </div>
 
-                            <TableHeader
-                                title={`${activeTab} Mahasiswa`}
-                                onDownload={(format) => handleDownload(format)}
-                                onAdd={() => handleAdd(activeTab)}
-                            />
-
                             <DataTable
-                                columns={tableConfigs[activeTab].columns}
-                                data={tableConfigs[activeTab].data}
-                                pagination={{
-                                    pageIndex: tableConfigs[activeTab].pagination.current_page - 1,
-                                    pageCount: tableConfigs[activeTab].pagination.last_page,
-                                    pageSize: tableConfigs[activeTab].pagination.per_page,
-                                    total: tableConfigs[activeTab].pagination.total,
-                                    from: tableConfigs[activeTab].pagination.from,
-                                    to: tableConfigs[activeTab].pagination.to
-                                }}
-                                actions={{
-                                    handleAdd: () => handleAdd(activeTab),
-                                    handleEdit,
-                                    handleDelete,
-                                    handleDownload: () => handleDownload(activeTab),
-                                }}
+                                columns={currentTableConfig.columns}
+                                data={currentTableConfig.data}
+                                pagination={currentTableConfig.pagination}
+                                actions={tableActions}
                             />
 
                             <GenericModal
                                 isOpen={modalState.isOpen}
                                 onClose={() => setModalState({ isOpen: false, type: null, editingData: null })}
                                 title={`${modalState.editingData ? 'Edit' : 'Tambah'} ${modalState.type}`}
-                                data={modalState.type === 'Logbook' ? logbookForm.data : bimbinganForm.data}
-                                setData={modalState.type === 'Logbook' ? logbookForm.setData : bimbinganForm.setData}
-                                errors={modalState.type === 'Logbook' ? logbookForm.errors : bimbinganForm.errors}
-                                processing={modalState.type === 'Logbook' ? logbookForm.processing : bimbinganForm.processing}
-                                handleSubmit={handleSubmit}
-                                clearErrors={modalState.type === 'Logbook' ? logbookForm.clearErrors : bimbinganForm.clearErrors}
-                                fields={modalState.type === 'Logbook' ? tableConfigs.Logbook.modalFields : tableConfigs.Bimbingan.modalFields}
+                                type={modalState.type}
+                                editingData={modalState.editingData}
+                                fields={tableConfigs[modalState.type]?.modalFields || []}
                             />
                         </div>
                     </div>

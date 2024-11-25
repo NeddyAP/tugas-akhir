@@ -59,7 +59,8 @@ export default function BaseLaporanData({
             put(route('admin.laporans.update', modalState.editingData.id), formData, {
                 forceFormData: true,
                 onSuccess: () => {
-                    handleModalClose();
+                    setModalState({ isOpen: false, editingData: null });
+                    reset();
                 },
                 preserveScroll: true,
             });
@@ -67,12 +68,13 @@ export default function BaseLaporanData({
             post(route('admin.laporans.store'), formData, {
                 forceFormData: true,
                 onSuccess: () => {
-                    handleModalClose();
+                    setModalState({ isOpen: false, editingData: null });
+                    reset();
                 },
                 preserveScroll: true,
             });
         }
-    }, [modalState.editingData, data, post, put, handleModalClose]);
+    }, [modalState.editingData, data, post, put, reset, setModalState]);
 
     const formatDateForInput = (dateString) => {
         if (!dateString) return '';
@@ -253,14 +255,14 @@ export default function BaseLaporanData({
                     isOpen={modalState.isOpen}
                     onClose={handleModalClose}
                     title={`${modalState.editingData ? 'Edit' : 'Tambah'} ${title}`}
+                    type={type}
+                    editingData={modalState.editingData}
+                    fields={modalFields}
                     data={data}
                     setData={setData}
                     errors={errors}
                     processing={processing}
                     handleSubmit={handleSubmit}
-                    clearErrors={clearErrors}
-                    fields={modalFields}
-                    onFileChange={handleFileChange}
                 />
             </div>
         </div>

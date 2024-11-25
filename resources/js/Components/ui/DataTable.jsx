@@ -1,7 +1,8 @@
 import { ChevronDown, ChevronLeft, ChevronRight, ChevronUp, Edit, Search, Trash } from 'lucide-react';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useGlobalFilter, usePagination, useSortBy, useTable } from 'react-table';
 import { router } from '@inertiajs/react';
+import { memo } from 'react';
 
 const TruncatedCell = ({ text, maxLength = 100 }) => {
     const [isExpanded, setIsExpanded] = useState(false);
@@ -22,7 +23,7 @@ const TruncatedCell = ({ text, maxLength = 100 }) => {
     );
 };
 
-export default function DataTable({ columns: userColumns, data, actions, pagination }) {
+export default memo(function DataTable({ columns: userColumns, data, actions, pagination }) {
     const [searchValue, setSearchValue] = useState('');
 
     const columns = useMemo(() => {
@@ -30,40 +31,59 @@ export default function DataTable({ columns: userColumns, data, actions, paginat
             {
                 Header: '#',
                 id: 'rowNumber',
-                Cell: ({ row }) => {
-                    return pagination?.from + row.index;
-                },
+                Cell: ({ row }) => pagination?.from + row.index
             },
             ...userColumns
         ];
+
         if (actions) {
             cols.push({
                 Header: 'Actions',
                 id: 'actions',
                 Cell: ({ row }) => (
-                    <div className="flex gap-2">
-                        <button
-                            onClick={() => actions.handleEdit(row.original)}
-                            className="p-1 text-teal-600 hover:text-teal-800"
-                        >
-                            <Edit className="w-5 h-5" />
-                        </button>
-                        <button
-                            onClick={() => actions.handleDelete(row.original)}
-                            className="p-1 text-red-600 hover:text-red-800"
-                        >
-                            <Trash className="w-5 h-5" />
-                        </button>
+                    <div className="relative z-50 flex gap-2" onClick={e => e.stopPropagation()}>
+                        {actions.handleEdit && (
+                            <button
+                                type="button"
+                                onClick={() => actions.handleEdit(row.original)}
+                                className="relative p-1 text-teal-600 cursor-pointer hover:text-teal-800 focus:outline-none"
+                            >
+                                <Edit className="w-5 h-5" />
+                            </button>
+                        )}
+                        {actions.handleDelete && (
+                            <button
+                                type="button"
+                                onClick={() => actions.handleDelete(row.original)}
+                                className="relative p-1 text-red-600 cursor-pointer hover:text-red-800 focus:outline-none"
+                            >
+                                <Trash className="w-5 h-5" />
+                            </button>
+                        )}
                     </div>
-                ),
+                )
             });
         }
         return cols;
     }, [userColumns, actions, pagination?.from]);
 
-    // Memoize data and columns
-    const memoizedColumns = useMemo(() => columns, [columns]);
-    const memoizedData = useMemo(() => data, [data]);
+    const tableConfig = useMemo(() => ({
+        columns,
+        data: data || [],
+        manualPagination: true,
+        pageCount: pagination?.pageCount || 1,
+        initialState: {
+            pageIndex: pagination?.pageIndex || 0,
+            pageSize: pagination?.pageSize || 10
+        }
+    }), [columns, data, pagination]);
+
+    const tableInstance = useTable(
+        tableConfig,
+        useGlobalFilter,
+        useSortBy,
+        usePagination
+    );
 
     const {
         getTableProps,
@@ -72,49 +92,28 @@ export default function DataTable({ columns: userColumns, data, actions, paginat
         page,
         prepareRow,
         state,
-        setGlobalFilter: setTableGlobalFilter,
-    } = useTable(
-        {
-            columns: memoizedColumns,
-            data: memoizedData,
-            manualPagination: true,
-            pageCount: pagination?.pageCount || 1,
-            initialState: {
-                pageIndex: pagination?.pageIndex || 0,
-                pageSize: pagination?.pageSize || 10
-            },
-        },
-        useGlobalFilter,
-        useSortBy,
-        usePagination
-    );
-
-    const { pageIndex, pageSize } = state;
+    } = tableInstance;
 
     const handleSearch = useCallback((e) => {
         const value = e.target.value;
         setSearchValue(value);
 
-        // Debounce the search request
         const timeoutId = setTimeout(() => {
             const currentQuery = new URLSearchParams(window.location.search);
             currentQuery.set('search', value);
-            currentQuery.set('page', 1); // Reset to first page on search
+            currentQuery.set('page', '1');
 
             router.get(
                 route(route().current()),
                 Object.fromEntries(currentQuery.entries()),
-                {
-                    preserveState: true,
-                    preserveScroll: true,
-                }
+                { preserveState: true, preserveScroll: true }
             );
         }, 300);
 
         return () => clearTimeout(timeoutId);
     }, []);
 
-    const handlePageChange = (newPage) => {
+    const handlePageChange = useCallback((newPage) => {
         const currentQuery = new URLSearchParams(window.location.search);
         currentQuery.set('page', newPage);
 
@@ -123,26 +122,27 @@ export default function DataTable({ columns: userColumns, data, actions, paginat
             Object.fromEntries(currentQuery.entries()),
             { preserveState: true, preserveScroll: true }
         );
-    };
+    }, []);
 
-    const handlePageSizeChange = (newSize) => {
+    const handlePageSizeChange = useCallback((newSize) => {
         const currentQuery = new URLSearchParams(window.location.search);
         currentQuery.set('per_page', newSize);
-        currentQuery.set('page', 1); // Reset to first page when changing page size
+        currentQuery.set('page', '1');
 
         router.get(
             route(route().current()),
             Object.fromEntries(currentQuery.entries()),
             { preserveState: true, preserveScroll: true }
         );
-    };
+    }, []);
 
-    const renderPaginationButtons = () => {
+    const renderPaginationButtons = useCallback(() => {
+        if (!pagination) return null;
+
         const buttons = [];
         const currentPage = pagination.pageIndex + 1;
         const lastPage = pagination.pageCount;
 
-        // First and Previous buttons
         buttons.push(
             <button
                 key="first"
@@ -162,7 +162,6 @@ export default function DataTable({ columns: userColumns, data, actions, paginat
             </button>
         );
 
-        // Page numbers
         for (let i = Math.max(1, currentPage - 2); i <= Math.min(lastPage, currentPage + 2); i++) {
             buttons.push(
                 <button
@@ -176,7 +175,6 @@ export default function DataTable({ columns: userColumns, data, actions, paginat
             );
         }
 
-        // Next and Last buttons
         buttons.push(
             <button
                 key="next"
@@ -197,7 +195,7 @@ export default function DataTable({ columns: userColumns, data, actions, paginat
         );
 
         return buttons;
-    };
+    }, [pagination]);
 
     return (
         <div className="overflow-hidden bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
@@ -245,18 +243,21 @@ export default function DataTable({ columns: userColumns, data, actions, paginat
                                     page.map((row, rowIndex) => {
                                         prepareRow(row);
                                         return (
-                                            <tr {...row.getRowProps()} key={rowIndex} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                                            <tr
+                                                {...row.getRowProps()}
+                                                key={rowIndex}
+                                                className="relative hover:bg-gray-50 dark:hover:bg-gray-700"
+                                                style={{ position: 'relative' }}
+                                            >
                                                 {row.cells.map((cell, cellIndex) => (
                                                     <td
                                                         {...cell.getCellProps()}
                                                         key={cellIndex}
-                                                        className="px-6 py-4 text-sm text-gray-500 whitespace-normal dark:text-gray-300" // Remove whitespace-nowrap
+                                                        className={`px-6 py-4 text-sm text-gray-500 whitespace-normal dark:text-gray-300 ${cell.column.id === 'actions' ? 'relative' : ''
+                                                            }`}
+                                                        style={cell.column.id === 'actions' ? { position: 'relative' } : undefined}
                                                     >
-                                                        {cell.column.accessor === 'answer' ? (
-                                                            <TruncatedCell text={cell.value} />
-                                                        ) : (
-                                                            cell.render('Cell')
-                                                        )}
+                                                        {cell.render('Cell')}
                                                     </td>
                                                 ))}
                                             </tr>
@@ -318,4 +319,11 @@ export default function DataTable({ columns: userColumns, data, actions, paginat
             </div>
         </div>
     );
-}
+}, (prevProps, nextProps) => {
+    return (
+        prevProps.data === nextProps.data &&
+        prevProps.pagination === nextProps.pagination &&
+        prevProps.actions === nextProps.actions &&
+        JSON.stringify(prevProps.columns) === JSON.stringify(nextProps.columns)
+    );
+});

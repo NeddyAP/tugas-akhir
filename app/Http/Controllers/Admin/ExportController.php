@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 
 class ExportController extends Controller
 {
-    protected $exportService;
+    protected ExportService $exportService;
 
     public function __construct(ExportService $exportService)
     {
@@ -34,10 +34,10 @@ class ExportController extends Controller
         // Apply search if provided
         if ($search) {
             $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%")
-                    ->orWhere('nim', 'like', "%{$search}%")
-                    ->orWhere('nip', 'like', "%{$search}%");
+                $q->where('name', 'like', "%$search%")
+                    ->orWhere('email', 'like', "%$search%")
+                    ->orWhere('nim', 'like', "%$search%")
+                    ->orWhere('nip', 'like', "%$search%");
             });
         }
 
@@ -47,7 +47,7 @@ class ExportController extends Controller
             return response()->json(['data' => $users]);
         }
 
-        $fileName = "users-{$tab}-".date('Y-m-d-His');
+        $fileName = "users-$tab-".date('Y-m-d-His');
 
         return $this->exportService->export($users, $format, $fileName);
     }
@@ -62,9 +62,9 @@ class ExportController extends Controller
         // Apply search if provided
         if ($search) {
             $query->where(function ($q) use ($search) {
-                $q->where('tanggal', 'like', "%{$search}%")
-                    ->orWhere('catatan', 'like', "%{$search}%")
-                    ->orWhere('keterangan', 'like', "%{$search}%");
+                $q->where('tanggal', 'like', "%$search%")
+                    ->orWhere('catatan', 'like', "%$search%")
+                    ->orWhere('keterangan', 'like', "%$search%");
             });
         }
 
@@ -88,8 +88,8 @@ class ExportController extends Controller
 
         if ($search) {
             $query->where(function ($q) use ($search) {
-                $q->where('tanggal', 'like', "%{$search}%")
-                    ->orWhere('keterangan', 'like', "%{$search}%");
+                $q->where('tanggal', 'like', "%$search%")
+                    ->orWhere('keterangan', 'like', "%$search%");
             });
         }
 
