@@ -165,9 +165,8 @@ const SidebarDropdown = memo(({ icon, label, children, isCollapsed }) => {
     );
 });
 
-const AdminSidebar = memo(({ onCollapse = () => { } }) => {
+const AdminSidebar = memo(({ onCollapse = () => { }, isMobileMenuOpen, onMobileMenuToggle }) => {
     const [isCollapsed, setIsCollapsed] = useState(false);
-    const [isMobileOpen, setIsMobileOpen] = useState(false);
 
     const toggleCollapsed = useCallback(() => {
         setIsCollapsed(prev => {
@@ -177,42 +176,38 @@ const AdminSidebar = memo(({ onCollapse = () => { } }) => {
         });
     }, [onCollapse]);
 
-    const toggleMobileMenu = useCallback(() => {
-        setIsMobileOpen(prev => !prev);
-    }, []);
-
     const sidebarClass = useMemo(() => `
-        ${isCollapsed ? 'w-3xl' : 'w-64'}
-        ${isMobileOpen ? 'translate-x-0' : '-translate-x-full'}
-        fixed top-0 left-0 md:translate-x-0
+        ${isCollapsed ? 'md:w-20' : 'md:w-64'}
+        fixed top-0 left-0 
         flex flex-col bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 p-4
         transition-all duration-300 ease-in-out z-50 h-screen
-    `, [isCollapsed, isMobileOpen]);
+        w-[280px] transform ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}
+        md:translate-x-0
+    `, [isCollapsed, isMobileMenuOpen]);
 
     return (
         <>
-            <button
-                onClick={toggleMobileMenu}
-                className="fixed p-2 bg-white rounded-lg shadow-lg dark:bg-gray-900 top-4 left-4 md:hidden focus:outline-none"
-            >
-                {isMobileOpen ? <X size={24} /> : <MenuIcon size={24} />}
-            </button>
-
             <div className={sidebarClass}>
                 <div className="flex items-center justify-between mb-8">
-                    <div className={`flex items-center ${isCollapsed ? 'w-full justify-center' : ''}`}>
+                    <div className={`flex items-center ${isCollapsed ? 'md:w-full md:justify-center' : ''}`}>
                         <img
                             src={filkomLogo}
                             alt="Filkom Logo"
-                            className={`h-8 w-8 transition-all duration-200 ${isCollapsed ? 'hidden' : 'block'}`}
+                            className={`h-8 w-8 transition-all duration-200 ${isCollapsed ? 'md:hidden' : ''}`}
                         />
-                        {!isCollapsed && <div className="ml-2 text-2xl font-bold text-gray-900 dark:text-white">Dashboard</div>}
+                        {!isCollapsed && <div className="ml-2 text-xl font-bold text-gray-900 dark:text-white">Dashboard</div>}
                     </div>
                     <button
                         onClick={toggleCollapsed}
                         className="hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 md:block focus:outline-none"
                     >
                         {isCollapsed ? <ChevronRight size={20} className='dark:text-white' /> : <X size={20} className='dark:text-white' />}
+                    </button>
+                    <button
+                        onClick={onMobileMenuToggle}
+                        className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 md:hidden focus:outline-none"
+                    >
+                        <X size={20} className='dark:text-white' />
                     </button>
                 </div>
 
@@ -274,10 +269,11 @@ const AdminSidebar = memo(({ onCollapse = () => { } }) => {
                 </div>
             </div>
 
-            {isMobileOpen && (
+            {/* Overlay for mobile */}
+            {isMobileMenuOpen && (
                 <div
-                    className="fixed inset-0 z-40 bg-black opacity-50"
-                    onClick={toggleMobileMenu}
+                    className="fixed inset-0 z-40 bg-black/50 md:hidden"
+                    onClick={onMobileMenuToggle}
                 />
             )}
         </>

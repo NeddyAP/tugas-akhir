@@ -46,7 +46,7 @@ const DarkModeToggle = () => {
     );
 };
 
-const AdminNavbar = memo(({ currentPage = 'Dashboard' }) => {
+const AdminNavbar = memo(({ currentPage = 'Dashboard', onMobileMenuToggle }) => {
     const { auth: { user } } = usePage().props;
     const [isProfileOpen, setIsProfileOpen] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -70,7 +70,7 @@ const AdminNavbar = memo(({ currentPage = 'Dashboard' }) => {
 
             <button
                 className="p-2 md:hidden"
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                onClick={onMobileMenuToggle}
             >
                 <Menu className="w-6 h-6 text-gray-600 dark:text-gray-300" />
             </button>

@@ -24,6 +24,13 @@ const AdminLayout = memo(({ children, title, currentPage }) => {
         }
     }, [flash]);
 
+    useEffect(() => {
+        // Close mobile menu when route changes
+        const handleRouteChange = () => setIsMobileMenuOpen(false);
+        document.addEventListener('inertia:navigate', handleRouteChange);
+        return () => document.removeEventListener('inertia:navigate', handleRouteChange);
+    }, []);
+
     const handleMobileMenuToggle = () => setIsMobileMenuOpen(!isMobileMenuOpen);
 
     return (
@@ -46,7 +53,7 @@ const AdminLayout = memo(({ children, title, currentPage }) => {
                         currentPage={currentPage}
                         onMobileMenuToggle={handleMobileMenuToggle}
                     />
-                    <main className="flex-1 p-4 md:p-8 overflow-x-hidden">
+                    <main className="flex-1 p-4 overflow-x-hidden md:p-8">
                         <div className="container mx-auto">
                             {children}
                         </div>
