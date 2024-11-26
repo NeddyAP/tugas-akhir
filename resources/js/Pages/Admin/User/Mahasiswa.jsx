@@ -1,4 +1,4 @@
-import { memo, useCallback, useState, useEffect } from 'react';
+import { memo, useCallback, useState, useEffect, useMemo } from 'react';
 import { useForm, usePage } from '@inertiajs/react';
 
 import DataTable from '@/Components/ui/DataTable';
@@ -17,7 +17,7 @@ const Mahasiswa = ({ users }) => {
     const { user: currentUser } = usePage().props;
     const currentUserRole = currentUser.role;
     const [modalState, setModalState] = useState({ isOpen: false, editingData: null });
-    const { data, setData, post, put, processing, errors, reset, clearErrors } = useForm({
+    const form = useForm({
         name: "",
         email: "",
         password: "",
@@ -26,59 +26,6 @@ const Mahasiswa = ({ users }) => {
         phone: "",
         address: "",
     });
-    const deleteForm = useForm();
-
-    const handleAdd = useCallback(() => {
-        if (currentUserRole !== 'superadmin') return;
-        setModalState({ isOpen: true, editingData: null });
-    }, [currentUserRole]);
-
-    const handleEdit = useCallback((row) => {
-        if (currentUserRole !== 'superadmin') return;
-        setModalState({ isOpen: true, editingData: row });
-    }, [currentUserRole]);
-
-    const handleDelete = useCallback((row) => {
-        if (currentUserRole !== 'superadmin' ||
-            !window.confirm('Kamu yakin ingin menghapus data mahasiswa?')) return;
-
-        deleteForm.delete(route("admin.users.destroy", row.id), {
-            data: { tab: USER_TYPES.MAHASISWA },
-            preserveState: true,
-            preserveScroll: true
-        });
-    }, [currentUserRole, deleteForm]);
-
-    const handleSubmit = useCallback((e) => {
-        e.preventDefault();
-        if (currentUserRole !== 'superadmin') return;
-
-        const isEditing = modalState.editingData;
-        const url = route(
-            isEditing ? 'admin.users.update' : 'admin.users.store',
-            {
-                ...(isEditing ? { id: modalState.editingData.id } : {}),
-                tab: USER_TYPES.MAHASISWA
-            }
-        );
-
-        const formData = Object.fromEntries(
-            Object.entries(data).filter(([key, value]) => {
-                if (key === 'password' && isEditing && !value) return false;
-                return value !== '';
-            })
-        );
-
-        const action = isEditing ? put : post;
-        action(url, {
-            data: { ...formData },
-            preserveState: true,
-            onSuccess: () => {
-                setModalState({ isOpen: false, editingData: null });
-                reset();
-            },
-        });
-    }, [currentUserRole, modalState, data, put, post, reset]);
 
     const handleDownload = useExport({
         routeName: 'admin.users.export',
@@ -86,16 +33,49 @@ const Mahasiswa = ({ users }) => {
         columns: [...USER_COMMON_COLUMNS, ...USER_SPECIFIC_COLUMNS[USER_TYPES.MAHASISWA]]
     });
 
-    useEffect(() => {
-        if (!modalState.isOpen) {
-            reset();
-            clearErrors();
-            return;
-        }
+    const handleSubmit = useCallback((e) => {
+        e.preventDefault();
+        if (currentUserRole !== 'superadmin') return;
 
+        const isEditing = modalState.editingData;
+        
+        form[isEditing ? 'put' : 'post'](
+            route(isEditing ? 'admin.users.update' : 'admin.users.store', 
+                {
+                    ...(isEditing ? { id: modalState.editingData.id } : {}),
+                    tab: USER_TYPES.MAHASISWA
+                }
+            ), {
+                onSuccess: () => {
+                    setModalState({ isOpen: false, editingData: null });
+                    form.reset();
+                }
+            }
+        );
+    }, [currentUserRole, modalState.editingData, form]);
+
+    const handleDelete = useCallback((row) => {
+        if (currentUserRole !== 'superadmin' || 
+            !window.confirm('Kamu yakin ingin menghapus data mahasiswa?')) return;
+
+        form.delete(route("admin.users.destroy", row.id), {
+            data: { tab: USER_TYPES.MAHASISWA },
+            preserveState: true,
+            preserveScroll: true
+        });
+    }, [currentUserRole, form]);
+
+    const tableActions = useMemo(() => ({
+        handleEdit: currentUserRole === 'superadmin' 
+            ? (row) => setModalState({ isOpen: true, editingData: row })
+            : undefined,
+        handleDelete: currentUserRole === 'superadmin' ? handleDelete : undefined
+    }), [currentUserRole, handleDelete]);
+
+    useEffect(() => {
         if (modalState.editingData) {
             const profile = modalState.editingData.profilable || {};
-            setData({
+            form.setData({
                 name: modalState.editingData.name || '',
                 email: modalState.editingData.email || '',
                 password: '',
@@ -104,15 +84,43 @@ const Mahasiswa = ({ users }) => {
                 phone: profile.phone || '',
                 address: profile.address || '',
             });
+        } else {
+            form.reset();
+            form.clearErrors();
         }
-    }, [modalState.isOpen, modalState.editingData, setData, reset, clearErrors]);
+    }, [modalState.editingData]);
+
+    const modalProps = useMemo(() => ({
+        isOpen: modalState.isOpen,
+        onClose: () => setModalState({ isOpen: false, editingData: null }),
+        title: `${modalState.editingData ? 'Edit' : 'Tambah'} Data Mahasiswa`,
+        data: form.data,
+        setData: form.setData,
+        errors: form.errors,
+        processing: form.processing,
+        handleSubmit,
+        clearErrors: form.clearErrors,
+        fields: [...USER_COMMON_FIELDS, ...USER_SPECIFIC_FIELDS[USER_TYPES.MAHASISWA]],
+        className: "w-full max-w-lg p-4 mx-auto sm:p-6"
+    }), [
+        modalState.isOpen,
+        modalState.editingData,
+        form.data,
+        form.setData,
+        form.errors,
+        form.processing,
+        handleSubmit,
+        form.clearErrors
+    ]);
 
     return (
         <div className="flex flex-col gap-8">
             <TableHeader
                 title="Data Mahasiswa"
                 onDownload={handleDownload}
-                onAdd={currentUserRole === 'superadmin' ? handleAdd : undefined}
+                onAdd={currentUserRole === 'superadmin' 
+                    ? () => setModalState({ isOpen: true, editingData: null })
+                    : undefined}
                 className="flex-col gap-2 sm:flex-row sm:gap-4"
             />
 
@@ -122,7 +130,7 @@ const Mahasiswa = ({ users }) => {
                         <DataTable
                             columns={[...USER_COMMON_COLUMNS, ...USER_SPECIFIC_COLUMNS[USER_TYPES.MAHASISWA]]}
                             data={users.data}
-                            actions={{ handleEdit, handleDelete }}
+                            actions={tableActions}
                             defaultSortBy="name"
                             pagination={{
                                 pageIndex: users.current_page - 1,
@@ -138,19 +146,7 @@ const Mahasiswa = ({ users }) => {
                 </div>
             </div>
 
-            <GenericModal
-                isOpen={modalState.isOpen}
-                onClose={() => setModalState({ isOpen: false, editingData: null })}
-                title={`${modalState.editingData ? 'Edit' : 'Tambah'} Data Mahasiswa`}
-                data={data}
-                setData={setData}
-                errors={errors}
-                processing={processing}
-                handleSubmit={handleSubmit}
-                clearErrors={clearErrors}
-                fields={[...USER_COMMON_FIELDS, ...USER_SPECIFIC_FIELDS[USER_TYPES.MAHASISWA]]}
-                className="w-full max-w-lg p-4 mx-auto sm:p-6"
-            />
+            <GenericModal {...modalProps} />
         </div>
     );
 };

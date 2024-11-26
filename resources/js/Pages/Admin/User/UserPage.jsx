@@ -8,9 +8,9 @@ import Mahasiswa from './Mahasiswa';
 import AllData from './AllData';
 
 const LoadingFallback = () => (
-  <div className="flex items-center justify-center w-full h-32">
-    <div className="w-8 h-8 border-4 border-teal-500 rounded-full animate-spin border-t-transparent"></div>
-  </div>
+    <div className="flex items-center justify-center w-full h-32">
+        <div className="w-8 h-8 border-4 border-teal-500 rounded-full animate-spin border-t-transparent"></div>
+    </div>
 );
 
 const TABS = [

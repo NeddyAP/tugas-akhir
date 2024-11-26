@@ -123,7 +123,7 @@ const GenericModal = ({
     processing,
     handleSubmit
 }) => {
-    
+
     const handleClose = () => {
         onClose();
     };
