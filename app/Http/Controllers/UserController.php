@@ -27,7 +27,7 @@ class UserController extends Controller
         $query = User::with('profilable');
 
         if ($search) {
-            $searchWildcard = '%'.$search.'%';
+            $searchWildcard = '%' . $search . '%';
             $query->where(function ($q) use ($searchWildcard) {
                 $q->where('name', 'like', $searchWildcard)
                     ->orWhere('email', 'like', $searchWildcard)
@@ -135,16 +135,34 @@ class UserController extends Controller
         return $labels[$tab] ?? 'User';
     }
 
+    private function canManageUser($currentUser, $targetUserRole = null)
+    {
+        // Superadmin can do everything
+        if ($currentUser->role === 'superadmin') {
+            return true;
+        }
+
+        // Admin can manage non-admin users
+        if ($currentUser->role === 'admin') {
+            return !in_array($targetUserRole, ['admin', 'superadmin']);
+        }
+
+        return false;
+    }
+
     public function store(Request $request)
     {
-        if (Auth::user()->role !== 'superadmin') {
+        $tab = $request->query('tab', 'user');
+        $targetUserRole = $tab === 'admin' ? 'admin' : $tab;
+
+        // Check if the current user can manage the target user role
+        if (!$this->canManageUser(Auth::user(), $targetUserRole)) {
             return redirect()->back()->with('flash', [
-                'message' => 'Unauthorized access',
+                'message' => 'Anda tidak memiliki izin untuk menambahkan ' . $this->getUserTypeLabel($tab),
                 'type' => 'error',
             ]);
         }
 
-        $tab = $request->query('tab', 'user');
         $rules = $this->getValidationRules($tab);
 
         try {
@@ -201,12 +219,12 @@ class UserController extends Controller
             });
 
             return redirect()->back()->with('flash', [
-                'message' => ucfirst($tab).' berhasil ditambahkan',
+                'message' => ucfirst($tab) . ' berhasil ditambahkan',
                 'type' => 'success',
             ]);
         } catch (Exception $e) {
             return redirect()->back()->with('flash', [
-                'message' => 'Gagal menambahkan '.$this->getUserTypeLabel($tab),
+                'message' => 'Gagal menambahkan ' . $this->getUserTypeLabel($tab),
                 'type' => 'error',
             ]);
         }
@@ -214,17 +232,18 @@ class UserController extends Controller
 
     public function update(Request $request, string $id)
     {
-        if (Auth::user()->role !== 'superadmin') {
-            return redirect()->back()->with('flash', [
-                'message' => 'Unauthorized access',
-                'type' => 'error',
-            ]);
-        }
-
-        $tab = $request->query('tab', 'user');
-
         try {
             $user = User::with('profilable')->findOrFail($id);
+
+            // Check if the current user can manage the target user
+            if (!$this->canManageUser(Auth::user(), $user->role)) {
+                return redirect()->back()->with('flash', [
+                    'message' => 'Anda tidak memiliki izin untuk mengubah ' . $this->getUserTypeLabel($user->role),
+                    'type' => 'error',
+                ]);
+            }
+
+            $tab = $request->query('tab', 'user');
             $rules = $this->getValidationRules($tab, $id);
             $validated = $request->validate($rules);
 
@@ -251,12 +270,12 @@ class UserController extends Controller
             });
 
             return redirect()->back()->with('flash', [
-                'message' => ucfirst($tab).' berhasil diperbarui',
+                'message' => ucfirst($tab) . ' berhasil diperbarui',
                 'type' => 'success',
             ]);
         } catch (Exception $e) {
             return redirect()->back()->with('flash', [
-                'message' => 'Gagal memperbarui '.$this->getUserTypeLabel($tab),
+                'message' => 'Gagal memperbarui ' . $this->getUserTypeLabel($tab),
                 'type' => 'error',
             ]);
         }
@@ -264,17 +283,19 @@ class UserController extends Controller
 
     public function destroy(Request $request, string $id)
     {
-        if (Auth::user()->role !== 'superadmin') {
-            return redirect()->back()->with('flash', [
-                'message' => 'Unauthorized access',
-                'type' => 'error',
-            ]);
-        }
-
         $tab = $request->query('tab', 'user');
-
         try {
             $user = User::findOrFail($id);
+
+            // Check if the current user can manage the target user
+            if (!$this->canManageUser(Auth::user(), $user->role)) {
+                return redirect()->back()->with('flash', [
+                    'message' => 'Anda tidak memiliki izin untuk menghapus ' . $this->getUserTypeLabel($user->role),
+                    'type' => 'error',
+                ]);
+            }
+
+            $tab = $request->query('tab', 'user');
 
             // Delete associated KKL and KKN data if user is mahasiswa
             if ($user->role === 'mahasiswa') {
@@ -285,12 +306,12 @@ class UserController extends Controller
             $user->delete();
 
             return redirect()->back()->with('flash', [
-                'message' => ucfirst($tab).' berhasil dihapus',
+                'message' => ucfirst($tab) . ' berhasil dihapus',
                 'type' => 'success',
             ]);
         } catch (Exception $e) {
             return redirect()->back()->with('flash', [
-                'message' => 'Gagal menghapus '.$this->getUserTypeLabel($tab),
+                'message' => 'Gagal menghapus ' . $this->getUserTypeLabel($tab),
                 'type' => 'error',
             ]);
         }

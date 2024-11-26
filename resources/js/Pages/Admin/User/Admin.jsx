@@ -32,9 +32,16 @@ const Admin = ({ users }) => {
         columns: [...USER_COMMON_COLUMNS, ...USER_SPECIFIC_COLUMNS[USER_TYPES.ADMIN]]
     });
 
+    const handleUnauthorizedAction = useCallback(() => {
+        alert('Butuh role lebih tinggi');
+    }, []);
+
     const handleSubmit = useCallback((e) => {
         e.preventDefault();
-        if (currentUserRole !== 'superadmin') return;
+        if (currentUserRole !== 'superadmin') {
+            handleUnauthorizedAction();
+            return;
+        }
 
         const isEditing = modalState.editingData;
 
@@ -51,25 +58,40 @@ const Admin = ({ users }) => {
             }
         }
         );
-    }, [currentUserRole, modalState.editingData, form]);
+    }, [currentUserRole, modalState.editingData, form, handleUnauthorizedAction]);
 
     const handleDelete = useCallback((row) => {
-        if (currentUserRole !== 'superadmin' ||
-            !window.confirm('Kamu yakin ingin menghapus data admin?')) return;
+        if (currentUserRole !== 'superadmin') {
+            handleUnauthorizedAction();
+            return;
+        }
+
+        if (!window.confirm('Kamu yakin ingin menghapus data admin?')) return;
 
         form.delete(route("admin.users.destroy", row.id), {
             data: { tab: USER_TYPES.ADMIN },
             preserveState: true,
             preserveScroll: true
         });
-    }, [currentUserRole, form]);
+    }, [currentUserRole, form, handleUnauthorizedAction]);
 
     const tableActions = useMemo(() => ({
-        handleEdit: currentUserRole === 'superadmin'
-            ? (row) => setModalState({ isOpen: true, editingData: row })
-            : undefined,
-        handleDelete: currentUserRole === 'superadmin' ? handleDelete : undefined
-    }), [currentUserRole, handleDelete]);
+        handleEdit: (row) => {
+            if (currentUserRole !== 'superadmin') {
+                handleUnauthorizedAction();
+                return;
+            }
+            setModalState({ isOpen: true, editingData: row });
+        },
+        handleDelete
+    }), [currentUserRole, handleDelete, handleUnauthorizedAction]);
+
+    const emptyStateMessage = useMemo(() => 
+        currentUserRole !== 'superadmin' 
+            ? "Anda tidak memiliki akses untuk melihat detail data admin"
+            : "Tidak ada data admin", 
+        [currentUserRole]
+    );
 
     useEffect(() => {
         if (modalState.editingData) {
@@ -116,9 +138,13 @@ const Admin = ({ users }) => {
             <TableHeader
                 title="Data Admin"
                 onDownload={handleDownload}
-                onAdd={currentUserRole === 'superadmin'
-                    ? () => setModalState({ isOpen: true, editingData: null })
-                    : undefined}
+                onAdd={() => {
+                    if (currentUserRole !== 'superadmin') {
+                        handleUnauthorizedAction();
+                        return;
+                    }
+                    setModalState({ isOpen: true, editingData: null });
+                }}
                 className="flex-col gap-2 sm:flex-row sm:gap-4"
             />
 
@@ -139,6 +165,7 @@ const Admin = ({ users }) => {
                                 to: users.to
                             }}
                             className="w-full"
+                            emptyMessage="Tidak ada data admin"
                         />
                     </div>
                 </div>

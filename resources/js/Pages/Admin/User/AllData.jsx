@@ -29,9 +29,28 @@ const AllData = ({ users }) => {
         address: "",
     });
 
+    const handleUnauthorizedAction = useCallback(() => {
+        alert('Butuh role lebih tinggi');
+    }, []);
+
+    const canManageRole = useCallback((currentRole, targetRole) => {
+        if (currentRole === 'superadmin') {
+            return true;
+        }
+        if (currentRole === 'admin') {
+            return !['admin', 'superadmin'].includes(targetRole);
+        }
+        return false;
+    }, []);
+
     const handleSubmit = useCallback((e) => {
         e.preventDefault();
-        if (currentUserRole !== 'superadmin') return;
+        const targetRole = modalState.editingData ? modalState.editingData.role : form.data.role || form.data.userType;
+
+        if (!canManageRole(currentUserRole, targetRole)) {
+            handleUnauthorizedAction();
+            return;
+        }
 
         const isEditing = modalState.editingData;
 
@@ -48,18 +67,22 @@ const AllData = ({ users }) => {
             }
         }
         );
-    }, [currentUserRole, modalState.editingData, form]);
+    }, [currentUserRole, modalState.editingData, form, handleUnauthorizedAction, canManageRole]);
 
     const handleDelete = useCallback((row) => {
-        if (currentUserRole !== 'superadmin' ||
-            !window.confirm('Kamu yakin ingin menghapus data user?')) return;
+        if (!canManageRole(currentUserRole, row.role)) {
+            handleUnauthorizedAction();
+            return;
+        }
+
+        if (!window.confirm('Kamu yakin ingin menghapus data user?')) return;
 
         form.delete(route("admin.users.destroy", row.id), {
             data: { tab: row.role },
             preserveState: true,
             preserveScroll: true
         });
-    }, [currentUserRole, form]);
+    }, [currentUserRole, form, handleUnauthorizedAction, canManageRole]);
 
     const handleDownload = useExport({
         routeName: 'admin.users.export',
@@ -127,11 +150,15 @@ const AllData = ({ users }) => {
     }, [modalState.editingData, form.setData]);
 
     const tableActions = useMemo(() => ({
-        handleEdit: currentUserRole === 'superadmin'
-            ? (row) => setModalState({ isOpen: true, editingData: row })
-            : undefined,
-        handleDelete: currentUserRole === 'superadmin' ? handleDelete : undefined
-    }), [currentUserRole, handleDelete]);
+        handleEdit: (row) => {
+            if (!canManageRole(currentUserRole, row.role)) {
+                handleUnauthorizedAction();
+                return;
+            }
+            setModalState({ isOpen: true, editingData: row });
+        },
+        handleDelete
+    }), [currentUserRole, handleDelete, handleUnauthorizedAction, canManageRole]);
 
     // Memoize the modal props
     const modalProps = useMemo(() => ({
@@ -163,9 +190,14 @@ const AllData = ({ users }) => {
             <TableHeader
                 title="Semua Data User"
                 onDownload={handleDownload}
-                onAdd={currentUserRole === 'superadmin'
-                    ? () => setModalState({ isOpen: true, editingData: null })
-                    : undefined}
+                onAdd={() => {
+                    const targetRole = form.data.userType || 'user';
+                    if (!canManageRole(currentUserRole, targetRole)) {
+                        handleUnauthorizedAction();
+                        return;
+                    }
+                    setModalState({ isOpen: true, editingData: null });
+                }}
                 className="flex-col gap-2 sm:flex-row sm:gap-4"
             />
 

@@ -33,9 +33,18 @@ const Dosen = ({ users }) => {
         columns: [...USER_COMMON_COLUMNS, ...USER_SPECIFIC_COLUMNS[USER_TYPES.DOSEN]]
     });
 
+    const allowedRoles = ['admin', 'superadmin'];
+
+    const handleUnauthorizedAction = useCallback(() => {
+        alert('Butuh role lebih tinggi');
+    }, []);
+
     const handleSubmit = useCallback((e) => {
         e.preventDefault();
-        if (currentUserRole !== 'superadmin') return;
+        if (!allowedRoles.includes(currentUserRole)) {
+            handleUnauthorizedAction();
+            return;
+        }
 
         const isEditing = modalState.editingData;
         
@@ -52,25 +61,32 @@ const Dosen = ({ users }) => {
                 }
             }
         );
-    }, [currentUserRole, modalState.editingData, form]);
+    }, [currentUserRole, modalState.editingData, form, handleUnauthorizedAction]);
 
     const handleDelete = useCallback((row) => {
-        if (currentUserRole !== 'superadmin' || 
-            !window.confirm('Kamu yakin ingin menghapus data dosen?')) return;
+        if (!allowedRoles.includes(currentUserRole)) {
+            handleUnauthorizedAction();
+            return;
+        }
+        if (!window.confirm('Kamu yakin ingin menghapus data dosen?')) return;
 
         form.delete(route("admin.users.destroy", row.id), {
             data: { tab: USER_TYPES.DOSEN },
             preserveState: true,
             preserveScroll: true
         });
-    }, [currentUserRole, form]);
+    }, [currentUserRole, form, handleUnauthorizedAction]);
 
     const tableActions = useMemo(() => ({
-        handleEdit: currentUserRole === 'superadmin' 
-            ? (row) => setModalState({ isOpen: true, editingData: row })
-            : undefined,
-        handleDelete: currentUserRole === 'superadmin' ? handleDelete : undefined
-    }), [currentUserRole, handleDelete]);
+        handleEdit: (row) => {
+            if (!allowedRoles.includes(currentUserRole)) {
+                handleUnauthorizedAction();
+                return;
+            }
+            setModalState({ isOpen: true, editingData: row });
+        },
+        handleDelete
+    }), [currentUserRole, handleDelete, handleUnauthorizedAction]);
 
     useEffect(() => {
         if (modalState.editingData) {
@@ -118,9 +134,13 @@ const Dosen = ({ users }) => {
             <TableHeader
                 title="Data Dosen"
                 onDownload={handleDownload}
-                onAdd={currentUserRole === 'superadmin' 
-                    ? () => setModalState({ isOpen: true, editingData: null })
-                    : undefined}
+                onAdd={() => {
+                    if (!allowedRoles.includes(currentUserRole)) {
+                        handleUnauthorizedAction();
+                        return;
+                    }
+                    setModalState({ isOpen: true, editingData: null });
+                }}
                 className="flex-col gap-2 sm:flex-row sm:gap-4"
             />
 
