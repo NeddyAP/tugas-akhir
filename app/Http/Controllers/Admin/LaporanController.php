@@ -17,49 +17,44 @@ class LaporanController extends Controller
     public function index(Request $request)
     {
         $type = $request->input('type', 'kkl');
-
-        $mahasiswas = User::mahasiswa()
-            ->select('id', 'name')
-            ->get();
-
-        $dosens = User::dosen()
-            ->select('id', 'name')
-            ->get();
-
         $search = $request->input('search');
+        $perPage = $request->input('per_page', 10);
 
         $baseQuery = function ($query) use ($search) {
-            if ($search) {
-                $query->whereHas('mahasiswa', function ($q) use ($search) {
+            $query->when($search, function ($q) use ($search) {
+                $q->whereHas('mahasiswa', function ($q) use ($search) {
                     $q->where('name', 'like', "%{$search}%")
-                        ->orWhereHas('profilable', function ($q) use ($search) {
-                            $q->where('nim', 'like', "%{$search}%");
-                        });
+                        ->orWhereHas('profilable', fn($q) => 
+                            $q->where('nim', 'like', "%{$search}%")
+                        );
                 })->orWhereHas('pembimbing', function ($q) use ($search) {
                     $q->where('name', 'like', "%{$search}%")
-                        ->orWhereHas('profilable', function ($q) use ($search) {
-                            $q->where('nip', 'like', "%{$search}%");
-                        });
+                        ->orWhereHas('profilable', fn($q) => 
+                            $q->where('nip', 'like', "%{$search}%")
+                        );
                 });
-            }
+            });
         };
 
-        $kklData = $type === 'kkl' ?
-            DataKkl::with(['mahasiswa:id,name', 'pembimbing:id,name', 'laporan'])
-                ->when($search, $baseQuery)
-                ->latest()
-                ->paginate(10) : null;
+        // Cache frequently accessed data
+        $mahasiswas = cache()->remember('mahasiswas', 3600, function () {
+            return User::mahasiswa()->select('id', 'name')->get();
+        });
 
-        $kknData = $type === 'kkn' ?
-            DataKkn::with(['mahasiswa:id,name', 'pembimbing:id,name', 'laporan'])
-                ->when($search, $baseQuery)
-                ->latest()
-                ->paginate(10) : null;
+        $dosens = cache()->remember('dosens', 3600, function () {
+            return User::dosen()->select('id', 'name')->get();
+        });
+
+        $modelClass = $type === 'kkl' ? DataKkl::class : DataKkn::class;
+        $data = $modelClass::with(['mahasiswa:id,name', 'pembimbing:id,name', 'laporan'])
+            ->when($search, $baseQuery)
+            ->latest()
+            ->paginate($perPage);
 
         return Inertia::render('Admin/Laporan/LaporanPage', [
             'type' => $type,
-            'kklData' => $kklData,
-            'kknData' => $kknData,
+            'kklData' => $type === 'kkl' ? $data : null,
+            'kknData' => $type === 'kkn' ? $data : null,
             'mahasiswas' => $mahasiswas,
             'dosens' => $dosens,
             'filters' => ['search' => $search],

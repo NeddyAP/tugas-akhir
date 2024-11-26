@@ -7,7 +7,7 @@ import { useDarkMode } from '@/Contexts/DarkModeContext';
 const NavLink = ({ href, children }) => (
     <Link
         href={route(href)}
-        className="text-white transition-all duration-300 ease-in-out  hover:underline-offset-2 hover:underline"
+        className="text-white transition-all duration-300 ease-in-out hover:underline-offset-2 hover:underline"
     >
         {children}
     </Link>
@@ -106,13 +106,13 @@ const MobileMenu = ({ isOpen, onClose, user }) => (
                     </button>
                 </div>
                 <nav className="flex flex-col space-y-4">
-                    <Link href={route('pedomans.index')} className="text-gray-800 dark:text-white hover:text-teal-600 dark:hover:text-teal-400">
+                    <Link href={route('pedoman')} className="text-gray-800 dark:text-white hover:text-teal-600 dark:hover:text-teal-400">
                         Buku Pedoman
                     </Link>
-                    <Link href={route('logbooks.index')} className="text-gray-800 dark:text-white hover:text-teal-600 dark:hover:text-teal-400">
+                    <Link href={route('logbook.index')} className="text-gray-800 dark:text-white hover:text-teal-600 dark:hover:text-teal-400">
                         Logbook
                     </Link>
-                    <Link href={route('laporans.index')} className="text-gray-800 dark:text-white hover:text-teal-600 dark:hover:text-teal-400">
+                    <Link href={route('laporan.index')} className="text-gray-800 dark:text-white hover:text-teal-600 dark:hover:text-teal-400">
                         Laporan
                     </Link>
                 </nav>
@@ -144,7 +144,7 @@ const FrontNavbar = () => {
                 className={`fixed top-0 left-0 z-40 w-full transition-transform duration-300 bg-teal-600 dark:bg-gray-800 shadow-md ${isVisible ? 'translate-y-0' : '-translate-y-full'
                     }`}
             >
-                <div className="container mx-auto max-w-6xl px-8 sm:px-12 md:px-16 lg:px-24 xl:px-32 py-3">
+                <div className="container max-w-6xl px-8 py-3 mx-auto sm:px-12 md:px-16 lg:px-24 xl:px-32">
                     <div className="flex items-center justify-between">
                         <Link href={route('home')} className="text-xl font-bold text-white sm:text-2xl">
                             FILKOM
@@ -152,9 +152,9 @@ const FrontNavbar = () => {
 
                         <div className="flex items-center space-x-2 sm:space-x-4">
                             <div className="hidden lg:flex lg:items-center lg:space-x-4">
-                                <NavLink href="pedomans.index">Buku Pedoman</NavLink>
-                                <NavLink href="logbooks.index">Logbook</NavLink>
-                                <NavLink href="laporans.index">Laporan</NavLink>
+                                <NavLink href="pedoman">Buku Pedoman</NavLink>
+                                <NavLink href="logbook.index">Logbook</NavLink>
+                                <NavLink href="laporan.index">Laporan</NavLink>
                             </div>
                             <DarkModeToggle />
                             <AuthButton user={auth.user} />

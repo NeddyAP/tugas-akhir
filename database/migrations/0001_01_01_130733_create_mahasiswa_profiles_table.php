@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('mahasiswa_profiles', function (Blueprint $table) {
             $table->id();
             $table->string('nim')->unique();
+            $table->string('angkatan')->nullable();
             $table->string('phone')->nullable();
             $table->text('address')->nullable();
             $table->timestamps();

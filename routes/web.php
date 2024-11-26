@@ -10,6 +10,7 @@ use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\LogbookController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\HomeController;
 use App\Http\Middleware\AdminMiddleware;
 use App\Models\Panduan;
 use App\Models\Question;
@@ -18,30 +19,18 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
-Route::inertia('/', 'Front/Home/HomePage', [
-    'canLogin' => Route::has('login'),
-    'tutorial' => Tutorial::select('title', 'description', 'link')->latest()->first(),
-    'faqs' => Question::select('question', 'answer')->get(),
-])->name('home');
-Route::inertia('/pedomans', 'Front/Pedoman/PedomanPage', [
-    'canLogin' => Route::has('login'),
-    'panduans' => Panduan::select('title', 'description', 'file')->latest()->get(),
-])->name('pedomans.index');
+Route::get('/', [HomeController::class, 'home'])->name('home');
+Route::get('/pedoman', [HomeController::class, 'pedoman'])->name('pedoman');
 
-Route::get('files/laporan/{filename}', function ($filename) {
-    $path = 'laporans/'.$filename;
-    if (! Storage::disk('private')->exists($path)) {
-        abort(404);
-    }
-
-    return response()->file(storage_path('app/private/'.$path));
-})->name('files.laporan')->middleware('auth');
 
 Route::middleware('auth')->group(function () {
 
-    Route::resource('bimbingans', BimbinganController::class);
-    Route::resource('logbooks', LogbookController::class);
-    Route::resource('laporans', LaporanController::class);
+    Route::resource('bimbingan', BimbinganController::class);
+    Route::resource('logbook', LogbookController::class);
+    Route::resource('laporan', LaporanController::class);
+
+    Route::get('files/laporan/{filename}', [HomeController::class, 'downloadLaporan'])
+        ->name('files.laporan');
 
     Route::get('/export/logbook', [AdminExportController::class, 'exportLogbook'])->name('logbook.export');
     Route::get('/export/bimbingan', [AdminExportController::class, 'exportBimbingan'])->name('bimbingan.export');

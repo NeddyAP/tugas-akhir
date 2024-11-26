@@ -10,11 +10,14 @@ use App\Models\MahasiswaProfile;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Carbon\Carbon;
 
 class UserSeeder extends Seeder
 {
     public function run(): void
     {
+        $currentYear = Carbon::now()->year;
+
         // Create SuperAdmin with profile
         $superAdminProfile = AdminProfile::create([
             'phone' => fake()->phoneNumber(),
@@ -75,6 +78,7 @@ class UserSeeder extends Seeder
         for ($i = 1; $i <= 20; $i++) {
             $profile = MahasiswaProfile::create([
                 'nim' => fake()->unique()->numerify('##########'),
+                'angkatan' => $currentYear - rand(0, 3), // Most recent 4 years
                 'phone' => fake()->phoneNumber(),
                 'address' => fake()->address(),
             ]);
