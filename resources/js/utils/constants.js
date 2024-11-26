@@ -1,6 +1,6 @@
 import { formatDate } from './helpers';
 
-const renderStatusBadge = (status) => {
+export const renderStatusBadge = (status) => {
     const colors = {
         pending: 'bg-yellow-100 text-yellow-800',
         active: 'bg-blue-100 text-blue-800',
@@ -69,15 +69,15 @@ export const USER_TABS = [
 ];
 
 export const USER_COMMON_COLUMNS = [
-    { 
+    {
         Header: "Nama",
         accessor: "name",
-        sortable: true 
+        sortable: true
     },
-    { 
+    {
         Header: "Email",
         accessor: "email",
-        sortable: true 
+        sortable: true
     },
     {
         Header: "No. Telepon",
@@ -95,10 +95,10 @@ export const USER_COMMON_COLUMNS = [
 
 export const USER_SPECIFIC_COLUMNS = {
     [USER_TYPES.ADMIN]: [
-        { 
+        {
             Header: "Role",
             accessor: "role",
-            sortable: true 
+            sortable: true
         }
     ],
     [USER_TYPES.DOSEN]: [
@@ -118,10 +118,10 @@ export const USER_SPECIFIC_COLUMNS = {
         }
     ],
     [USER_TYPES.ALL]: [
-        { 
+        {
             Header: "Role",
             accessor: "role",
-            sortable: true 
+            sortable: true
         },
         {
             Header: "NIM/NIP",
@@ -133,36 +133,36 @@ export const USER_SPECIFIC_COLUMNS = {
 };
 
 export const USER_COMMON_FIELDS = [
-    { 
+    {
         name: "name",
         label: "Nama",
         type: "text",
-        required: true 
+        required: true
     },
-    { 
+    {
         name: "email",
         label: "Email",
         type: "email",
-        required: true 
+        required: true
     },
-    { 
+    {
         name: "password",
         label: "Password",
         type: "password",
-        required: false 
+        required: false
     },
-    { 
+    {
         name: "phone",
         label: "No. Telepon",
         type: "tel",
-        required: false 
+        required: false
     },
-    { 
+    {
         name: "address",
         label: "Alamat",
         type: "textarea",
         rows: 3,
-        required: false 
+        required: false
     }
 ];
 
@@ -180,7 +180,7 @@ export const USER_SPECIFIC_FIELDS = {
         }
     ],
     [USER_TYPES.DOSEN]: [
-        { 
+        {
             name: "nip",
             label: "NIP",
             type: "text",
@@ -188,7 +188,7 @@ export const USER_SPECIFIC_FIELDS = {
         }
     ],
     [USER_TYPES.MAHASISWA]: [
-        { 
+        {
             name: "nim",
             label: "NIM",
             type: "text",

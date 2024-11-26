@@ -8,6 +8,7 @@ use App\Models\DataKkn;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class LaporanController extends Controller
 {
@@ -15,16 +16,16 @@ class LaporanController extends Controller
     {
         $type = $request->input('type', 'kkl');
         $user = Auth::user();
-        
+
         $baseQuery = function ($query) use ($user) {
             $query->where('user_id', $user->id)
-                  ->with(['mahasiswa:id,name', 'pembimbing:id,name', 'laporan']);
+                ->with(['mahasiswa:id,name', 'pembimbing:id,name', 'laporan']);
         };
 
-        $kklData = $type === 'kkl' ? 
+        $kklData = $type === 'kkl' ?
             DataKkl::when(true, $baseQuery)->latest()->paginate(10) : null;
 
-        $kknData = $type === 'kkn' ? 
+        $kknData = $type === 'kkn' ?
             DataKkn::when(true, $baseQuery)->latest()->paginate(10) : null;
 
         return inertia('Front/Laporan/LaporanPage', [
@@ -51,8 +52,8 @@ class LaporanController extends Controller
 
             $model = $validated['type'] === 'kkl' ? DataKkl::class : DataKkn::class;
             $existingData = $model::where('user_id', Auth::id())
-                                ->whereNull('id_laporan')
-                                ->first();
+                ->whereNull('id_laporan')
+                ->first();
 
             if ($existingData) {
                 $existingData->update(['id_laporan' => $laporan->id]);
@@ -75,18 +76,40 @@ class LaporanController extends Controller
 
         return DB::transaction(function () use ($validated, $id, $request) {
             $model = $validated['type'] === 'kkl' ? DataKkl::class : DataKkn::class;
-            $data = $model::where('user_id', Auth::id())->findOrFail($id);
+            $data = $model::with('laporan')
+                ->where('user_id', Auth::id())
+                ->where('id', $id)
+                ->firstOrFail();
 
-            if ($request->hasFile('file')) {
-                if ($data->laporan) {
-                    Storage::disk('private')->delete($data->laporan->file);
-                    $data->laporan->update([
-                        'file' => $request->file('file')->store('laporans', 'private'),
-                        'keterangan' => $validated['keterangan'],
-                    ]);
+            if (!$data->laporan) {
+                // Create new laporan if it doesn't exist
+                $laporan = Laporan::create([
+                    'user_id' => Auth::id(),
+                    'file' => $request->hasFile('file') ? 
+                        $request->file('file')->store('laporans', 'private') : null,
+                    'keterangan' => $validated['keterangan'] ?? null,
+                ]);
+                
+                $data->update(['id_laporan' => $laporan->id]);
+            } else {
+                // Update existing laporan
+                $updateData = [];
+
+                if ($request->hasFile('file')) {
+                    // Delete old file if exists
+                    if ($data->laporan->file) {
+                        Storage::disk('private')->delete($data->laporan->file);
+                    }
+                    $updateData['file'] = $request->file('file')->store('laporans', 'private');
                 }
-            } elseif ($data->laporan && isset($validated['keterangan'])) {
-                $data->laporan->update(['keterangan' => $validated['keterangan']]);
+
+                if (isset($validated['keterangan'])) {
+                    $updateData['keterangan'] = $validated['keterangan'];
+                }
+
+                if (!empty($updateData)) {
+                    $data->laporan->update($updateData);
+                }
             }
 
             return redirect()->back()->with('flash', [
@@ -100,11 +123,11 @@ class LaporanController extends Controller
     {
         return DB::transaction(function () use ($id) {
             $laporan = Laporan::where('user_id', Auth::id())->findOrFail($id);
-            
+
             if ($laporan->file) {
                 Storage::disk('private')->delete($laporan->file);
             }
-            
+
             $laporan->delete();
 
             return redirect()->back()->with('flash', [

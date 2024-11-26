@@ -41,8 +41,13 @@ export default function LaporanPage({
     kknData = null,
     type = 'kkl'
 }) {
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const { data, setData, post, processing, errors, reset } = useForm({
+    const [modalState, setModalState] = useState({
+        isOpen: false,
+        type: type,
+        editingData: null
+    });
+
+    const { data, setData, post, put, processing, errors, reset } = useForm({
         type: type,
         file: null,
         keterangan: '',
@@ -50,6 +55,7 @@ export default function LaporanPage({
 
     const handleTabClick = (tab) => {
         const newType = tab.toLowerCase();
+        setModalState(prev => ({ ...prev, type: newType }));
         router.get(
             route(route().current(), { type: newType }),
             {},
@@ -59,13 +65,46 @@ export default function LaporanPage({
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        post(route('laporan.store'), {
-            preserveScroll: true,
-            onSuccess: () => {
-                setIsModalOpen(false);
-                reset();
-            },
-        });
+        const isEditing = modalState.editingData;
+
+        if (isEditing) {
+            put(route('laporan.update', { id: isEditing.id, type: modalState.type }), {
+                ...data,
+                type: modalState.type,
+                preserveScroll: true,
+                onSuccess: () => {
+                    setModalState({ isOpen: false, type: modalState.type, editingData: null });
+                    reset();
+                },
+            });
+        } else {
+            post(route('laporan.store', { type: modalState.type }), {
+                ...data,
+                type: modalState.type,
+                preserveScroll: true,
+                onSuccess: () => {
+                    setModalState({ isOpen: false, type: modalState.type, editingData: null });
+                    reset();
+                },
+            });
+        }
+    };
+
+    const handleModal = (editingData = null) => {
+        setModalState(prev => ({
+            isOpen: true,
+            type: prev.type,
+            editingData
+        }));
+        if (editingData?.laporan) {
+            setData({
+                type: modalState.type,
+                file: null,
+                keterangan: editingData.laporan.keterangan || '',
+            });
+        } else {
+            reset();
+        }
     };
 
     const currentData = type === 'kkl' ?
@@ -81,7 +120,7 @@ export default function LaporanPage({
                             Anda belum memiliki laporan {type.toUpperCase()}
                         </p>
                         <button
-                            onClick={() => setIsModalOpen(true)}
+                            onClick={() => handleModal()}
                             className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white transition-colors bg-teal-500 rounded-lg hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
                         >
                             Upload Laporan
@@ -91,7 +130,12 @@ export default function LaporanPage({
             );
         }
 
-        return <LaporanCard data={currentData} type={type} />;
+        return <LaporanCard 
+            data={currentData} 
+            type={type} 
+            onEdit={handleModal} 
+            processing={processing} 
+        />;
     };
 
     return (
@@ -112,11 +156,10 @@ export default function LaporanPage({
                                     key={tab}
                                     role="tab"
                                     type="button"
-                                    className={`flex whitespace-nowrap items-center h-8 px-5 font-medium rounded-lg outline-none focus:ring-2 focus:ring-teal-600 focus:ring-inset ${
-                                        type === tab.toLowerCase()
-                                            ? 'text-teal-600 shadow bg-white dark:text-white dark:bg-teal-600'
-                                            : 'hover:text-gray-800 focus:text-teal-600 dark:text-gray-400 dark:hover:text-gray-300 dark:focus:text-gray-400'
-                                    }`}
+                                    className={`flex whitespace-nowrap items-center h-8 px-5 font-medium rounded-lg outline-none focus:ring-2 focus:ring-teal-600 focus:ring-inset ${type === tab.toLowerCase()
+                                        ? 'text-teal-600 shadow bg-white dark:text-white dark:bg-teal-600'
+                                        : 'hover:text-gray-800 focus:text-teal-600 dark:text-gray-400 dark:hover:text-gray-300 dark:focus:text-gray-400'
+                                        }`}
                                     onClick={() => handleTabClick(tab)}
                                 >
                                     {tab}
@@ -130,15 +173,15 @@ export default function LaporanPage({
                     </Suspense>
 
                     <GenericModal
-                        isOpen={isModalOpen}
+                        isOpen={modalState.isOpen}
                         onClose={() => {
-                            setIsModalOpen(false);
+                            setModalState({ isOpen: false, type: modalState.type, editingData: null });
                             reset();
                         }}
-                        title={`Upload Laporan ${type.toUpperCase()}`}
-                        type="create"
+                        title={`${modalState.editingData ? 'Update' : 'Upload'} Laporan ${modalState.type.toUpperCase()}`}
+                        type={modalState.editingData ? 'edit' : 'create'}
                         fields={MODAL_FIELDS}
-                        data={{ ...data, type }}
+                        data={{ ...data, type: modalState.type }}
                         setData={setData}
                         errors={errors}
                         processing={processing}
