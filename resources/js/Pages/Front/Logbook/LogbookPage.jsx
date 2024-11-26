@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
-import { Head } from "@inertiajs/react";
+import { Head, useForm } from "@inertiajs/react";
 import FrontLayout from "@/Layouts/FrontLayout";
 import DataTable from "@/Components/ui/DataTable";
 import GenericModal from "@/Components/ui/GenericModal";
@@ -9,6 +9,12 @@ import { getTableConfigs } from '@/utils/constants';
 import { formatDate } from '@/utils/utils';
 
 export default function LogbookPage({ logbooks, bimbingans }) {
+    const form = useForm({
+        tanggal: '',
+        catatan: '',
+        keterangan: '',
+    });
+
     const tableConfigs = useMemo(() =>
         getTableConfigs(logbooks, bimbingans, formatDate)
         , [logbooks?.data, bimbingans?.data]);
@@ -44,16 +50,28 @@ export default function LogbookPage({ logbooks, bimbingans }) {
         });
     }, [activeTab]);
 
+    const handleSubmit = useCallback((e) => {
+        e.preventDefault();
+        const isEditing = modalState.editingData;
+        const type = modalState.type.toLowerCase();
+        const baseRoute = type === 'logbook' ? 'logbooks' : 'bimbingans';
+
+        form[isEditing ? 'put' : 'post'](
+            route(`${baseRoute}.${isEditing ? 'update' : 'store'}`, isEditing?.id), {
+            onSuccess: () => {
+                setModalState({ isOpen: false, type: null, editingData: null });
+            }
+        });
+    }, [modalState, form]);
+
     const handleDelete = useCallback((row) => {
         if (!window.confirm('Yakin ingin menghapus data ini?')) return;
 
         const isLogbook = activeTab === 'Logbook';
         const baseRoute = isLogbook ? 'logbooks' : 'bimbingans';
 
-        form.delete(route(`${baseRoute}.destroy`, row.id), {
-            preserveState: true,
-        });
-    }, [activeTab]);
+        form.delete(route(`${baseRoute}.destroy`, row.id));
+    }, [activeTab, form]);
 
     const handleDownload = useCallback(async (format) => {
         const type = activeTab.toLowerCase();
@@ -98,6 +116,19 @@ export default function LogbookPage({ logbooks, bimbingans }) {
         handleDownload,
     }), [handleAdd, handleEdit, handleDelete, handleDownload]);
 
+    // Effect to handle form data when modal state changes
+    useEffect(() => {
+        if (modalState.editingData) {
+            form.setData({
+                tanggal: modalState.editingData.tanggal || '',
+                catatan: modalState.editingData.catatan || '',
+                keterangan: modalState.editingData.keterangan || '',
+            });
+        } else {
+            form.reset();
+        }
+    }, [modalState.editingData]);
+
     return (
         <FrontLayout>
             <Head title="Logbook" />
@@ -124,6 +155,12 @@ export default function LogbookPage({ logbooks, bimbingans }) {
                                 </nav>
                             </div>
 
+                            <TableHeader
+                                title={`${activeTab} Mahasiswa`}
+                                onDownload={(format) => handleDownload(format)}
+                                onAdd={() => handleAdd(activeTab)}
+                            />
+
                             <DataTable
                                 columns={currentTableConfig.columns}
                                 data={currentTableConfig.data}
@@ -135,8 +172,12 @@ export default function LogbookPage({ logbooks, bimbingans }) {
                                 isOpen={modalState.isOpen}
                                 onClose={() => setModalState({ isOpen: false, type: null, editingData: null })}
                                 title={`${modalState.editingData ? 'Edit' : 'Tambah'} ${modalState.type}`}
-                                type={modalState.type}
-                                editingData={modalState.editingData}
+                                data={form.data}
+                                setData={form.setData}
+                                errors={form.errors}
+                                processing={form.processing}
+                                handleSubmit={handleSubmit}
+                                clearErrors={form.clearErrors}
                                 fields={tableConfigs[modalState.type]?.modalFields || []}
                             />
                         </div>
