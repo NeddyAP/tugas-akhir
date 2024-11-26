@@ -28,7 +28,7 @@ const MODAL_FIELDS = [
 
 export default function LaporanCard({ data, type }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const { data: formData, setData, post, processing, errors, reset } = useForm({
+    const { data: formData, setData, post, put, processing, errors, reset } = useForm({
         type: type,
         file: null,
         keterangan: data?.laporan?.keterangan || '',
@@ -36,17 +36,23 @@ export default function LaporanCard({ data, type }) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        const url = data.laporan ?
-            route('laporan.update', data.id) :
-            route('laporan.store');
-
-        post(url, {
-            preserveScroll: true,
-            onSuccess: () => {
-                setIsModalOpen(false);
-                reset();
-            },
-        });
+        if (data.laporan) {
+            put(route('laporan.update', data.id), {
+                preserveScroll: true,
+                onSuccess: () => {
+                    setIsModalOpen(false);
+                    reset();
+                },
+            });
+        } else {
+            post(route('laporan.store'), {
+                preserveScroll: true,
+                onSuccess: () => {
+                    setIsModalOpen(false);
+                    reset();
+                },
+            });
+        }
     };
 
     const getStatusBadge = (status) => {
@@ -135,6 +141,7 @@ export default function LaporanCard({ data, type }) {
                                             {data.laporan?.keterangan || 'Belum ada keterangan'}
                                         </p>
                                     </div>
+
                                 </div>
                             </div>
 
@@ -147,19 +154,6 @@ export default function LaporanCard({ data, type }) {
                                             {data.updated_at ? format(new Date(data.updated_at), 'dd MMM yyyy HH:mm') : '-'}
                                         </p>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="py-6">
-                        <div className="p-4 transition-colors border rounded-lg dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800/50">
-                            <div className="flex items-start gap-3">
-                                <NotebookPen className="w-5 h-5 text-teal-500 dark:text-teal-400" />
-                                <div>
-                                    <p className="text-sm font-medium text-gray-900 dark:text-white">Keterangan</p>
-                                    <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                                        {data.laporan?.keterangan || '-'}
-                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -233,4 +227,4 @@ LaporanCard.propTypes = {
         }),
     }).isRequired,
     type: PropTypes.oneOf(['kkl', 'kkn']).isRequired,
-}; 
+};
