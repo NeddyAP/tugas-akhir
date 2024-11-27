@@ -20,20 +20,17 @@ export default function LaporanPage({
     kknData = null,
     type = 'kkl'
 }) {
-    const [modalState, setModalState] = useState({
-        isOpen: false,
-        type: type,
-        editingData: null
-    });
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const { data, setData, post, put, processing, errors, reset, clearErrors } = useForm({
+    const { data, setData, post, processing, errors, reset, clearErrors } = useForm({
         type: type,
         keterangan: '',
+        file: null,
     });
 
     const handleTabClick = (tab) => {
         const newType = tab.toLowerCase();
-        setModalState(prev => ({ ...prev, type: newType }));
+        setData('type', newType);
         router.get(
             route(route().current(), { type: newType }),
             {},
@@ -43,39 +40,31 @@ export default function LaporanPage({
 
     const handleSubmit = useCallback((e) => {
         e.preventDefault();
+        const formData = new FormData();
+        formData.append('type', data.type);
+        formData.append('keterangan', data.keterangan);
+        
+        if (data.file instanceof File) {
+            formData.append('file', data.file);
+        }
 
-        const options = {
+        post(route('laporan.store'), formData, {
             preserveScroll: true,
+            forceFormData: true,
             onSuccess: () => {
-                setModalState(prev => ({ ...prev, isOpen: false, editingData: null }));
+                setIsModalOpen(false);
                 reset();
+            },
+            onError: (errors) => {
+                console.error('Submission errors:', errors);
             }
-        };
+        });
+    }, [data, post, reset]);
 
-        if (modalState.editingData) {
-            put(route('laporan.update', modalState.editingData.id), data, options);
-        } else {
-            post(route('laporan.store'), { ...data, type: modalState.type }, options);
-        }
-    }, [modalState, data, post, put, reset]);
-
-    const handleModal = useCallback((editingData = null) => {
-        setModalState(prev => ({
-            isOpen: true,
-            type: prev.type,
-            editingData
-        }));
-
-        if (editingData?.laporan) {
-            setData({
-                type: modalState.type,
-                keterangan: editingData.laporan.keterangan || '',
-            });
-        } else {
-            reset();
-            setData('type', modalState.type);
-        }
-    }, [modalState.type, setData, reset]);
+    const handleModal = () => {
+        setIsModalOpen(true);
+        setData('type', type);
+    };
 
     const currentData = type === 'kkl' ?
         (kklData?.data?.[0] ?? null) :
@@ -106,24 +95,36 @@ export default function LaporanPage({
                 <LaporanCard
                     data={currentData}
                     type={type}
-                    onEdit={handleModal}
                     processing={processing}
-                />
-
-                <GenericModal
-                    isOpen={modalState.isOpen}
-                    onClose={() => {
-                        setModalState(prev => ({ ...prev, isOpen: false, editingData: null }));
+                    onUpload={handleModal}
+                    isModalOpen={isModalOpen}
+                    onCloseModal={() => {
+                        setIsModalOpen(false);
                         reset();
                         clearErrors();
                     }}
-                    title={`${modalState.editingData ? 'Update' : 'Tambah'} Keterangan ${modalState.type.toUpperCase()}`}
+                />
+
+                <GenericModal
+                    isOpen={isModalOpen}
+                    onClose={() => {
+                        setIsModalOpen(false);
+                        reset();
+                        clearErrors();
+                    }}
+                    title={`Tambah Laporan ${type.toUpperCase()}`}
                     fields={[
                         {
                             name: 'keterangan',
                             label: 'Keterangan',
                             type: 'textarea',
                             rows: 3
+                        },
+                        {
+                            name: 'file',
+                            label: 'File Laporan',
+                            type: 'file',
+                            accept: '.pdf,.doc,.docx'
                         }
                     ]}
                     data={data}

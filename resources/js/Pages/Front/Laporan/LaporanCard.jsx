@@ -1,10 +1,29 @@
 import PropTypes from 'prop-types';
 import { format } from 'date-fns';
-import { FileText, Calendar, User, Clock, Download, Edit, SquareUserRoundIcon, Goal } from 'lucide-react';
+import { FileText, Calendar, User, Clock, Download, SquareUserRoundIcon, Goal, Trash2, Upload } from 'lucide-react';
 import { renderStatusBadge } from '@/utils/constants';
-import { useForm } from '@inertiajs/react';
+import { useForm, router } from '@inertiajs/react';
 
-export default function LaporanCard({ data, type, onEdit, processing }) {
+export default function LaporanCard({ data, type, processing, onUpload }) {
+    const handleDelete = (data) => {
+        if (confirm('Apakah Anda yakin ingin menghapus laporan ini?')) {
+            router.delete(route('laporan.destroy', data.laporan.id), {
+                preserveScroll: true,
+                preserveState: true,
+            });
+        }
+    };
+
+    if (!data) {
+        return (
+            <div className="p-6 text-center bg-white border rounded-xl dark:bg-gray-800/50 dark:border-gray-700">
+                <p className="text-gray-600 dark:text-gray-400">
+                    Tidak ada data {type.toUpperCase()} yang tersedia.
+                </p>
+            </div>
+        );
+    }
+
     return (
         <div className="overflow-hidden bg-white border rounded-xl dark:bg-gray-800/50 dark:border-gray-700 backdrop-blur-xl">
             <div className="px-6 py-4 border-b dark:border-gray-700">
@@ -97,21 +116,25 @@ export default function LaporanCard({ data, type, onEdit, processing }) {
                 </div>
                 {data.laporan ? (
                     <div className="flex gap-3 pt-6 mt-6 border-t dark:border-gray-700">
-                        <a
-                            href={route('files.laporan', data.laporan.file.split('/').pop())}
-                            className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white transition-colors bg-teal-500 rounded-lg hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
-                            disabled={processing}
-                        >
-                            <Download className={`w-4 h-4 ${processing ? 'animate-spin' : ''}`} />
-                            {processing ? 'Memproses...' : 'Download PDF'}
-                        </a>
+                        {data.laporan.file && (
+                            <a
+                                href={route('files.laporan', data.laporan.file.split('/').pop())}
+                                className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white transition-colors bg-teal-500 rounded-lg hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
+                                disabled={processing}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                <Download className={`w-4 h-4 ${processing ? 'animate-spin' : ''}`} />
+                                {processing ? 'Memproses...' : 'Download PDF'}
+                            </a>
+                        )}
                         <button
-                            onClick={() => onEdit(data)}
-                            className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 transition-colors bg-white border rounded-lg dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
+                            onClick={() => handleDelete(data)}
+                            className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-red-700 transition-colors bg-white border rounded-lg dark:bg-red-700 dark:text-red-200 dark:border-red-600 hover:bg-red-50 dark:hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
                             disabled={processing}
                         >
-                            <Edit className="w-4 h-4" />
-                            {processing ? 'Memproses...' : 'Edit Laporan'}
+                            <Trash2 className="w-4 h-4" />
+                            {processing ? 'Memproses...' : 'Hapus'}
                         </button>
                     </div>
                 ) : (
@@ -120,10 +143,12 @@ export default function LaporanCard({ data, type, onEdit, processing }) {
                             Anda belum mengupload laporan {type.toUpperCase()}
                         </p>
                         <button
-                            onClick={() => onEdit()}
+                            onClick={onUpload}
                             className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white transition-colors bg-teal-500 rounded-lg hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
+                            disabled={processing}
                         >
-                            Upload Laporan
+                            <Upload className="w-4 h-4" />
+                            {processing ? 'Memproses...' : 'Upload Laporan'}
                         </button>
                     </div>
                 )}
@@ -148,6 +173,6 @@ LaporanCard.propTypes = {
         }),
     }).isRequired,
     type: PropTypes.oneOf(['kkl', 'kkn']).isRequired,
-    onEdit: PropTypes.func.isRequired,
-    processing: PropTypes.bool.isRequired, // Add this line
+    processing: PropTypes.bool.isRequired,
+    onUpload: PropTypes.func.isRequired,
 };

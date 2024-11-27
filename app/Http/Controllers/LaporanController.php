@@ -8,6 +8,7 @@ use App\Models\DataKkn;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class LaporanController extends Controller
 {
@@ -39,59 +40,27 @@ class LaporanController extends Controller
         $validated = $request->validate([
             'type' => 'required|in:kkl,kkn',
             'keterangan' => 'nullable|string',
+            'file' => 'required|file|mimes:pdf,doc,docx|max:10240',
         ]);
 
-        return DB::transaction(function () use ($validated) {
+        return DB::transaction(function () use ($validated, $request) {
+            $model = $validated['type'] === 'kkl' ? DataKkl::class : DataKkn::class;
+            $data = $model::where('user_id', Auth::id())
+                ->whereNull('id_laporan')
+                ->latest()
+                ->firstOrFail();
+
             $laporan = Laporan::create([
                 'user_id' => Auth::id(),
                 'keterangan' => $validated['keterangan'],
+                'file' => $request->file('file')->store('laporans', 'private'),
             ]);
 
-            $model = $validated['type'] === 'kkl' ? DataKkl::class : DataKkn::class;
-            $existingData = $model::where('user_id', Auth::id())
-                ->whereNull('id_laporan')
-                ->first();
+            $data->update(['id_laporan' => $laporan->id]);
 
-            if ($existingData) {
-                $existingData->update(['id_laporan' => $laporan->id]);
-            }
-
-            return redirect()->back()->with('flash', [
-                'message' => 'Keterangan berhasil ditambahkan.',
-                'type' => 'success'
-            ]);
-        });
-    }
-
-    public function update(Request $request, $id)
-    {
-        $validated = $request->validate([
-            'type' => 'required|in:kkl,kkn',
-            'keterangan' => 'nullable|string',
-        ]);
-
-        return DB::transaction(function () use ($validated, $request, $id) {
-            $model = $validated['type'] === 'kkl' ? DataKkl::class : DataKkn::class;
-            $data = $model::with('laporan')
-                ->where('user_id', Auth::id())
-                ->findOrFail($id);
-
-            if (!$data->laporan) {
-                $laporan = Laporan::create([
-                    'user_id' => Auth::id(),
-                    'keterangan' => $validated['keterangan'],
-                ]);
-                
-                $data->update(['id_laporan' => $laporan->id]);
-            } else {
-                $data->laporan->update([
-                    'keterangan' => $validated['keterangan']
-                ]);
-            }
-
-            return redirect()->back()->with('flash', [
-                'message' => 'Keterangan berhasil diperbarui.',
-                'type' => 'success'
+            return back()->with('flash', [
+                'type' => 'success',
+                'message' => 'Laporan berhasil ditambahkan'
             ]);
         });
     }
@@ -99,13 +68,42 @@ class LaporanController extends Controller
     public function destroy($id)
     {
         return DB::transaction(function () use ($id) {
-            $laporan = Laporan::where('user_id', Auth::id())->findOrFail($id);
-            $laporan->delete();
+            try {
+                $laporan = Laporan::findOrFail($id);
 
-            return redirect()->back()->with('flash', [
-                'message' => 'Keterangan berhasil dihapus.',
-                'type' => 'success'
-            ]);
+                // Check if user owns this laporan
+                if ($laporan->user_id !== Auth::id()) {
+                    abort(403, 'Unauthorized action.');
+                }
+
+                // Delete file if exists
+                if ($laporan->file) {
+                    Storage::disk('private')->delete($laporan->file);
+                }
+
+                // Find and update the related KKL/KKN data
+                $kklData = DataKkl::where('id_laporan', $id)->first();
+                $kknData = DataKkn::where('id_laporan', $id)->first();
+
+                if ($kklData) {
+                    $kklData->update(['id_laporan' => null]);
+                }
+                if ($kknData) {
+                    $kknData->update(['id_laporan' => null]);
+                }
+
+                $laporan->delete();
+
+                return back()->with('flash', [
+                    'type' => 'success',
+                    'message' => 'Laporan berhasil dihapus'
+                ]);
+            } catch (\Exception $e) {
+                return back()->with('flash', [
+                    'type' => 'error',
+                    'message' => 'Gagal menghapus laporan: ' . $e->getMessage()
+                ]);
+            }
         });
     }
 }

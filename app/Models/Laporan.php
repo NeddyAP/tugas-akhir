@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Laporan extends Model
 {
@@ -17,6 +18,12 @@ class Laporan extends Model
         'file',
         'keterangan',
     ];
+
+    // Add accessor for file URL
+    public function getFileUrlAttribute()
+    {
+        return $this->file ? Storage::url($this->file) : null;
+    }
 
     public function user()
     {
