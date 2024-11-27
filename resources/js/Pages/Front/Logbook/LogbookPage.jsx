@@ -133,7 +133,7 @@ export default function LogbookPage({ logbooks, bimbingans }) {
         <FrontLayout>
             <Head title="Logbook" />
             <div>
-                <div className="px-32 mt-20">
+                <div className="max-w-6xl p-6 mx-auto my-20">
                     <div className="grid grid-cols-1 mb-8">
                         <div className="flex flex-col gap-8">
                             <div className="flex justify-center">

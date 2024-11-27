@@ -43,7 +43,7 @@ export default function LaporanPage({
         const formData = new FormData();
         formData.append('type', data.type);
         formData.append('keterangan', data.keterangan);
-        
+
         if (data.file instanceof File) {
             formData.append('file', data.file);
         }
@@ -74,8 +74,8 @@ export default function LaporanPage({
         <FrontLayout>
             <Head title={`Laporan ${type.toUpperCase()}`} />
             <div className="max-w-6xl p-6 mx-auto my-20">
-                <div className="mb-6">
-                    <nav className="flex p-1.5 bg-gray-100 rounded-lg dark:bg-gray-800/50 w-fit">
+                <div className="flex items-center justify-center mb-6">
+                    <nav className="flex items-center p-1 space-x-1 overflow-x-auto text-sm text-gray-600 bg-gray-200 rtl:space-x-reverse rounded-xl dark:bg-gray-500/20">
                         {TABS.map((tab) => (
                             <button
                                 key={tab}
