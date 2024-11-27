@@ -8,7 +8,6 @@ use App\Models\DataKkn;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 
 class LaporanController extends Controller
 {
@@ -29,9 +28,9 @@ class LaporanController extends Controller
             DataKkn::when(true, $baseQuery)->latest()->paginate(10) : null;
 
         return inertia('Front/Laporan/LaporanPage', [
-            'type' => $type,
             'kklData' => $kklData,
             'kknData' => $kknData,
+            'type' => $type,
         ]);
     }
 
@@ -39,14 +38,12 @@ class LaporanController extends Controller
     {
         $validated = $request->validate([
             'type' => 'required|in:kkl,kkn',
-            'file' => 'required|file|mimes:pdf|max:10240',
             'keterangan' => 'nullable|string',
         ]);
 
-        return DB::transaction(function () use ($validated, $request) {
+        return DB::transaction(function () use ($validated) {
             $laporan = Laporan::create([
                 'user_id' => Auth::id(),
-                'file' => $request->file('file')->store('laporans', 'private'),
                 'keterangan' => $validated['keterangan'],
             ]);
 
@@ -60,7 +57,7 @@ class LaporanController extends Controller
             }
 
             return redirect()->back()->with('flash', [
-                'message' => 'Laporan berhasil diunggah.',
+                'message' => 'Keterangan berhasil ditambahkan.',
                 'type' => 'success'
             ]);
         });
@@ -70,50 +67,30 @@ class LaporanController extends Controller
     {
         $validated = $request->validate([
             'type' => 'required|in:kkl,kkn',
-            'file' => 'nullable|file|mimes:pdf|max:10240',
             'keterangan' => 'nullable|string',
         ]);
 
-        return DB::transaction(function () use ($validated, $id, $request) {
+        return DB::transaction(function () use ($validated, $request, $id) {
             $model = $validated['type'] === 'kkl' ? DataKkl::class : DataKkn::class;
             $data = $model::with('laporan')
                 ->where('user_id', Auth::id())
-                ->where('id', $id)
-                ->firstOrFail();
+                ->findOrFail($id);
 
             if (!$data->laporan) {
-                // Create new laporan if it doesn't exist
                 $laporan = Laporan::create([
                     'user_id' => Auth::id(),
-                    'file' => $request->hasFile('file') ? 
-                        $request->file('file')->store('laporans', 'private') : null,
-                    'keterangan' => $validated['keterangan'] ?? null,
+                    'keterangan' => $validated['keterangan'],
                 ]);
                 
                 $data->update(['id_laporan' => $laporan->id]);
             } else {
-                // Update existing laporan
-                $updateData = [];
-
-                if ($request->hasFile('file')) {
-                    // Delete old file if exists
-                    if ($data->laporan->file) {
-                        Storage::disk('private')->delete($data->laporan->file);
-                    }
-                    $updateData['file'] = $request->file('file')->store('laporans', 'private');
-                }
-
-                if (isset($validated['keterangan'])) {
-                    $updateData['keterangan'] = $validated['keterangan'];
-                }
-
-                if (!empty($updateData)) {
-                    $data->laporan->update($updateData);
-                }
+                $data->laporan->update([
+                    'keterangan' => $validated['keterangan']
+                ]);
             }
 
             return redirect()->back()->with('flash', [
-                'message' => 'Laporan berhasil diperbarui.',
+                'message' => 'Keterangan berhasil diperbarui.',
                 'type' => 'success'
             ]);
         });
@@ -123,15 +100,10 @@ class LaporanController extends Controller
     {
         return DB::transaction(function () use ($id) {
             $laporan = Laporan::where('user_id', Auth::id())->findOrFail($id);
-
-            if ($laporan->file) {
-                Storage::disk('private')->delete($laporan->file);
-            }
-
             $laporan->delete();
 
             return redirect()->back()->with('flash', [
-                'message' => 'Laporan berhasil dihapus.',
+                'message' => 'Keterangan berhasil dihapus.',
                 'type' => 'success'
             ]);
         });

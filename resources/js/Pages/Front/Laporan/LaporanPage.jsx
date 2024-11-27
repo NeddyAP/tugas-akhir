@@ -1,4 +1,4 @@
-import { Suspense, useState } from 'react';
+import { Suspense, useState, useCallback } from 'react';
 import { router } from '@inertiajs/react';
 import FrontLayout from "@/Layouts/FrontLayout";
 import { Head } from "@inertiajs/react";
@@ -15,27 +15,6 @@ const LoadingFallback = () => (
 
 const TABS = ['KKL', 'KKN'];
 
-const MODAL_FIELDS = [
-    {
-        name: 'file',
-        label: 'File PDF',
-        type: 'file',
-        accept: '.pdf',
-        required: true
-    },
-    {
-        name: 'keterangan',
-        label: 'Keterangan',
-        type: 'textarea',
-        rows: 3,
-        required: false
-    },
-    {
-        name: 'type',
-        type: 'hidden',
-    }
-];
-
 export default function LaporanPage({
     kklData = null,
     kknData = null,
@@ -47,9 +26,8 @@ export default function LaporanPage({
         editingData: null
     });
 
-    const { data, setData, post, put, processing, errors, reset } = useForm({
+    const { data, setData, post, put, processing, errors, reset, clearErrors } = useForm({
         type: type,
-        file: null,
         keterangan: '',
     });
 
@@ -63,133 +41,99 @@ export default function LaporanPage({
         );
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = useCallback((e) => {
         e.preventDefault();
-        const isEditing = modalState.editingData;
 
-        if (isEditing) {
-            put(route('laporan.update', { id: isEditing.id, type: modalState.type }), {
-                ...data,
-                type: modalState.type,
-                preserveScroll: true,
-                onSuccess: () => {
-                    setModalState({ isOpen: false, type: modalState.type, editingData: null });
-                    reset();
-                },
-            });
+        const options = {
+            preserveScroll: true,
+            onSuccess: () => {
+                setModalState(prev => ({ ...prev, isOpen: false, editingData: null }));
+                reset();
+            }
+        };
+
+        if (modalState.editingData) {
+            put(route('laporan.update', modalState.editingData.id), data, options);
         } else {
-            post(route('laporan.store', { type: modalState.type }), {
-                ...data,
-                type: modalState.type,
-                preserveScroll: true,
-                onSuccess: () => {
-                    setModalState({ isOpen: false, type: modalState.type, editingData: null });
-                    reset();
-                },
-            });
+            post(route('laporan.store'), { ...data, type: modalState.type }, options);
         }
-    };
+    }, [modalState, data, post, put, reset]);
 
-    const handleModal = (editingData = null) => {
+    const handleModal = useCallback((editingData = null) => {
         setModalState(prev => ({
             isOpen: true,
             type: prev.type,
             editingData
         }));
+
         if (editingData?.laporan) {
             setData({
                 type: modalState.type,
-                file: null,
                 keterangan: editingData.laporan.keterangan || '',
             });
         } else {
             reset();
+            setData('type', modalState.type);
         }
-    };
+    }, [modalState.type, setData, reset]);
 
     const currentData = type === 'kkl' ?
         (kklData?.data?.[0] ?? null) :
         (kknData?.data?.[0] ?? null);
 
-    const renderContent = () => {
-        if (!currentData) {
-            return (
-                <div className="py-8 text-center">
-                    <div className="max-w-sm p-6 mx-auto bg-white border rounded-xl dark:bg-gray-800/50 dark:border-gray-700">
-                        <p className="mb-4 text-gray-600 dark:text-gray-400">
-                            Anda belum memiliki laporan {type.toUpperCase()}
-                        </p>
-                        <button
-                            onClick={() => handleModal()}
-                            className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white transition-colors bg-teal-500 rounded-lg hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
-                        >
-                            Upload Laporan
-                        </button>
-                    </div>
-                </div>
-            );
-        }
-
-        return <LaporanCard 
-            data={currentData} 
-            type={type} 
-            onEdit={handleModal} 
-            processing={processing} 
-        />;
-    };
-
     return (
-        <>
+        <FrontLayout>
             <Head title={`Laporan ${type.toUpperCase()}`} />
-            <FrontLayout>
-                <div className="max-w-4xl px-4 py-6 mx-auto">
-                    <div className="flex items-center justify-between mb-6">
-                        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-                            Laporan
-                        </h1>
-                    </div>
-
-                    <div className="flex justify-center mb-6">
-                        <nav className="flex items-center p-1 space-x-1 overflow-x-auto text-sm text-gray-600 bg-gray-200 rtl:space-x-reverse rounded-xl dark:bg-gray-500/20">
-                            {TABS.map((tab) => (
-                                <button
-                                    key={tab}
-                                    role="tab"
-                                    type="button"
-                                    className={`flex whitespace-nowrap items-center h-8 px-5 font-medium rounded-lg outline-none focus:ring-2 focus:ring-teal-600 focus:ring-inset ${type === tab.toLowerCase()
-                                        ? 'text-teal-600 shadow bg-white dark:text-white dark:bg-teal-600'
-                                        : 'hover:text-gray-800 focus:text-teal-600 dark:text-gray-400 dark:hover:text-gray-300 dark:focus:text-gray-400'
-                                        }`}
-                                    onClick={() => handleTabClick(tab)}
-                                >
-                                    {tab}
-                                </button>
-                            ))}
-                        </nav>
-                    </div>
-
-                    <Suspense fallback={<LoadingFallback />}>
-                        {renderContent()}
-                    </Suspense>
-
-                    <GenericModal
-                        isOpen={modalState.isOpen}
-                        onClose={() => {
-                            setModalState({ isOpen: false, type: modalState.type, editingData: null });
-                            reset();
-                        }}
-                        title={`${modalState.editingData ? 'Update' : 'Upload'} Laporan ${modalState.type.toUpperCase()}`}
-                        type={modalState.editingData ? 'edit' : 'create'}
-                        fields={MODAL_FIELDS}
-                        data={{ ...data, type: modalState.type }}
-                        setData={setData}
-                        errors={errors}
-                        processing={processing}
-                        handleSubmit={handleSubmit}
-                    />
+            <div className="max-w-6xl p-6 mx-auto my-20">
+                <div className="mb-6">
+                    <nav className="flex p-1.5 bg-gray-100 rounded-lg dark:bg-gray-800/50 w-fit">
+                        {TABS.map((tab) => (
+                            <button
+                                key={tab}
+                                type="button"
+                                className={`flex whitespace-nowrap items-center h-8 px-5 font-medium rounded-lg outline-none focus:ring-2 focus:ring-teal-600 focus:ring-inset ${type === tab.toLowerCase()
+                                    ? 'text-teal-600 shadow bg-white dark:text-white dark:bg-teal-600'
+                                    : 'hover:text-gray-800 focus:text-teal-600 dark:text-gray-400 dark:hover:text-gray-300 dark:focus:text-gray-400'
+                                    }`}
+                                onClick={() => handleTabClick(tab)}
+                            >
+                                {tab}
+                            </button>
+                        ))}
+                    </nav>
                 </div>
-            </FrontLayout>
-        </>
+
+                <LaporanCard
+                    data={currentData}
+                    type={type}
+                    onEdit={handleModal}
+                    processing={processing}
+                />
+
+                <GenericModal
+                    isOpen={modalState.isOpen}
+                    onClose={() => {
+                        setModalState(prev => ({ ...prev, isOpen: false, editingData: null }));
+                        reset();
+                        clearErrors();
+                    }}
+                    title={`${modalState.editingData ? 'Update' : 'Tambah'} Keterangan ${modalState.type.toUpperCase()}`}
+                    fields={[
+                        {
+                            name: 'keterangan',
+                            label: 'Keterangan',
+                            type: 'textarea',
+                            rows: 3
+                        }
+                    ]}
+                    data={data}
+                    setData={setData}
+                    errors={errors}
+                    processing={processing}
+                    handleSubmit={handleSubmit}
+                />
+            </div>
+        </FrontLayout>
     );
 }
 
