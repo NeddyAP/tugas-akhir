@@ -8,9 +8,9 @@ use App\Models\DataKkn;
 use App\Models\DosenProfile;
 use App\Models\MahasiswaProfile;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
-use Carbon\Carbon;
 
 class UserSeeder extends Seeder
 {

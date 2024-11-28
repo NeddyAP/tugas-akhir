@@ -6,22 +6,17 @@ use App\Http\Controllers\Admin\InformationController as AdminInformationControll
 use App\Http\Controllers\Admin\LaporanController as AdminLaporanController;
 use App\Http\Controllers\Admin\LogbookController as AdminLogbookController;
 use App\Http\Controllers\BimbinganController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\LogbookController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\HomeController;
 use App\Http\Middleware\AdminMiddleware;
-use App\Models\Panduan;
-use App\Models\Question;
-use App\Models\Tutorial;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 Route::get('/', [HomeController::class, 'home'])->name('home');
 Route::get('/pedoman', [HomeController::class, 'pedoman'])->name('pedoman');
-
 
 Route::middleware('auth')->group(function () {
 

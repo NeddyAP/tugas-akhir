@@ -27,7 +27,7 @@ class UserController extends Controller
         $query = User::with('profilable');
 
         if ($search) {
-            $searchWildcard = '%' . $search . '%';
+            $searchWildcard = '%'.$search.'%';
             $query->where(function ($q) use ($searchWildcard) {
                 $q->where('name', 'like', $searchWildcard)
                     ->orWhere('email', 'like', $searchWildcard)
@@ -144,7 +144,7 @@ class UserController extends Controller
 
         // Admin can manage non-admin users
         if ($currentUser->role === 'admin') {
-            return !in_array($targetUserRole, ['admin', 'superadmin']);
+            return ! in_array($targetUserRole, ['admin', 'superadmin']);
         }
 
         return false;
@@ -156,9 +156,9 @@ class UserController extends Controller
         $targetUserRole = $tab === 'admin' ? 'admin' : $tab;
 
         // Check if the current user can manage the target user role
-        if (!$this->canManageUser(Auth::user(), $targetUserRole)) {
+        if (! $this->canManageUser(Auth::user(), $targetUserRole)) {
             return redirect()->back()->with('flash', [
-                'message' => 'Anda tidak memiliki izin untuk menambahkan ' . $this->getUserTypeLabel($tab),
+                'message' => 'Anda tidak memiliki izin untuk menambahkan '.$this->getUserTypeLabel($tab),
                 'type' => 'error',
             ]);
         }
@@ -219,12 +219,12 @@ class UserController extends Controller
             });
 
             return redirect()->back()->with('flash', [
-                'message' => ucfirst($tab) . ' berhasil ditambahkan',
+                'message' => ucfirst($tab).' berhasil ditambahkan',
                 'type' => 'success',
             ]);
         } catch (Exception $e) {
             return redirect()->back()->with('flash', [
-                'message' => 'Gagal menambahkan ' . $this->getUserTypeLabel($tab),
+                'message' => 'Gagal menambahkan '.$this->getUserTypeLabel($tab),
                 'type' => 'error',
             ]);
         }
@@ -236,9 +236,9 @@ class UserController extends Controller
             $user = User::with('profilable')->findOrFail($id);
 
             // Check if the current user can manage the target user
-            if (!$this->canManageUser(Auth::user(), $user->role)) {
+            if (! $this->canManageUser(Auth::user(), $user->role)) {
                 return redirect()->back()->with('flash', [
-                    'message' => 'Anda tidak memiliki izin untuk mengubah ' . $this->getUserTypeLabel($user->role),
+                    'message' => 'Anda tidak memiliki izin untuk mengubah '.$this->getUserTypeLabel($user->role),
                     'type' => 'error',
                 ]);
             }
@@ -270,12 +270,12 @@ class UserController extends Controller
             });
 
             return redirect()->back()->with('flash', [
-                'message' => ucfirst($tab) . ' berhasil diperbarui',
+                'message' => ucfirst($tab).' berhasil diperbarui',
                 'type' => 'success',
             ]);
         } catch (Exception $e) {
             return redirect()->back()->with('flash', [
-                'message' => 'Gagal memperbarui ' . $this->getUserTypeLabel($tab),
+                'message' => 'Gagal memperbarui '.$this->getUserTypeLabel($tab),
                 'type' => 'error',
             ]);
         }
@@ -288,9 +288,9 @@ class UserController extends Controller
             $user = User::findOrFail($id);
 
             // Check if the current user can manage the target user
-            if (!$this->canManageUser(Auth::user(), $user->role)) {
+            if (! $this->canManageUser(Auth::user(), $user->role)) {
                 return redirect()->back()->with('flash', [
-                    'message' => 'Anda tidak memiliki izin untuk menghapus ' . $this->getUserTypeLabel($user->role),
+                    'message' => 'Anda tidak memiliki izin untuk menghapus '.$this->getUserTypeLabel($user->role),
                     'type' => 'error',
                 ]);
             }
@@ -306,12 +306,12 @@ class UserController extends Controller
             $user->delete();
 
             return redirect()->back()->with('flash', [
-                'message' => ucfirst($tab) . ' berhasil dihapus',
+                'message' => ucfirst($tab).' berhasil dihapus',
                 'type' => 'success',
             ]);
         } catch (Exception $e) {
             return redirect()->back()->with('flash', [
-                'message' => 'Gagal menghapus ' . $this->getUserTypeLabel($tab),
+                'message' => 'Gagal menghapus '.$this->getUserTypeLabel($tab),
                 'type' => 'error',
             ]);
         }

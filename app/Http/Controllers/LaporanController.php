@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Laporan;
 use App\Models\DataKkl;
 use App\Models\DataKkn;
+use App\Models\Laporan;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class LaporanController extends Controller
@@ -60,7 +60,7 @@ class LaporanController extends Controller
 
             return back()->with('flash', [
                 'type' => 'success',
-                'message' => 'Laporan berhasil ditambahkan'
+                'message' => 'Laporan berhasil ditambahkan',
             ]);
         });
     }
@@ -96,12 +96,12 @@ class LaporanController extends Controller
 
                 return back()->with('flash', [
                     'type' => 'success',
-                    'message' => 'Laporan berhasil dihapus'
+                    'message' => 'Laporan berhasil dihapus',
                 ]);
             } catch (\Exception $e) {
                 return back()->with('flash', [
                     'type' => 'error',
-                    'message' => 'Gagal menghapus laporan: ' . $e->getMessage()
+                    'message' => 'Gagal menghapus laporan: '.$e->getMessage(),
                 ]);
             }
         });

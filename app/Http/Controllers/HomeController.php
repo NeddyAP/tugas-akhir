@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Panduan;
+use App\Models\Question;
+use App\Models\Tutorial;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
-use App\Models\{Tutorial, Question, Panduan};
 
 class HomeController extends Controller
 {
@@ -27,9 +29,9 @@ class HomeController extends Controller
 
     public function downloadLaporan(string $filename)
     {
-        $path = 'laporans/' . $filename;
+        $path = 'laporans/'.$filename;
         abort_unless(Storage::disk('private')->exists($path), 404);
 
-        return response()->file(storage_path('app/private/' . $path));
+        return response()->file(storage_path('app/private/'.$path));
     }
 }
