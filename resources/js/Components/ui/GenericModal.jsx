@@ -23,10 +23,17 @@ const InputField = ({ field, value, onChange, disabled = false }) => (
     />
 );
 
+// Update the SelectField component to handle custom onChange
 const SelectField = ({ field, value, onChange }) => (
     <select
         value={value || ''}
-        onChange={onChange}
+        onChange={(e) => {
+            if (field.onChange) {
+                field.onChange(e.target.value);
+            } else {
+                onChange(e);
+            }
+        }}
         disabled={field.disabled}
         className="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-teal-500 focus:ring-teal-500 disabled:bg-gray-100 dark:disabled:bg-gray-600 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
     >
@@ -51,6 +58,7 @@ const SearchableSelect = ({ field, value, onChange, options }) => (
         classNamePrefix="select"
         isClearable
         isSearchable
+        isDisabled={field.disabled}
         placeholder={`Select ${field.label}`}
         className="block w-full mt-1"
         classNames={{

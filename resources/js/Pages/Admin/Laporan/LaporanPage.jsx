@@ -22,8 +22,8 @@ export default function LaporanPage({
 }) {
     const handleTabClick = (newType) => {
         router.get(
-            route(route().current(), { type: newType }), 
-            {}, 
+            route(route().current(), { type: newType }),
+            {},
             { preserveState: true, preserveScroll: true }
         );
     };
@@ -34,24 +34,24 @@ export default function LaporanPage({
             value: m.id,
             label: m.name
         })) || [];
-        
+
         const defaultDosens = dosens.map(d => ({
             value: d.id,
             label: d.name
         })) || [];
 
-        switch(type) {
+        switch (type) {
             case 'kkl':
-                return <DataKkl 
+                return <DataKkl
                     type="kkl"
                     title="Data KKL"
                     description="Kelola data KKL mahasiswa"
-                    laporans={kklData || defaultData} 
+                    laporans={kklData || defaultData}
                     mahasiswas={defaultMahasiswas}
                     dosens={defaultDosens}
                 />;
             case 'kkn':
-                return <DataKkn 
+                return <DataKkn
                     type="kkn"
                     title="Data KKN"
                     description="Kelola data KKN mahasiswa"

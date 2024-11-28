@@ -24,8 +24,6 @@ export default function BaseLaporanData({
         tanggal_mulai: "",
         tanggal_selesai: "",
         status: "pending",
-        file: null,
-        keterangan: "",
     });
 
     const handleModalClose = useCallback(() => {
@@ -34,30 +32,11 @@ export default function BaseLaporanData({
         clearErrors();
     }, [reset, clearErrors]);
 
-    const handleFileChange = useCallback((e) => {
-        const file = e.target.files[0];
-        if (file) {
-            setData('file', file);
-        }
-    }, [setData]);
-
     const handleSubmit = useCallback((e) => {
         e.preventDefault();
-        const formData = new FormData();
-
-        Object.keys(data).forEach(key => {
-            if (data[key] !== null && data[key] !== undefined) {
-                if (key === 'file' && data[key] instanceof File) {
-                    formData.append(key, data[key]);
-                } else {
-                    formData.append(key, data[key].toString());
-                }
-            }
-        });
 
         if (modalState.editingData) {
-            put(route('admin.laporans.update', modalState.editingData.id), formData, {
-                forceFormData: true,
+            put(route('admin.laporans.update', modalState.editingData.id), {
                 onSuccess: () => {
                     setModalState({ isOpen: false, editingData: null });
                     reset();
@@ -65,8 +44,7 @@ export default function BaseLaporanData({
                 preserveScroll: true,
             });
         } else {
-            post(route('admin.laporans.store'), formData, {
-                forceFormData: true,
+            post(route('admin.laporans.store'), {
                 onSuccess: () => {
                     setModalState({ isOpen: false, editingData: null });
                     reset();
@@ -92,7 +70,6 @@ export default function BaseLaporanData({
                 tanggal_mulai: formatDateForInput(row.tanggal_mulai),
                 tanggal_selesai: formatDateForInput(row.tanggal_selesai),
                 status: row.status,
-                keterangan: row.laporan?.keterangan || "",
             });
         },
         handleDelete: (row) => {
@@ -165,14 +142,17 @@ export default function BaseLaporanData({
                 { value: "kkl", label: "KKL" },
                 { value: "kkn", label: "KKN" }
             ],
-            value: type
+            value: type,
+            required: true,
+            disabled: modalState.editingData !== null
         },
         {
             name: "user_id",
             label: "Mahasiswa",
             type: "searchableSelect",
-            options: mahasiswas,
-            required: true
+            options: mahasiswas, // Use all mahasiswas directly
+            required: true,
+            disabled: modalState.editingData !== null
         },
         {
             name: "dosen_id",
@@ -193,20 +173,8 @@ export default function BaseLaporanData({
                 { value: "rejected", label: "Rejected" }
             ],
             required: true
-        },
-        {
-            name: "file",
-            label: "File Laporan (PDF)",
-            type: "file",
-            accept: ".pdf,.doc,.docx"
-        },
-        {
-            name: "keterangan",
-            label: "Keterangan Laporan",
-            type: "textarea",
-            rows: 3
         }
-    ], [mahasiswas, dosens, type]);
+    ], [mahasiswas, dosens, type, modalState.editingData]);
 
     const pagination = useMemo(() => ({
         pageIndex: laporans.current_page - 1,
