@@ -1,5 +1,5 @@
-import React from 'react';
-import { Edit, Trash2 } from 'lucide-react';
+import React from "react";
+import { Edit, Trash2 } from "lucide-react";
 
 const ActionCell = React.memo(({ row, onEdit, onDelete }) => (
     <div className="flex space-x-2">

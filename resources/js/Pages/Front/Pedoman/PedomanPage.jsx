@@ -1,8 +1,8 @@
-import React, { useState, useMemo } from 'react';
-import { FileText, Search } from 'lucide-react';
-import { Head, Link } from '@inertiajs/react';
-import FrontLayout from '@/Layouts/FrontLayout';
-import PropTypes from 'prop-types';
+import React, { useState, useMemo } from "react";
+import { FileText, Search } from "lucide-react";
+import { Head, Link } from "@inertiajs/react";
+import FrontLayout from "@/Layouts/FrontLayout";
+import PropTypes from "prop-types";
 
 const SearchBar = React.memo(({ onSearch }) => (
     <div className="relative my-10">
@@ -47,7 +47,7 @@ const Card = React.memo(({ title, description, file }) => (
 ));
 
 const CardGrid = React.memo(({ panduans }) => {
-    const [searchQuery, setSearchQuery] = useState('');
+    const [searchQuery, setSearchQuery] = useState("");
 
     const filteredPanduans = useMemo(() => {
         return panduans.filter((panduan) =>

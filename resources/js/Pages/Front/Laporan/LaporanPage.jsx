@@ -1,11 +1,11 @@
-import { Suspense, useState, useCallback } from 'react';
-import { router } from '@inertiajs/react';
+import { Suspense, useState, useCallback } from "react";
+import { router } from "@inertiajs/react";
 import FrontLayout from "@/Layouts/FrontLayout";
 import { Head } from "@inertiajs/react";
-import LaporanCard from './LaporanCard';
-import GenericModal from '@/Components/ui/GenericModal';
-import { useForm } from '@inertiajs/react';
-import PropTypes from 'prop-types';
+import LaporanCard from "./LaporanCard";
+import GenericModal from "@/Components/ui/GenericModal";
+import { useForm } from "@inertiajs/react";
+import PropTypes from "prop-types";
 
 const LoadingFallback = () => (
     <div className="animate-pulse">
@@ -13,24 +13,25 @@ const LoadingFallback = () => (
     </div>
 );
 
-const TABS = ['KKL', 'KKN'];
+const TABS = ["KKL", "KKN"];
 
 export default function LaporanPage({
     kklData = null,
     kknData = null,
-    type = 'kkl'
+    type = "kkl",
 }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const { data, setData, post, processing, errors, reset, clearErrors } = useForm({
-        type: type,
-        keterangan: '',
-        file: null,
-    });
+    const { data, setData, post, processing, errors, reset, clearErrors } =
+        useForm({
+            type: type,
+            keterangan: "",
+            file: null,
+        });
 
     const handleTabClick = (tab) => {
         const newType = tab.toLowerCase();
-        setData('type', newType);
+        setData("type", newType);
         router.get(
             route(route().current(), { type: newType }),
             {},
@@ -38,37 +39,41 @@ export default function LaporanPage({
         );
     };
 
-    const handleSubmit = useCallback((e) => {
-        e.preventDefault();
-        const formData = new FormData();
-        formData.append('type', data.type);
-        formData.append('keterangan', data.keterangan);
+    const handleSubmit = useCallback(
+        (e) => {
+            e.preventDefault();
+            const formData = new FormData();
+            formData.append("type", data.type);
+            formData.append("keterangan", data.keterangan);
 
-        if (data.file instanceof File) {
-            formData.append('file', data.file);
-        }
-
-        post(route('laporan.store'), formData, {
-            preserveScroll: true,
-            forceFormData: true,
-            onSuccess: () => {
-                setIsModalOpen(false);
-                reset();
-            },
-            onError: (errors) => {
-                console.error('Submission errors:', errors);
+            if (data.file instanceof File) {
+                formData.append("file", data.file);
             }
-        });
-    }, [data, post, reset]);
+
+            post(route("laporan.store"), formData, {
+                preserveScroll: true,
+                forceFormData: true,
+                onSuccess: () => {
+                    setIsModalOpen(false);
+                    reset();
+                },
+                onError: (errors) => {
+                    console.error("Submission errors:", errors);
+                },
+            });
+        },
+        [data, post, reset]
+    );
 
     const handleModal = () => {
         setIsModalOpen(true);
-        setData('type', type);
+        setData("type", type);
     };
 
-    const currentData = type === 'kkl' ?
-        (kklData?.data?.[0] ?? null) :
-        (kknData?.data?.[0] ?? null);
+    const currentData =
+        type === "kkl"
+            ? kklData?.data?.[0] ?? null
+            : kknData?.data?.[0] ?? null;
 
     return (
         <FrontLayout>
@@ -80,10 +85,11 @@ export default function LaporanPage({
                             <button
                                 key={tab}
                                 type="button"
-                                className={`flex whitespace-nowrap items-center h-8 px-5 font-medium rounded-lg outline-none focus:ring-2 focus:ring-teal-600 focus:ring-inset ${type === tab.toLowerCase()
-                                    ? 'text-teal-600 shadow bg-white dark:text-white dark:bg-teal-600'
-                                    : 'hover:text-gray-800 focus:text-teal-600 dark:text-gray-400 dark:hover:text-gray-300 dark:focus:text-gray-400'
-                                    }`}
+                                className={`flex whitespace-nowrap items-center h-8 px-5 font-medium rounded-lg outline-none focus:ring-2 focus:ring-teal-600 focus:ring-inset ${
+                                    type === tab.toLowerCase()
+                                        ? "text-teal-600 shadow bg-white dark:text-white dark:bg-teal-600"
+                                        : "hover:text-gray-800 focus:text-teal-600 dark:text-gray-400 dark:hover:text-gray-300 dark:focus:text-gray-400"
+                                }`}
                                 onClick={() => handleTabClick(tab)}
                             >
                                 {tab}
@@ -115,17 +121,17 @@ export default function LaporanPage({
                     title={`Tambah Laporan ${type.toUpperCase()}`}
                     fields={[
                         {
-                            name: 'keterangan',
-                            label: 'Keterangan',
-                            type: 'textarea',
-                            rows: 3
+                            name: "keterangan",
+                            label: "Keterangan",
+                            type: "textarea",
+                            rows: 3,
                         },
                         {
-                            name: 'file',
-                            label: 'File Laporan',
-                            type: 'file',
-                            accept: '.pdf,.doc,.docx'
-                        }
+                            name: "file",
+                            label: "File Laporan",
+                            type: "file",
+                            accept: ".pdf,.doc,.docx",
+                        },
                     ]}
                     data={data}
                     setData={setData}
@@ -145,5 +151,5 @@ LaporanPage.propTypes = {
     kknData: PropTypes.shape({
         data: PropTypes.array,
     }),
-    type: PropTypes.oneOf(['kkl', 'kkn']),
+    type: PropTypes.oneOf(["kkl", "kkn"]),
 };

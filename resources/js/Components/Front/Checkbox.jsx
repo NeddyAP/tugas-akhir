@@ -10,6 +10,6 @@ const Checkbox = ({ label, checked, onChange }) => {
             <label className="form-check-label">{label}</label>
         </div>
     );
-}
+};
 
 export default Checkbox;

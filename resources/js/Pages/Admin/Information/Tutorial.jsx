@@ -2,30 +2,34 @@ import React, { useCallback, useMemo, useState, useEffect } from "react";
 import { useForm, usePage } from "@inertiajs/react";
 import DataTable from "@/Components/ui/DataTable";
 import GenericModal from "@/Components/ui/GenericModal";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 
 const formatDate = (dateString) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('id-ID', {
-        day: '2-digit',
-        month: 'short',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
+    return date.toLocaleDateString("id-ID", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
     });
 };
 
 const getYouTubeId = (url) => {
     if (!url) return false;
-    const match = url.match(/^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/);
-    return (match && match[7].length === 11) ? match[7] : url;
+    const match = url.match(
+        /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/
+    );
+    return match && match[7].length === 11 ? match[7] : url;
 };
 
 const YouTubePreview = React.memo(({ link }) => {
-    if (!link) return <span className="text-gray-500">No video link provided</span>;
+    if (!link)
+        return <span className="text-gray-500">No video link provided</span>;
 
     const videoId = getYouTubeId(link);
-    if (!videoId) return <span className="text-red-500">Invalid YouTube URL or ID</span>;
+    if (!videoId)
+        return <span className="text-red-500">Invalid YouTube URL or ID</span>;
 
     return (
         <div className="relative w-full px-20 pt-36">
@@ -43,43 +47,61 @@ const YouTubePreview = React.memo(({ link }) => {
 
 export default function Tutorial({ informations }) {
     const { delete: destroy } = useForm();
-    const [modalState, setModalState] = useState({ isOpen: false, editingData: null });
-    const { data, setData, post, put, processing, errors, reset, clearErrors } = useForm({
-        title: "",
-        description: "",
-        link: "",
-        type: "tutorial",
+    const [modalState, setModalState] = useState({
+        isOpen: false,
+        editingData: null,
     });
+    const { data, setData, post, put, processing, errors, reset, clearErrors } =
+        useForm({
+            title: "",
+            description: "",
+            link: "",
+            type: "tutorial",
+        });
 
-    const TABLE_CONFIG = useMemo(() => ({
-        columns: [
-            {
-                Header: "Video",
-                accessor: "videoPreview",
-                Cell: ({ row }) => <YouTubePreview link={row.original.link} />
-            },
-            { Header: "Judul", accessor: "title", sortable: true },
-            { Header: "Deskripsi", accessor: "description", sortable: true },
-            {
-                Header: "Kode Youtube",
-                accessor: "link",
-                sortable: true,
-                Cell: ({ value }) => getYouTubeId(value) || value
-            },
-            {
-                Header: "Tanggal Dibuat",
-                accessor: "created_at",
-                sortable: true,
-                Cell: ({ value }) => formatDate(value)
-            },
-        ],
-        modalFields: [
-            { name: "title", label: "Judul", type: "text" },
-            { name: "description", label: "Deskripsi", type: "textarea", rows: 3 },
-            { name: "link", label: "Link YouTube", type: "text" },
-        ],
-        defaultSort: "created_at"
-    }), []);
+    const TABLE_CONFIG = useMemo(
+        () => ({
+            columns: [
+                {
+                    Header: "Video",
+                    accessor: "videoPreview",
+                    Cell: ({ row }) => (
+                        <YouTubePreview link={row.original.link} />
+                    ),
+                },
+                { Header: "Judul", accessor: "title", sortable: true },
+                {
+                    Header: "Deskripsi",
+                    accessor: "description",
+                    sortable: true,
+                },
+                {
+                    Header: "Kode Youtube",
+                    accessor: "link",
+                    sortable: true,
+                    Cell: ({ value }) => getYouTubeId(value) || value,
+                },
+                {
+                    Header: "Tanggal Dibuat",
+                    accessor: "created_at",
+                    sortable: true,
+                    Cell: ({ value }) => formatDate(value),
+                },
+            ],
+            modalFields: [
+                { name: "title", label: "Judul", type: "text" },
+                {
+                    name: "description",
+                    label: "Deskripsi",
+                    type: "textarea",
+                    rows: 3,
+                },
+                { name: "link", label: "Link YouTube", type: "text" },
+            ],
+            defaultSort: "created_at",
+        }),
+        []
+    );
 
     useEffect(() => {
         if (modalState.isOpen) {
@@ -88,7 +110,7 @@ export default function Tutorial({ informations }) {
                     title: modalState.editingData.title,
                     description: modalState.editingData.description,
                     link: modalState.editingData.link,
-                    type: "tutorial"
+                    type: "tutorial",
                 });
             } else {
                 reset();
@@ -103,59 +125,81 @@ export default function Tutorial({ informations }) {
         setModalState({ isOpen: false, editingData: null });
     }, []);
 
-    const tableActions = useMemo(() => ({
-        handleEdit: (row) => setModalState({ isOpen: true, editingData: row }),
-        handleDelete: (row) => {
-            if (window.confirm('Kamu yakin ingin menghapus tutorial ini?')) {
-                destroy(route("admin.informations.destroy", row.id) + `?type=tutorial`, {
-                    preserveScroll: true,
-                    preserveState: true
+    const tableActions = useMemo(
+        () => ({
+            handleEdit: (row) =>
+                setModalState({ isOpen: true, editingData: row }),
+            handleDelete: (row) => {
+                if (
+                    window.confirm("Kamu yakin ingin menghapus tutorial ini?")
+                ) {
+                    destroy(
+                        route("admin.informations.destroy", row.id) +
+                            `?type=tutorial`,
+                        {
+                            preserveScroll: true,
+                            preserveState: true,
+                        }
+                    );
+                }
+            },
+            handleAdd: () => setModalState({ isOpen: true, editingData: null }),
+        }),
+        [destroy]
+    );
+
+    const handleSubmit = useCallback(
+        (e) => {
+            e.preventDefault();
+            const videoId = getYouTubeId(data.link);
+            if (!videoId) return;
+
+            const formData = {
+                title: data.title,
+                description: data.description,
+                link: videoId,
+                type: "tutorial",
+            };
+
+            if (modalState.editingData) {
+                put(
+                    route(
+                        "admin.informations.update",
+                        modalState.editingData.id
+                    ),
+                    {
+                        ...formData,
+                        preserveScroll: true,
+                        onSuccess: () => {
+                            setModalState({ isOpen: false, editingData: null });
+                            clearErrors();
+                        },
+                    }
+                );
+            } else {
+                post(route("admin.informations.store"), {
+                    ...formData,
+                    onSuccess: () => {
+                        setModalState({ isOpen: false, editingData: null });
+                        clearErrors();
+                    },
                 });
             }
         },
-        handleAdd: () => setModalState({ isOpen: true, editingData: null }),
-    }), [destroy]);
+        [modalState.editingData, data, put, post, clearErrors]
+    );
 
-    const handleSubmit = useCallback((e) => {
-        e.preventDefault();
-        const videoId = getYouTubeId(data.link);
-        if (!videoId) return;
-
-        const formData = {
-            title: data.title,
-            description: data.description,
-            link: videoId,
-            type: 'tutorial'
-        };
-
-        if (modalState.editingData) {
-            put(route('admin.informations.update', modalState.editingData.id), {
-                ...formData,
-                preserveScroll: true,
-                onSuccess: () => {
-                    setModalState({ isOpen: false, editingData: null });
-                    clearErrors();
-                },
-            });
-        } else {
-            post(route('admin.informations.store'), {
-                ...formData,
-                onSuccess: () => {
-                    setModalState({ isOpen: false, editingData: null });
-                    clearErrors();
-                },
-            });
-        }
-    }, [modalState.editingData, data, put, post, clearErrors]);
-
-    const pagination = useMemo(() => ({
-        pageIndex: informations.current_page - 1,
-        pageCount: informations.last_page,
-        pageSize: informations.per_page,
-        total: informations.total,
-        from: informations.from,
-        to: informations.to
-    }), [informations]);
+    const pagination = useMemo(
+        () => ({
+            pageIndex: informations.current_page - 1,
+            pageCount: informations.last_page,
+            pageSize: informations.per_page,
+            total: informations.total,
+            from: informations.from,
+            to: informations.to,
+        }),
+        [informations]
+    );
 
     return (
         <div className="grid grid-cols-1 mb-8">
@@ -195,7 +239,9 @@ export default function Tutorial({ informations }) {
                 <GenericModal
                     isOpen={modalState.isOpen}
                     onClose={handleModalClose}
-                    title={`${modalState.editingData ? 'Edit' : 'Tambah'} Tutorial`}
+                    title={`${
+                        modalState.editingData ? "Edit" : "Tambah"
+                    } Tutorial`}
                     data={data}
                     setData={setData}
                     errors={errors}

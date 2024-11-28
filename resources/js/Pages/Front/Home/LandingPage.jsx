@@ -1,8 +1,8 @@
-import React from 'react';
-import { usePage } from '@inertiajs/react';
-import landingImage from '@images/Saly-10.png';
-import PrimaryButton from '@/Components/Front/PrimaryButton';
-import SecondaryButton from '@/Components/Front/SecondaryButton';
+import React from "react";
+import { usePage } from "@inertiajs/react";
+import landingImage from "@images/Saly-10.png";
+import PrimaryButton from "@/Components/Front/PrimaryButton";
+import SecondaryButton from "@/Components/Front/SecondaryButton";
 
 export default function LandingPage() {
     const { auth } = usePage().props;
@@ -17,16 +17,24 @@ export default function LandingPage() {
                                 Hallo, Selamat Datang
                             </h2>
                             <h1 className="mb-4 text-2xl font-bold leading-tight text-gray-900 sm:text-3xl lg:text-4xl dark:text-white">
-                                Semangat melaksanakan kuliah kerja lapangan & kuliah kerja nyata.
+                                Semangat melaksanakan kuliah kerja lapangan &
+                                kuliah kerja nyata.
                             </h1>
                             <p className="mb-6 text-base text-gray-600 dark:text-gray-300 sm:text-lg">
-                                Terus semangat untuk mendapatkan hasil yang luar biasa, Isi sekarang yu.
+                                Terus semangat untuk mendapatkan hasil yang luar
+                                biasa, Isi sekarang yu.
                             </p>
                             <div className="flex flex-col justify-center gap-4 sm:flex-row lg:justify-start">
-                                <PrimaryButton href={route('login')} className="text-lg">
-                                    {auth.user ? 'Submit' : 'Login'}
+                                <PrimaryButton
+                                    href={route("login")}
+                                    className="text-lg"
+                                >
+                                    {auth.user ? "Submit" : "Login"}
                                 </PrimaryButton>
-                                <SecondaryButton href="#tutorial" className="text-lg">
+                                <SecondaryButton
+                                    href="#tutorial"
+                                    className="text-lg"
+                                >
                                     Tutorial
                                 </SecondaryButton>
                             </div>
@@ -49,8 +57,18 @@ export default function LandingPage() {
                 <div className="absolute bottom-0 left-0 right-0">
                     <div className="h-16 bg-gradient-to-b from-transparent to-white/10 dark:to-gray-900/10"></div>
                     <div className="absolute hidden -translate-x-1/2 bottom-8 left-1/2 animate-bounce lg:block">
-                        <svg className="w-6 h-6 text-teal-7 00 dark:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                        <svg
+                            className="w-6 h-6 text-teal-7 00 dark:text-white"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="M19 14l-7 7m0 0l-7-7m7 7V3"
+                            />
                         </svg>
                     </div>
                 </div>

@@ -1,8 +1,8 @@
-import React, { useCallback, useState, useEffect } from 'react';
-import { Link, usePage } from '@inertiajs/react';
-import { Moon, Sun, Menu, X } from 'lucide-react';
-import avatarProfile from '@images/avatar-profile.jpg';
-import { useDarkMode } from '@/Contexts/DarkModeContext';
+import React, { useCallback, useState, useEffect } from "react";
+import { Link, usePage } from "@inertiajs/react";
+import { Moon, Sun, Menu, X } from "lucide-react";
+import avatarProfile from "@images/avatar-profile.jpg";
+import { useDarkMode } from "@/Contexts/DarkModeContext";
 
 const NavLink = ({ href, children }) => (
     <Link
@@ -20,13 +20,13 @@ const AuthButton = ({ user }) => {
 
     useEffect(() => {
         const closeDropdown = (e) => {
-            if (isOpen && !e.target.closest('.avatar-dropdown')) {
+            if (isOpen && !e.target.closest(".avatar-dropdown")) {
                 setIsOpen(false);
             }
         };
 
-        document.addEventListener('click', closeDropdown);
-        return () => document.removeEventListener('click', closeDropdown);
+        document.addEventListener("click", closeDropdown);
+        return () => document.removeEventListener("click", closeDropdown);
     }, [isOpen]);
 
     return user ? (
@@ -35,20 +35,24 @@ const AuthButton = ({ user }) => {
                 onClick={toggleDropdown}
                 className="relative z-10 block w-8 h-8 overflow-hidden rounded-full shadow focus:outline-none"
             >
-                <img className="object-cover w-full h-full" src={avatarProfile} alt="User Avatar" />
+                <img
+                    className="object-cover w-full h-full"
+                    src={avatarProfile}
+                    alt="User Avatar"
+                />
             </button>
             {isOpen && (
                 <div className="absolute right-0 z-20 w-48 py-2 mt-2 text-black bg-white rounded-md shadow-xl dark:text-white dark:bg-gray-700">
                     <Link
-                        href={route('profile.edit')}
+                        href={route("profile.edit")}
                         as="button"
                         className="block w-full px-4 py-2 text-left transition-colors hover:bg-gray-100 dark:hover:bg-gray-600"
                     >
                         Profile
                     </Link>
-                    {(user.role === 'admin' || user.role === 'superadmin') && (
+                    {(user.role === "admin" || user.role === "superadmin") && (
                         <Link
-                            href={route('admin.dashboard')}
+                            href={route("admin.dashboard")}
                             as="button"
                             className="block w-full px-4 py-2 text-left transition-colors hover:bg-gray-100 dark:hover:bg-gray-600"
                         >
@@ -57,7 +61,7 @@ const AuthButton = ({ user }) => {
                     )}
                     <Link
                         method="post"
-                        href={route('logout')}
+                        href={route("logout")}
                         as="button"
                         className="block w-full px-4 py-2 text-left text-red-500 transition-colors hover:bg-gray-100 dark:hover:bg-gray-600"
                     >
@@ -67,7 +71,7 @@ const AuthButton = ({ user }) => {
             )}
         </div>
     ) : (
-        <Link href={route('login')} className="mr-4">
+        <Link href={route("login")} className="mr-4">
             <button className="px-2 py-1 text-white transition-colors bg-teal-700 rounded-md hover:bg-teal-800">
                 Login
             </button>
@@ -93,26 +97,48 @@ const DarkModeToggle = () => {
 };
 
 const MobileMenu = ({ isOpen, onClose, user }) => (
-    <div className={`fixed inset-0 z-50 transform ${isOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out lg:hidden`}>
-        <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose}></div>
+    <div
+        className={`fixed inset-0 z-50 transform ${
+            isOpen ? "translate-x-0" : "-translate-x-full"
+        } transition-transform duration-300 ease-in-out lg:hidden`}
+    >
+        <div
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            onClick={onClose}
+        ></div>
         <div className="absolute inset-y-0 left-0 px-6 py-4 bg-white shadow-lg w-72 dark:bg-gray-800">
             <div className="flex flex-col h-full">
                 <div className="flex items-center justify-between mb-8">
-                    <Link href={route('home')} className="text-2xl font-bold text-teal-600 dark:text-white">
+                    <Link
+                        href={route("home")}
+                        className="text-2xl font-bold text-teal-600 dark:text-white"
+                    >
                         FILKOM
                     </Link>
-                    <button onClick={onClose} className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700">
+                    <button
+                        onClick={onClose}
+                        className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
+                    >
                         <X className="w-6 h-6" />
                     </button>
                 </div>
                 <nav className="flex flex-col space-y-4">
-                    <Link href={route('pedoman')} className="text-gray-800 dark:text-white hover:text-teal-600 dark:hover:text-teal-400">
+                    <Link
+                        href={route("pedoman")}
+                        className="text-gray-800 dark:text-white hover:text-teal-600 dark:hover:text-teal-400"
+                    >
                         Buku Pedoman
                     </Link>
-                    <Link href={route('logbook.index')} className="text-gray-800 dark:text-white hover:text-teal-600 dark:hover:text-teal-400">
+                    <Link
+                        href={route("logbook.index")}
+                        className="text-gray-800 dark:text-white hover:text-teal-600 dark:hover:text-teal-400"
+                    >
                         Logbook
                     </Link>
-                    <Link href={route('laporan.index')} className="text-gray-800 dark:text-white hover:text-teal-600 dark:hover:text-teal-400">
+                    <Link
+                        href={route("laporan.index")}
+                        className="text-gray-800 dark:text-white hover:text-teal-600 dark:hover:text-teal-400"
+                    >
                         Laporan
                     </Link>
                 </nav>
@@ -134,19 +160,23 @@ const FrontNavbar = () => {
     }, [lastScrollY]);
 
     useEffect(() => {
-        window.addEventListener('scroll', controlNavbar);
-        return () => window.removeEventListener('scroll', controlNavbar);
+        window.addEventListener("scroll", controlNavbar);
+        return () => window.removeEventListener("scroll", controlNavbar);
     }, [controlNavbar]);
 
     return (
         <>
             <nav
-                className={`fixed top-0 left-0 z-40 w-full transition-transform duration-300 bg-teal-600 dark:bg-gray-800 shadow-md ${isVisible ? 'translate-y-0' : '-translate-y-full'
-                    }`}
+                className={`fixed top-0 left-0 z-40 w-full transition-transform duration-300 bg-teal-600 dark:bg-gray-800 shadow-md ${
+                    isVisible ? "translate-y-0" : "-translate-y-full"
+                }`}
             >
                 <div className="container max-w-6xl px-8 py-3 mx-auto sm:px-12 md:px-16 lg:px-24 xl:px-32">
                     <div className="flex items-center justify-between">
-                        <Link href={route('home')} className="text-xl font-bold text-white sm:text-2xl">
+                        <Link
+                            href={route("home")}
+                            className="text-xl font-bold text-white sm:text-2xl"
+                        >
                             FILKOM
                         </Link>
 

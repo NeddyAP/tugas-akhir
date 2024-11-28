@@ -1,7 +1,7 @@
-import React from 'react';
-import { Dialog } from '@headlessui/react';
-import { X } from 'lucide-react';
-import Select from 'react-select';
+import React from "react";
+import { Dialog } from "@headlessui/react";
+import { X } from "lucide-react";
+import Select from "react-select";
 
 const FieldLabel = ({ label }) => (
     <label className="block text-sm font-medium text-gray-700 dark:text-gray-100">
@@ -9,14 +9,15 @@ const FieldLabel = ({ label }) => (
     </label>
 );
 
-const ErrorMessage = ({ message }) => (
-    message ? <p className="mt-1 text-sm text-red-600 dark:text-red-400">{message}</p> : null
-);
+const ErrorMessage = ({ message }) =>
+    message ? (
+        <p className="mt-1 text-sm text-red-600 dark:text-red-400">{message}</p>
+    ) : null;
 
 const InputField = ({ field, value, onChange, disabled = false }) => (
     <input
         type={field.type}
-        value={value || ''}
+        value={value || ""}
         onChange={onChange}
         disabled={disabled}
         className="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-teal-500 focus:ring-teal-500 disabled:bg-gray-100 dark:disabled:bg-gray-600 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100 dark:placeholder-gray-400"
@@ -26,7 +27,7 @@ const InputField = ({ field, value, onChange, disabled = false }) => (
 // Update the SelectField component to handle custom onChange
 const SelectField = ({ field, value, onChange }) => (
     <select
-        value={value || ''}
+        value={value || ""}
         onChange={(e) => {
             if (field.onChange) {
                 field.onChange(e.target.value);
@@ -52,8 +53,8 @@ const SelectField = ({ field, value, onChange }) => (
 
 const SearchableSelect = ({ field, value, onChange, options }) => (
     <Select
-        value={options.find(option => option.value === value)}
-        onChange={(selected) => onChange(selected ? selected.value : '')}
+        value={options.find((option) => option.value === value)}
+        onChange={(selected) => onChange(selected ? selected.value : "")}
         options={options}
         classNamePrefix="select"
         isClearable
@@ -62,28 +63,35 @@ const SearchableSelect = ({ field, value, onChange, options }) => (
         placeholder={`Select ${field.label}`}
         className="block w-full mt-1"
         classNames={{
-            control: () => "border rounded-md shadow-sm bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 hover:border-teal-500 dark:hover:border-teal-500",
+            control: () =>
+                "border rounded-md shadow-sm bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 hover:border-teal-500 dark:hover:border-teal-500",
             input: () => "text-gray-900 dark:text-gray-100",
             placeholder: () => "text-gray-500 dark:text-gray-400",
             singleValue: () => "text-gray-900 dark:text-gray-100",
-            menu: () => "mt-1 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg dark:text-gray-100",
-            option: ({ isFocused, isSelected }) => [
-                "px-3 py-2 cursor-pointer",
-                isFocused && "bg-teal-50 dark:bg-teal-900/50",
-                isSelected && "bg-teal-100 dark:bg-teal-900",
-                !isFocused && !isSelected && "hover:bg-gray-100 dark:hover:bg-gray-600"
-            ].filter(Boolean).join(" "),
-            noOptionsMessage: () => "text-gray-500 dark:text-gray-400 p-3"
+            menu: () =>
+                "mt-1 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg dark:text-gray-100",
+            option: ({ isFocused, isSelected }) =>
+                [
+                    "px-3 py-2 cursor-pointer",
+                    isFocused && "bg-teal-50 dark:bg-teal-900/50",
+                    isSelected && "bg-teal-100 dark:bg-teal-900",
+                    !isFocused &&
+                        !isSelected &&
+                        "hover:bg-gray-100 dark:hover:bg-gray-600",
+                ]
+                    .filter(Boolean)
+                    .join(" "),
+            noOptionsMessage: () => "text-gray-500 dark:text-gray-400 p-3",
         }}
         components={{
-            IndicatorSeparator: () => null
+            IndicatorSeparator: () => null,
         }}
     />
 );
 
 const TextArea = ({ field, value, onChange }) => (
     <textarea
-        value={value || ''}
+        value={value || ""}
         onChange={onChange}
         rows={field.rows || 3}
         className="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-teal-500 focus:ring-teal-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100 dark:placeholder-gray-400"
@@ -100,11 +108,14 @@ const FileInput = ({ field, onChange }) => (
     />
 );
 
-const Button = ({ onClick, disabled, variant = 'primary', children }) => {
-    const baseClasses = "px-4 py-2 text-sm font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2";
+const Button = ({ onClick, disabled, variant = "primary", children }) => {
+    const baseClasses =
+        "px-4 py-2 text-sm font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2";
     const variants = {
-        primary: "text-white bg-teal-600 border-transparent hover:bg-teal-700 dark:bg-teal-700 dark:hover:bg-teal-800 disabled:opacity-50",
-        secondary: "text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 dark:text-gray-200 dark:bg-gray-700 dark:border-gray-600 dark:hover:bg-gray-600"
+        primary:
+            "text-white bg-teal-600 border-transparent hover:bg-teal-700 dark:bg-teal-700 dark:hover:bg-teal-800 disabled:opacity-50",
+        secondary:
+            "text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 dark:text-gray-200 dark:bg-gray-700 dark:border-gray-600 dark:hover:bg-gray-600",
     };
 
     return (
@@ -129,9 +140,8 @@ const GenericModal = ({
     setData,
     errors,
     processing,
-    handleSubmit
+    handleSubmit,
 }) => {
-
     const handleClose = () => {
         onClose();
     };
@@ -141,9 +151,15 @@ const GenericModal = ({
         const handleFileChange = (e) => setData(field.name, e.target.files[0]);
 
         switch (field.type) {
-            case 'hidden':
-                return <input type="hidden" value={field.value} name={field.name} />;
-            case 'searchableSelect':
+            case "hidden":
+                return (
+                    <input
+                        type="hidden"
+                        value={field.value}
+                        name={field.name}
+                    />
+                );
+            case "searchableSelect":
                 return (
                     <SearchableSelect
                         field={field}
@@ -152,7 +168,7 @@ const GenericModal = ({
                         options={field.options}
                     />
                 );
-            case 'textarea':
+            case "textarea":
                 return (
                     <TextArea
                         field={field}
@@ -160,9 +176,9 @@ const GenericModal = ({
                         onChange={handleChange}
                     />
                 );
-            case 'file':
+            case "file":
                 return <FileInput field={field} onChange={handleFileChange} />;
-            case 'select':
+            case "select":
                 return (
                     <SelectField
                         field={field}
@@ -205,7 +221,9 @@ const GenericModal = ({
                                 <div key={field.name}>
                                     <FieldLabel label={field.label} />
                                     {renderField(field)}
-                                    <ErrorMessage message={errors[field.name]} />
+                                    <ErrorMessage
+                                        message={errors[field.name]}
+                                    />
                                 </div>
                             ))}
                         </form>

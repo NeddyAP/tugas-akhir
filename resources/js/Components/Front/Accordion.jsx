@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { ChevronDown } from 'lucide-react';
+import React, { useState } from "react";
+import { ChevronDown } from "lucide-react";
 
 const AccordionItem = React.memo(({ item, isActive, onToggle }) => (
     <div className="py-5">
@@ -14,7 +14,9 @@ const AccordionItem = React.memo(({ item, isActive, onToggle }) => (
             <summary className="flex items-center justify-between font-medium list-none cursor-pointer">
                 <span>{item.question}</span>
                 <ChevronDown
-                    className={`transition-transform duration-300 ${isActive ? 'rotate-180' : ''}`}
+                    className={`transition-transform duration-300 ${
+                        isActive ? "rotate-180" : ""
+                    }`}
                 />
             </summary>
             {isActive && (
@@ -30,7 +32,7 @@ const Accordion = ({ items }) => {
     const [activeIndex, setActiveIndex] = useState(null);
 
     const toggleAccordion = (index) => {
-        setActiveIndex(prevIndex => (prevIndex === index ? null : index));
+        setActiveIndex((prevIndex) => (prevIndex === index ? null : index));
     };
 
     return (

@@ -1,6 +1,6 @@
-import React from 'react';
-import { Link } from '@inertiajs/react';
-import filkomLogo from '@images/filkom.png';
+import React from "react";
+import { Link } from "@inertiajs/react";
+import filkomLogo from "@images/filkom.png";
 
 const SocialIcon = React.memo(({ href, icon }) => (
     <a href={href} target="_blank" rel="noopener noreferrer" className="mr-2">
@@ -14,7 +14,12 @@ const FooterSection = React.memo(({ title, links }) => (
         <ul className="p-0 list-none">
             {links.map((link, index) => (
                 <li key={index} className="mb-2">
-                    <Link href={link.href} className="text-blue-500 hover:underline">{link.text}</Link>
+                    <Link
+                        href={link.href}
+                        className="text-blue-500 hover:underline"
+                    >
+                        {link.text}
+                    </Link>
                 </li>
             ))}
         </ul>
@@ -24,8 +29,15 @@ const FooterSection = React.memo(({ title, links }) => (
 const ContactInfo = React.memo(() => (
     <div className="widget">
         <h4 className="mb-3 font-bold widget-title">Kontak</h4>
-        <address className="mb-2">Jl. Tol Ciawi No. 1, Ciawi-Bogor, Jawa Barat, Indonesia.</address>
-        <a href="mailto:filkom@unida.ac.id" className="block mb-1 text-blue-500">filkom@unida.ac.id</a>
+        <address className="mb-2">
+            Jl. Tol Ciawi No. 1, Ciawi-Bogor, Jawa Barat, Indonesia.
+        </address>
+        <a
+            href="mailto:filkom@unida.ac.id"
+            className="block mb-1 text-blue-500"
+        >
+            filkom@unida.ac.id
+        </a>
         <span>02518240773</span>
     </div>
 ));
@@ -33,9 +45,15 @@ const ContactInfo = React.memo(() => (
 const socialLinks = [
     { href: "https://twitter.com/PMBUnidaBogor", icon: "twitter" },
     { href: "https://facebook.com/PmbUnida", icon: "facebook" },
-    { href: "https://www.linkedin.com/in/universitas-djuanda-bogor-a97702172/", icon: "linkedin" },
+    {
+        href: "https://www.linkedin.com/in/universitas-djuanda-bogor-a97702172/",
+        icon: "linkedin",
+    },
     { href: "https://www.instagram.com/faipgunida", icon: "instagram" },
-    { href: "https://www.youtube.com/channel/UC9EKxYOSyg0QtOs8sAXTceQ?view_as=subscriber", icon: "youtube" }
+    {
+        href: "https://www.youtube.com/channel/UC9EKxYOSyg0QtOs8sAXTceQ?view_as=subscriber",
+        icon: "youtube",
+    },
 ];
 
 const SocialIcons = React.memo(() => (
@@ -51,13 +69,13 @@ const FrontFooter = () => {
 
     return (
         <footer className="w-full py-8 mt-auto bg-white dark:bg-gray-900 dark:text-white">
-            <div className="container mx-auto max-w-6xl px-8 sm:px-12 md:px-16 lg:px-24 xl:px-32">
+            <div className="container max-w-6xl px-8 mx-auto sm:px-12 md:px-16 lg:px-24 xl:px-32">
                 <div className="grid grid-cols-1 gap-8 md:grid-cols-12">
                     {/* Logo and Social Section */}
                     <div className="md:col-span-4 lg:col-span-3">
-                        <div className="flex flex-col items-center md:items-start space-y-4">
+                        <div className="flex flex-col items-center space-y-4 md:items-start">
                             <img
-                                className="h-16 w-auto object-contain"
+                                className="object-contain w-auto h-16"
                                 src={filkomLogo}
                                 alt="Fakultas Ilmu Komputer"
                             />
@@ -66,7 +84,7 @@ const FrontFooter = () => {
                     </div>
 
                     {/* Links Sections */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 md:col-span-8 lg:col-span-9">
+                    <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 md:col-span-8 lg:col-span-9">
                         <FooterSection
                             title="Sistem Online"
                             links={[

@@ -1,25 +1,25 @@
-import { Suspense } from 'react';
-import { router } from '@inertiajs/react';
-import AdminLayout from '@/Layouts/AdminLayout';
-import TabButton from '@/Components/ui/TabButton';
-import DataKkl from './DataKkl';
-import DataKkn from './DataKkn';
-import PropTypes from 'prop-types';
+import { Suspense } from "react";
+import { router } from "@inertiajs/react";
+import AdminLayout from "@/Layouts/AdminLayout";
+import TabButton from "@/Components/ui/TabButton";
+import DataKkl from "./DataKkl";
+import DataKkn from "./DataKkn";
+import PropTypes from "prop-types";
 
 const LoadingFallback = () => <div>Loading...</div>;
 
 const TABS = [
-    { type: 'kkl', label: 'KKL' },
-    { type: 'kkn', label: 'KKN' }
+    { type: "kkl", label: "KKL" },
+    { type: "kkn", label: "KKN" },
 ];
 
 export default function LaporanPage({
     kklData = null,
     kknData = null,
     allLaporansData = [],
-    type = 'kkl',
+    type = "kkl",
     mahasiswas = [],
-    dosens = []
+    dosens = [],
 }) {
     const handleTabClick = (newType) => {
         router.get(
@@ -30,31 +30,41 @@ export default function LaporanPage({
     };
 
     const renderContent = () => {
-        const defaultData = { data: [], current_page: 1, last_page: 1, per_page: 10, total: 0 };
+        const defaultData = {
+            data: [],
+            current_page: 1,
+            last_page: 1,
+            per_page: 10,
+            total: 0,
+        };
         const defaultMahasiswas = mahasiswas || [];
         const defaultDosens = dosens || [];
 
         switch (type) {
-            case 'kkl':
-                return <DataKkl
-                    type="kkl"
-                    title="Data KKL"
-                    description="Kelola data KKL mahasiswa"
-                    laporans={kklData || defaultData}
-                    allLaporans={allLaporansData}
-                    mahasiswas={defaultMahasiswas}
-                    dosens={defaultDosens}
-                />;
-            case 'kkn':
-                return <DataKkn
-                    type="kkn"
-                    title="Data KKN"
-                    description="Kelola data KKN mahasiswa"
-                    laporans={kknData || defaultData}
-                    allLaporans={allLaporansData}
-                    mahasiswas={defaultMahasiswas}
-                    dosens={defaultDosens}
-                />;
+            case "kkl":
+                return (
+                    <DataKkl
+                        type="kkl"
+                        title="Data KKL"
+                        description="Kelola data KKL mahasiswa"
+                        laporans={kklData || defaultData}
+                        allLaporans={allLaporansData}
+                        mahasiswas={defaultMahasiswas}
+                        dosens={defaultDosens}
+                    />
+                );
+            case "kkn":
+                return (
+                    <DataKkn
+                        type="kkn"
+                        title="Data KKN"
+                        description="Kelola data KKN mahasiswa"
+                        laporans={kknData || defaultData}
+                        allLaporans={allLaporansData}
+                        mahasiswas={defaultMahasiswas}
+                        dosens={defaultDosens}
+                    />
+                );
             default:
                 return null;
         }
@@ -100,17 +110,23 @@ LaporanPage.propTypes = {
         from: PropTypes.number,
         to: PropTypes.number,
     }),
-    allLaporansData: PropTypes.arrayOf(PropTypes.shape({
-        user_id: PropTypes.number.isRequired,
-        type: PropTypes.string.isRequired,
-    })).isRequired,
-    type: PropTypes.oneOf(['kkl', 'kkn']),
-    mahasiswas: PropTypes.arrayOf(PropTypes.shape({
-        value: PropTypes.number.isRequired,
-        label: PropTypes.string.isRequired,
-    })).isRequired,
-    dosens: PropTypes.arrayOf(PropTypes.shape({
-        value: PropTypes.number.isRequired,
-        label: PropTypes.string.isRequired,
-    })).isRequired,
+    allLaporansData: PropTypes.arrayOf(
+        PropTypes.shape({
+            user_id: PropTypes.number.isRequired,
+            type: PropTypes.string.isRequired,
+        })
+    ).isRequired,
+    type: PropTypes.oneOf(["kkl", "kkn"]),
+    mahasiswas: PropTypes.arrayOf(
+        PropTypes.shape({
+            value: PropTypes.number.isRequired,
+            label: PropTypes.string.isRequired,
+        })
+    ).isRequired,
+    dosens: PropTypes.arrayOf(
+        PropTypes.shape({
+            value: PropTypes.number.isRequired,
+            label: PropTypes.string.isRequired,
+        })
+    ).isRequired,
 };

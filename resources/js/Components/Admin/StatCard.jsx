@@ -1,5 +1,4 @@
-
-import React from 'react';
+import React from "react";
 
 const StatCard = ({ icon, title, value, change, changeType }) => {
     return (
@@ -10,7 +9,13 @@ const StatCard = ({ icon, title, value, change, changeType }) => {
                     <h3 className="text-gray-600">{title}</h3>
                     <div className="flex items-center space-x-2">
                         <span className="text-2xl font-semibold">{value}</span>
-                        <span className={`text-sm ${changeType === 'increase' ? 'text-green-500' : 'text-red-500'}`}>
+                        <span
+                            className={`text-sm ${
+                                changeType === "increase"
+                                    ? "text-green-500"
+                                    : "text-red-500"
+                            }`}
+                        >
                             {change}
                         </span>
                     </div>

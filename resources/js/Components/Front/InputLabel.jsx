@@ -1,6 +1,6 @@
 export default function InputLabel({
     value,
-    className = '',
+    className = "",
     children,
     ...props
 }) {

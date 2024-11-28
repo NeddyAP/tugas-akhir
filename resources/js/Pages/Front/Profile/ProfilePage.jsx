@@ -1,33 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import { Head, useForm, usePage } from "@inertiajs/react";
-import { User } from 'lucide-react';
-import Select from 'react-select';
+import { User } from "lucide-react";
+import Select from "react-select";
 import FrontLayout from "@/Layouts/FrontLayout";
 import SecondaryButton from "@/Components/Front/SecondaryButton";
 import PrimaryButton from "@/Components/Front/PrimaryButton";
-import avatarProfile from '@images/avatar-profile.jpg';
+import avatarProfile from "@images/avatar-profile.jpg";
 
 export default function ProfilePage({ mustVerifyEmail, status }) {
     const user = usePage().props.auth.user;
     const [profileImage, setProfileImage] = useState(avatarProfile);
 
-
     const { data, setData, post, processing, errors } = useForm({
-        name: user.name || '',
-        email: user.email || '',
-        phone: user.profilable?.phone || '',
-        address: user.profilable?.address || '',
-        ...(user.role === 'mahasiswa' && {
-            nim: user.profilable?.nim || '',
-            angkatan: user.profilable?.angkatan || '',
-            prodi: user.profilable?.prodi || '',
-            fakultas: user.profilable?.fakultas || '',
+        name: user.name || "",
+        email: user.email || "",
+        phone: user.profilable?.phone || "",
+        address: user.profilable?.address || "",
+        ...(user.role === "mahasiswa" && {
+            nim: user.profilable?.nim || "",
+            angkatan: user.profilable?.angkatan || "",
+            prodi: user.profilable?.prodi || "",
+            fakultas: user.profilable?.fakultas || "",
         }),
-        ...(user.role === 'dosen' && {
-            nip: user.profilable?.nip || '',
+        ...(user.role === "dosen" && {
+            nip: user.profilable?.nip || "",
         }),
     });
-
 
     const {
         data: passwordData,
@@ -37,9 +35,9 @@ export default function ProfilePage({ mustVerifyEmail, status }) {
         errors: passwordErrors,
         reset: resetPassword,
     } = useForm({
-        current_password: '',
-        password: '',
-        password_confirmation: '',
+        current_password: "",
+        password: "",
+        password_confirmation: "",
     });
 
     const handleChange = (e) => {
@@ -52,13 +50,11 @@ export default function ProfilePage({ mustVerifyEmail, status }) {
         setPasswordData(name, value);
     };
 
-
-    const commonFields = ['name', 'email', 'phone', 'address'];
-
+    const commonFields = ["name", "email", "phone", "address"];
 
     const roleSpecificFields = {
-        mahasiswa: ['nim', 'angkatan', 'prodi', 'fakultas'],
-        dosen: ['nip'],
+        mahasiswa: ["nim", "angkatan", "prodi", "fakultas"],
+        dosen: ["nip"],
         admin: [],
     };
 
@@ -76,8 +72,8 @@ export default function ProfilePage({ mustVerifyEmail, status }) {
 
     const SearchableSelect = ({ value, onChange, options, placeholder }) => (
         <Select
-            value={options.find(option => option.value === value)}
-            onChange={(selected) => onChange(selected ? selected.value : '')}
+            value={options.find((option) => option.value === value)}
+            onChange={(selected) => onChange(selected ? selected.value : "")}
             options={options}
             classNamePrefix="select"
             isClearable
@@ -85,34 +81,54 @@ export default function ProfilePage({ mustVerifyEmail, status }) {
             placeholder={placeholder}
             className="block w-full mt-1"
             classNames={{
-                control: () => "border rounded-md shadow-sm bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 hover:border-teal-500 dark:hover:border-teal-500",
+                control: () =>
+                    "border rounded-md shadow-sm bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 hover:border-teal-500 dark:hover:border-teal-500",
                 input: () => "text-gray-900 dark:text-gray-100",
                 placeholder: () => "text-gray-500 dark:text-gray-400",
                 singleValue: () => "text-gray-900 dark:text-gray-100",
-                menu: () => "mt-1 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg dark:text-gray-100",
-                option: ({ isFocused, isSelected }) => [
-                    "px-3 py-2 cursor-pointer",
-                    isFocused && "bg-teal-50 dark:bg-teal-900/50",
-                    isSelected && "bg-teal-100 dark:bg-teal-900",
-                    !isFocused && !isSelected && "hover:bg-gray-100 dark:hover:bg-gray-600"
-                ].filter(Boolean).join(" "),
-                noOptionsMessage: () => "text-gray-500 dark:text-gray-400 p-3"
+                menu: () =>
+                    "mt-1 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg dark:text-gray-100",
+                option: ({ isFocused, isSelected }) =>
+                    [
+                        "px-3 py-2 cursor-pointer",
+                        isFocused && "bg-teal-50 dark:bg-teal-900/50",
+                        isSelected && "bg-teal-100 dark:bg-teal-900",
+                        !isFocused &&
+                            !isSelected &&
+                            "hover:bg-gray-100 dark:hover:bg-gray-600",
+                    ]
+                        .filter(Boolean)
+                        .join(" "),
+                noOptionsMessage: () => "text-gray-500 dark:text-gray-400 p-3",
             }}
             components={{
-                IndicatorSeparator: () => null
+                IndicatorSeparator: () => null,
             }}
         />
     );
 
     const renderFormFields = () => {
-        const fieldsToRender = [...commonFields, ...(roleSpecificFields[user.role] || [])];
+        const fieldsToRender = [
+            ...commonFields,
+            ...(roleSpecificFields[user.role] || []),
+        ];
 
         return fieldsToRender.map((field) => (
             <div key={field}>
-                <label htmlFor={field} className="block text-sm font-medium text-gray-700 dark:text-gray-200">
-                    {field.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')} *
+                <label
+                    htmlFor={field}
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-200"
+                >
+                    {field
+                        .split("_")
+                        .map(
+                            (word) =>
+                                word.charAt(0).toUpperCase() + word.slice(1)
+                        )
+                        .join(" ")}{" "}
+                    *
                 </label>
-                {field === 'angkatan' ? (
+                {field === "angkatan" ? (
                     <SearchableSelect
                         value={data[field]}
                         onChange={(value) => setData(field, value)}
@@ -130,7 +146,11 @@ export default function ProfilePage({ mustVerifyEmail, status }) {
                         required
                     />
                 )}
-                {errors[field] && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors[field]}</p>}
+                {errors[field] && (
+                    <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+                        {errors[field]}
+                    </p>
+                )}
             </div>
         ));
     };
@@ -146,7 +166,7 @@ export default function ProfilePage({ mustVerifyEmail, status }) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        post(route('profile.update'), {
+        post(route("profile.update"), {
             preserveState: true,
             preserveScroll: true,
         });
@@ -154,7 +174,7 @@ export default function ProfilePage({ mustVerifyEmail, status }) {
 
     const handlePasswordSubmit = (e) => {
         e.preventDefault();
-        putPassword(route('password.update'), {
+        putPassword(route("password.update"), {
             onSuccess: () => {
                 resetPassword();
             },
@@ -169,7 +189,9 @@ export default function ProfilePage({ mustVerifyEmail, status }) {
                 <div className="p-6 bg-white rounded-lg shadow-md dark:bg-gray-800">
                     <div className="flex items-center mb-6">
                         <User className="w-6 h-6 mr-2 text-gray-500 dark:text-gray-400" />
-                        <h2 className="text-xl font-semibold text-gray-700 dark:text-gray-200">Profil Anda</h2>
+                        <h2 className="text-xl font-semibold text-gray-700 dark:text-gray-200">
+                            Profil Anda
+                        </h2>
                     </div>
 
                     <div className="flex flex-col items-center mb-6">
@@ -185,9 +207,15 @@ export default function ProfilePage({ mustVerifyEmail, status }) {
 
                         <div className="flex justify-end space-x-4">
                             <PrimaryButton type="submit" disabled={processing}>
-                                {processing ? 'Menyimpan...' : 'Simpan'}
+                                {processing ? "Menyimpan..." : "Simpan"}
                             </PrimaryButton>
-                            <SecondaryButton type="reset" disabled={processing} preserveScroll>Batal</SecondaryButton>
+                            <SecondaryButton
+                                type="reset"
+                                disabled={processing}
+                                preserveScroll
+                            >
+                                Batal
+                            </SecondaryButton>
                         </div>
                     </form>
                 </div>
@@ -195,16 +223,28 @@ export default function ProfilePage({ mustVerifyEmail, status }) {
                 <div className="p-6 bg-white rounded-lg shadow-md dark:bg-gray-800">
                     <div className="flex items-center mb-6">
                         <User className="w-6 h-6 mr-2 text-gray-500 dark:text-gray-400" />
-                        <h2 className="text-xl font-semibold text-gray-700 dark:text-gray-200">Ubah Password</h2>
+                        <h2 className="text-xl font-semibold text-gray-700 dark:text-gray-200">
+                            Ubah Password
+                        </h2>
                     </div>
 
                     <form onSubmit={handlePasswordSubmit} className="space-y-4">
-                        {['current_password', 'password', 'password_confirmation'].map((field) => (
+                        {[
+                            "current_password",
+                            "password",
+                            "password_confirmation",
+                        ].map((field) => (
                             <div key={field}>
-                                <label htmlFor={field} className="block text-sm font-medium text-gray-700 dark:text-gray-200">
-                                    {field === 'current_password' ? 'Password Saat Ini' :
-                                        field === 'password' ? 'Password Baru' :
-                                            'Konfirmasi Password Baru'} *
+                                <label
+                                    htmlFor={field}
+                                    className="block text-sm font-medium text-gray-700 dark:text-gray-200"
+                                >
+                                    {field === "current_password"
+                                        ? "Password Saat Ini"
+                                        : field === "password"
+                                        ? "Password Baru"
+                                        : "Konfirmasi Password Baru"}{" "}
+                                    *
                                 </label>
                                 <input
                                     type="password"
@@ -216,14 +256,21 @@ export default function ProfilePage({ mustVerifyEmail, status }) {
                                     required
                                 />
                                 {passwordErrors[field] && (
-                                    <p className="mt-1 text-sm text-red-600 dark:text-red-400">{passwordErrors[field]}</p>
+                                    <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+                                        {passwordErrors[field]}
+                                    </p>
                                 )}
                             </div>
                         ))}
 
                         <div className="flex justify-end space-x-4">
-                            <PrimaryButton type="submit" disabled={passwordProcessing}>
-                                {passwordProcessing ? 'Menyimpan...' : 'Ubah Password'}
+                            <PrimaryButton
+                                type="submit"
+                                disabled={passwordProcessing}
+                            >
+                                {passwordProcessing
+                                    ? "Menyimpan..."
+                                    : "Ubah Password"}
                             </PrimaryButton>
                             <SecondaryButton
                                 type="button"

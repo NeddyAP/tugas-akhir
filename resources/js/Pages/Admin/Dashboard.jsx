@@ -1,12 +1,27 @@
-import React from 'react';
-import { Layout } from 'lucide-react';
-import StatCard from '@/Components/Admin/StatCard';
-import AdminLayout from '@/Layouts/AdminLayout';
+import React from "react";
+import { Layout } from "lucide-react";
+import StatCard from "@/Components/Admin/StatCard";
+import AdminLayout from "@/Layouts/AdminLayout";
 
 const STATS_DATA = [
-    { title: "Finished", value: "18", change: "+8 tasks", changeType: "increase" },
-    { title: "Tracked", value: "31h", change: "-6 hours", changeType: "decrease" },
-    { title: "Efficiency", value: "93%", change: "+12%", changeType: "increase" }
+    {
+        title: "Finished",
+        value: "18",
+        change: "+8 tasks",
+        changeType: "increase",
+    },
+    {
+        title: "Tracked",
+        value: "31h",
+        change: "-6 hours",
+        changeType: "decrease",
+    },
+    {
+        title: "Efficiency",
+        value: "93%",
+        change: "+12%",
+        changeType: "increase",
+    },
 ];
 
 const Dashboard = () => (

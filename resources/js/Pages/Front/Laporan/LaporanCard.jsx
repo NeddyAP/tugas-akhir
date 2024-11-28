@@ -1,13 +1,23 @@
-import PropTypes from 'prop-types';
-import { format } from 'date-fns';
-import { FileText, Calendar, User, Clock, Download, SquareUserRoundIcon, Goal, Trash2, Upload } from 'lucide-react';
-import { renderStatusBadge } from '@/utils/constants';
-import { useForm, router } from '@inertiajs/react';
+import PropTypes from "prop-types";
+import { format } from "date-fns";
+import {
+    FileText,
+    Calendar,
+    User,
+    Clock,
+    Download,
+    SquareUserRoundIcon,
+    Goal,
+    Trash2,
+    Upload,
+} from "lucide-react";
+import { renderStatusBadge } from "@/utils/constants";
+import { useForm, router } from "@inertiajs/react";
 
 export default function LaporanCard({ data, type, processing, onUpload }) {
     const handleDelete = (data) => {
-        if (confirm('Apakah Anda yakin ingin menghapus laporan ini?')) {
-            router.delete(route('laporan.destroy', data.laporan.id), {
+        if (confirm("Apakah Anda yakin ingin menghapus laporan ini?")) {
+            router.delete(route("laporan.destroy", data.laporan.id), {
                 preserveScroll: true,
                 preserveState: true,
             });
@@ -18,10 +28,13 @@ export default function LaporanCard({ data, type, processing, onUpload }) {
         return (
             <div className="p-6 text-center bg-white border rounded-xl dark:bg-gray-800/50 dark:border-gray-700">
                 <p className="text-gray-600 dark:text-gray-400">
-                    Tidak ada data <span className='text-red-500'> {type.toUpperCase()}</span>  yang tersedia.
+                    Tidak ada data{" "}
+                    <span className="text-red-500"> {type.toUpperCase()}</span>{" "}
+                    yang tersedia.
                 </p>
                 <p className="text-gray-600 dark:text-gray-400">
-                    Gunakan role <span className='text-red-500'>Mahasiswa</span> untuk membuat laporan.
+                    Gunakan role <span className="text-red-500">Mahasiswa</span>{" "}
+                    untuk membuat laporan.
                 </p>
             </div>
         );
@@ -34,7 +47,11 @@ export default function LaporanCard({ data, type, processing, onUpload }) {
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                         Laporan {type.toUpperCase()}
                     </h3>
-                    <span className={`px-3 py-1 rounded-full text-sm font-medium inline-flex items-center gap-1.5 ${renderStatusBadge(data.status)}`}>
+                    <span
+                        className={`px-3 py-1 rounded-full text-sm font-medium inline-flex items-center gap-1.5 ${renderStatusBadge(
+                            data.status
+                        )}`}
+                    >
                         {data.status}
                     </span>
                 </div>
@@ -47,9 +64,11 @@ export default function LaporanCard({ data, type, processing, onUpload }) {
                             <div className="flex items-start gap-3">
                                 <SquareUserRoundIcon className="w-5 h-5 text-teal-500 dark:text-teal-400" />
                                 <div>
-                                    <p className="text-sm font-medium text-gray-900 dark:text-white">Nama Mahasiswa</p>
+                                    <p className="text-sm font-medium text-gray-900 dark:text-white">
+                                        Nama Mahasiswa
+                                    </p>
                                     <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                                        {data.mahasiswa?.name || '-'}
+                                        {data.mahasiswa?.name || "-"}
                                     </p>
                                 </div>
                             </div>
@@ -58,9 +77,19 @@ export default function LaporanCard({ data, type, processing, onUpload }) {
                             <div className="flex items-start gap-3">
                                 <Calendar className="w-5 h-5 text-teal-500 dark:text-teal-400" />
                                 <div>
-                                    <p className="text-sm font-medium text-gray-900 dark:text-white">Periode Pelaksanaan</p>
+                                    <p className="text-sm font-medium text-gray-900 dark:text-white">
+                                        Periode Pelaksanaan
+                                    </p>
                                     <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                                        {format(new Date(data.tanggal_mulai), 'dd MMM yyyy')} - {format(new Date(data.tanggal_selesai), 'dd MMM yyyy')}
+                                        {format(
+                                            new Date(data.tanggal_mulai),
+                                            "dd MMM yyyy"
+                                        )}{" "}
+                                        -{" "}
+                                        {format(
+                                            new Date(data.tanggal_selesai),
+                                            "dd MMM yyyy"
+                                        )}
                                     </p>
                                 </div>
                             </div>
@@ -70,9 +99,11 @@ export default function LaporanCard({ data, type, processing, onUpload }) {
                             <div className="flex items-start gap-3">
                                 <User className="w-5 h-5 text-teal-500 dark:text-teal-400" />
                                 <div>
-                                    <p className="text-sm font-medium text-gray-900 dark:text-white">Dosen Pembimbing</p>
+                                    <p className="text-sm font-medium text-gray-900 dark:text-white">
+                                        Dosen Pembimbing
+                                    </p>
                                     <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                                        {data.pembimbing?.name || '-'}
+                                        {data.pembimbing?.name || "-"}
                                     </p>
                                 </div>
                             </div>
@@ -84,9 +115,11 @@ export default function LaporanCard({ data, type, processing, onUpload }) {
                             <div className="flex items-start gap-3">
                                 <Goal className="w-5 h-5 text-teal-500 dark:text-teal-400" />
                                 <div>
-                                    <p className="text-sm font-medium text-gray-900 dark:text-white">Angkatan</p>
+                                    <p className="text-sm font-medium text-gray-900 dark:text-white">
+                                        Angkatan
+                                    </p>
                                     <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                                        {data.mahasiswa?.angkatan || '-'}
+                                        {data.mahasiswa?.angkatan || "-"}
                                     </p>
                                 </div>
                             </div>
@@ -95,12 +128,14 @@ export default function LaporanCard({ data, type, processing, onUpload }) {
                             <div className="flex items-start gap-3">
                                 <FileText className="w-5 h-5 text-teal-500 dark:text-teal-400" />
                                 <div>
-                                    <p className="text-sm font-medium text-gray-900 dark:text-white">Keterangan Laporan</p>
+                                    <p className="text-sm font-medium text-gray-900 dark:text-white">
+                                        Keterangan Laporan
+                                    </p>
                                     <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                                        {data.laporan?.keterangan || 'Belum ada keterangan'}
+                                        {data.laporan?.keterangan ||
+                                            "Belum ada keterangan"}
                                     </p>
                                 </div>
-
                             </div>
                         </div>
 
@@ -108,9 +143,16 @@ export default function LaporanCard({ data, type, processing, onUpload }) {
                             <div className="flex items-start gap-3">
                                 <Clock className="w-5 h-5 text-teal-500 dark:text-teal-400" />
                                 <div>
-                                    <p className="text-sm font-medium text-gray-900 dark:text-white">Terakhir Diperbarui</p>
+                                    <p className="text-sm font-medium text-gray-900 dark:text-white">
+                                        Terakhir Diperbarui
+                                    </p>
                                     <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                                        {data.updated_at ? format(new Date(data.updated_at), 'dd MMM yyyy HH:mm') : '-'}
+                                        {data.updated_at
+                                            ? format(
+                                                  new Date(data.updated_at),
+                                                  "dd MMM yyyy HH:mm"
+                                              )
+                                            : "-"}
                                     </p>
                                 </div>
                             </div>
@@ -121,14 +163,21 @@ export default function LaporanCard({ data, type, processing, onUpload }) {
                     <div className="flex gap-3 pt-6 mt-6 border-t dark:border-gray-700">
                         {data.laporan.file && (
                             <a
-                                href={route('files.laporan', data.laporan.file.split('/').pop())}
+                                href={route(
+                                    "files.laporan",
+                                    data.laporan.file.split("/").pop()
+                                )}
                                 className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white transition-colors bg-teal-500 rounded-lg hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
                                 disabled={processing}
                                 target="_blank"
                                 rel="noopener noreferrer"
                             >
-                                <Download className={`w-4 h-4 ${processing ? 'animate-spin' : ''}`} />
-                                {processing ? 'Memproses...' : 'Download PDF'}
+                                <Download
+                                    className={`w-4 h-4 ${
+                                        processing ? "animate-spin" : ""
+                                    }`}
+                                />
+                                {processing ? "Memproses..." : "Download PDF"}
                             </a>
                         )}
                         <button
@@ -137,7 +186,7 @@ export default function LaporanCard({ data, type, processing, onUpload }) {
                             disabled={processing}
                         >
                             <Trash2 className="w-4 h-4" />
-                            {processing ? 'Memproses...' : 'Hapus'}
+                            {processing ? "Memproses..." : "Hapus"}
                         </button>
                     </div>
                 ) : (
@@ -151,7 +200,7 @@ export default function LaporanCard({ data, type, processing, onUpload }) {
                             disabled={processing}
                         >
                             <Upload className="w-4 h-4" />
-                            {processing ? 'Memproses...' : 'Upload Laporan'}
+                            {processing ? "Memproses..." : "Upload Laporan"}
                         </button>
                     </div>
                 )}
@@ -175,7 +224,7 @@ LaporanCard.propTypes = {
             keterangan: PropTypes.string,
         }),
     }).isRequired,
-    type: PropTypes.oneOf(['kkl', 'kkn']).isRequired,
+    type: PropTypes.oneOf(["kkl", "kkn"]).isRequired,
     processing: PropTypes.bool.isRequired,
     onUpload: PropTypes.func.isRequired,
 };
