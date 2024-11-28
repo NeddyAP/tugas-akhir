@@ -18,7 +18,10 @@ export default function LaporanCard({ data, type, processing, onUpload }) {
         return (
             <div className="p-6 text-center bg-white border rounded-xl dark:bg-gray-800/50 dark:border-gray-700">
                 <p className="text-gray-600 dark:text-gray-400">
-                    Tidak ada data {type.toUpperCase()} yang tersedia.
+                    Tidak ada data <span className='text-red-500'> {type.toUpperCase()}</span>  yang tersedia.
+                </p>
+                <p className="text-gray-600 dark:text-gray-400">
+                    Gunakan role <span className='text-red-500'>Mahasiswa</span> untuk membuat laporan.
                 </p>
             </div>
         );

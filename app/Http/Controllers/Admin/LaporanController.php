@@ -24,12 +24,16 @@ class LaporanController extends Controller
             $query->when($search, function ($q) use ($search) {
                 $q->whereHas('mahasiswa', function ($q) use ($search) {
                     $q->where('name', 'like', "%{$search}%")
-                        ->orWhereHas('profilable', fn($q) => 
+                        ->orWhereHas(
+                            'profilable',
+                            fn($q) =>
                             $q->where('nim', 'like', "%{$search}%")
                         );
                 })->orWhereHas('pembimbing', function ($q) use ($search) {
                     $q->where('name', 'like', "%{$search}%")
-                        ->orWhereHas('profilable', fn($q) => 
+                        ->orWhereHas(
+                            'profilable',
+                            fn($q) =>
                             $q->where('nip', 'like', "%{$search}%")
                         );
                 });
@@ -98,7 +102,7 @@ class LaporanController extends Controller
             $model = $validated['type'] === 'kkl' ? DataKkl::class : DataKkn::class;
             $model::create($data);
 
-            return redirect()->back()->with('flash', ['message' => 'Data '.$validated['type'].' berhasil ditambahkan.', 'type' => 'success']);
+            return redirect()->back()->with('flash', ['message' => 'Data ' . $validated['type'] . ' berhasil ditambahkan.', 'type' => 'success']);
         });
     }
 
@@ -106,11 +110,11 @@ class LaporanController extends Controller
     {
         $validated = $request->validate([
             'type' => 'required|in:kkl,kkn',
-            'user_id' => 'required|exists:users,id',
-            'dosen_id' => 'required|exists:users,id',
-            'tanggal_mulai' => 'required|date',
-            'tanggal_selesai' => 'required|date|after:tanggal_mulai',
-            'status' => 'required|in:pending,completed,rejected',
+            'user_id' => 'nullable|exists:users,id',
+            'dosen_id' => 'nullable|exists:users,id',
+            'tanggal_mulai' => 'nullable|date',
+            'tanggal_selesai' => 'nullable|date|after:tanggal_mulai',
+            'status' => 'nullable|in:pending,completed,rejected',
             'file' => 'nullable|file|mimes:pdf|max:10240',
             'keterangan' => 'nullable|string',
         ]);
@@ -146,7 +150,7 @@ class LaporanController extends Controller
                 'status' => $validated['status'],
             ]);
 
-            return redirect()->back()->with('flash', ['message' => 'Data '.$validated['type'].' berhasil diperbarui.', 'type' => 'success']);
+            return redirect()->back()->with('flash', ['message' => 'Data ' . $validated['type'] . ' berhasil diperbarui.', 'type' => 'success']);
         });
     }
 
@@ -168,7 +172,7 @@ class LaporanController extends Controller
 
             $data->delete();
 
-            return redirect()->back()->with('flash', ['message' => 'Data '.$type.' berhasil dihapus.', 'type' => 'success']);
+            return redirect()->back()->with('flash', ['message' => 'Data ' . $type . ' berhasil dihapus.', 'type' => 'success']);
         });
     }
 }
