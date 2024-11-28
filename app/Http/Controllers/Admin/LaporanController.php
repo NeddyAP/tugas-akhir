@@ -61,16 +61,35 @@ class LaporanController extends Controller
                 ]);
         });
 
-        $modelClass = $type === 'kkl' ? DataKkl::class : DataKkn::class;
-        $data = $modelClass::with(['mahasiswa:id,name', 'pembimbing:id,name', 'laporan'])
-            ->when($search, $baseQuery)
+        // Fetch paginated KKL data
+        $kklData = DataKkl::with(['mahasiswa:id,name', 'pembimbing:id,name', 'laporan'])
+            ->when($type === 'kkl', $baseQuery)
             ->latest()
             ->paginate($perPage);
 
+        // Fetch paginated KKN data
+        $kknData = DataKkn::with(['mahasiswa:id,name', 'pembimbing:id,name', 'laporan'])
+            ->when($type === 'kkn', $baseQuery)
+            ->latest()
+            ->paginate($perPage);
+
+        // Fetch all KKL and KKN data without pagination for filtering
+        $allKklData = DataKkl::select('user_id')
+            ->get()
+            ->map(fn($item) => ['user_id' => $item->user_id, 'type' => 'kkl']);
+
+        $allKknData = DataKkn::select('user_id')
+            ->get()
+            ->map(fn($item) => ['user_id' => $item->user_id, 'type' => 'kkn']);
+
+        // Combine all laporans data
+        $allLaporansData = $allKklData->merge($allKknData)->values();
+
         return Inertia::render('Admin/Laporan/LaporanPage', [
             'type' => $type,
-            'kklData' => $type === 'kkl' ? $data : null,
-            'kknData' => $type === 'kkn' ? $data : null,
+            'kklData' => $kklData,
+            'kknData' => $kknData,
+            'allLaporansData' => $allLaporansData,
             'mahasiswas' => $mahasiswas,
             'dosens' => $dosens,
             'filters' => ['search' => $search],

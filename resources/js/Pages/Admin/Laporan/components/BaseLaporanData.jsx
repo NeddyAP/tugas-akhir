@@ -12,6 +12,7 @@ export default function BaseLaporanData({
     title,
     description,
     laporans,
+    allLaporans, // Now an array of { user_id, type }
     mahasiswas,
     dosens
 }) {
@@ -25,6 +26,26 @@ export default function BaseLaporanData({
         tanggal_selesai: "",
         status: "pending",
     });
+
+    // State to keep track of filtered mahasiswas
+    const [filteredMahasiswas, setFilteredMahasiswas] = useState(mahasiswas);
+
+    // Update filteredMahasiswas when data.type, mahasiswas, or allLaporans change
+    // ...existing code...
+
+    useEffect(() => {
+        let existingUserIds = allLaporans
+            .filter(laporan => laporan.type === data.type)
+            .map(laporan => laporan.user_id);
+
+        // If editing, allow the current user_id
+        if (modalState.editingData) {
+            existingUserIds = existingUserIds.filter(id => id !== modalState.editingData.user_id);
+        }
+
+        const newFilteredMahasiswas = mahasiswas.filter(m => !existingUserIds.includes(m.value));
+        setFilteredMahasiswas(newFilteredMahasiswas);
+    }, [data.type, mahasiswas, allLaporans, modalState.editingData]);
 
     const handleModalClose = useCallback(() => {
         setModalState({ isOpen: false, editingData: null });
@@ -133,6 +154,7 @@ export default function BaseLaporanData({
         }
     ], []);
 
+    // Update modalFields to use filteredMahasiswas for 'user_id' field options
     const modalFields = useMemo(() => [
         {
             name: "type",
@@ -150,7 +172,7 @@ export default function BaseLaporanData({
             name: "user_id",
             label: "Mahasiswa",
             type: "searchableSelect",
-            options: mahasiswas, // Use all mahasiswas directly
+            options: filteredMahasiswas,
             required: true,
             disabled: modalState.editingData !== null
         },
@@ -174,7 +196,7 @@ export default function BaseLaporanData({
             ],
             required: true
         }
-    ], [mahasiswas, dosens, type, modalState.editingData]);
+    ], [filteredMahasiswas, dosens, modalState.editingData]);
 
     const pagination = useMemo(() => ({
         pageIndex: laporans.current_page - 1,
@@ -250,6 +272,11 @@ BaseLaporanData.propTypes = {
         from: PropTypes.number,
         to: PropTypes.number,
     }).isRequired,
+    // Update the `allLaporans` prop type to be an array
+    allLaporans: PropTypes.arrayOf(PropTypes.shape({
+        user_id: PropTypes.number.isRequired,
+        type: PropTypes.string.isRequired,
+    })).isRequired,
     mahasiswas: PropTypes.arrayOf(PropTypes.shape({
         value: PropTypes.number.isRequired,
         label: PropTypes.string.isRequired,

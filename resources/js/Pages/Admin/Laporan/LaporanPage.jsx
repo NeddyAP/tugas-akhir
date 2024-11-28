@@ -16,6 +16,7 @@ const TABS = [
 export default function LaporanPage({
     kklData = null,
     kknData = null,
+    allLaporansData = [],
     type = 'kkl',
     mahasiswas = [],
     dosens = []
@@ -30,15 +31,8 @@ export default function LaporanPage({
 
     const renderContent = () => {
         const defaultData = { data: [], current_page: 1, last_page: 1, per_page: 10, total: 0 };
-        const defaultMahasiswas = mahasiswas.map(m => ({
-            value: m.id,
-            label: m.name
-        })) || [];
-
-        const defaultDosens = dosens.map(d => ({
-            value: d.id,
-            label: d.name
-        })) || [];
+        const defaultMahasiswas = mahasiswas || [];
+        const defaultDosens = dosens || [];
 
         switch (type) {
             case 'kkl':
@@ -47,6 +41,7 @@ export default function LaporanPage({
                     title="Data KKL"
                     description="Kelola data KKL mahasiswa"
                     laporans={kklData || defaultData}
+                    allLaporans={allLaporansData}
                     mahasiswas={defaultMahasiswas}
                     dosens={defaultDosens}
                 />;
@@ -56,6 +51,7 @@ export default function LaporanPage({
                     title="Data KKN"
                     description="Kelola data KKN mahasiswa"
                     laporans={kknData || defaultData}
+                    allLaporans={allLaporansData}
                     mahasiswas={defaultMahasiswas}
                     dosens={defaultDosens}
                 />;
@@ -104,13 +100,17 @@ LaporanPage.propTypes = {
         from: PropTypes.number,
         to: PropTypes.number,
     }),
+    allLaporansData: PropTypes.arrayOf(PropTypes.shape({
+        user_id: PropTypes.number.isRequired,
+        type: PropTypes.string.isRequired,
+    })).isRequired,
     type: PropTypes.oneOf(['kkl', 'kkn']),
     mahasiswas: PropTypes.arrayOf(PropTypes.shape({
-        id: PropTypes.number,
-        name: PropTypes.string,
-    })),
+        value: PropTypes.number.isRequired,
+        label: PropTypes.string.isRequired,
+    })).isRequired,
     dosens: PropTypes.arrayOf(PropTypes.shape({
-        id: PropTypes.number,
-        name: PropTypes.string,
-    })),
+        value: PropTypes.number.isRequired,
+        label: PropTypes.string.isRequired,
+    })).isRequired,
 };
