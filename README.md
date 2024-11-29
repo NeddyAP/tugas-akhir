@@ -11,44 +11,44 @@ Sebelum memulai, pastikan Anda telah memenuhi persyaratan berikut:
 
 ### Instalasi
 
-1. **Klon repositori:**
+0. **Klon repositori:**
 
     ```sh
     git clone https://github.com/neddy1298/tugas-akhir
     cd tugas-akhir
     ```
 
-2. **Instal dependensi PHP:**
+1. **Instal dependensi PHP:**
 
     ```sh
     composer install
     ```
 
-3. **Instal dependensi JavaScript:**
+2. **Instal dependensi JavaScript:**
 
     ```sh
     npm install
     ```
 
-4. **Salin file `.env.example` ke `.env`:**
+3. **Salin file `.env.example` ke `.env`:**
 
     ```sh
     cp .env.example .env
     ```
 
-5. **Hasilkan kunci aplikasi:**
+4. **Hasilkan kunci aplikasi:**
 
     ```sh
     php artisan key:generate
     ```
 
-6. **Konfigurasi database Anda di file `.env`:**
+5. **Konfigurasi database Anda di file `.env`:**
 
     ```env
     DB_CONNECTION=sqlite
     ```
 
-7. **Jalankan migrasi database:**
+6. **Jalankan migrasi database:**
 
     jika belum memiliki database:
 
@@ -63,7 +63,7 @@ Sebelum memulai, pastikan Anda telah memenuhi persyaratan berikut:
     php artisan migrate:fresh --seed
     ```
 
-8. **Konfigurasi storage:**
+7. **Konfigurasi storage:**
 
     ```sh
     php artisan storage:link
