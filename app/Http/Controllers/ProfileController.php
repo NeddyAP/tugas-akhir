@@ -18,9 +18,12 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): Response
     {
+        $user = $request->user()->load('profilable');
+
         return Inertia::render('Front/Profile/ProfilePage', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => session('status'),
+            'user' => $user,
         ]);
     }
 
@@ -29,15 +32,47 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        $user = $request->user();
+        $validated = $request->validated();
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        try {
+            \DB::transaction(function () use ($user, $validated) {
+                // Update user basic info
+                $user->update([
+                    'name' => $validated['name'],
+                    'email' => $validated['email'],
+                ]);
+
+                // Update profile specific fields
+                $profileData = [
+                    'phone' => $validated['phone'],
+                    'address' => $validated['address'],
+                ];
+
+                if ($user->role === 'mahasiswa') {
+                    $profileData = array_merge($profileData, [
+                        'nim' => $validated['nim'],
+                        'angkatan' => $validated['angkatan'],
+                        'prodi' => $validated['prodi'],
+                        'fakultas' => $validated['fakultas'],
+                    ]);
+                } elseif ($user->role === 'dosen') {
+                    $profileData['nip'] = $validated['nip'];
+                }
+
+                $user->profilable->update($profileData);
+            });
+
+            return Redirect::route('profile.edit')->with('flash', [
+                'type' => 'success',
+                'message' => 'Profile berhasil diubah',
+            ]);
+        } catch (\Exception $e) {
+            return Redirect::back()->withErrors('flash', [
+                'type' => 'error',
+                'message' => 'Profile gagal diubah',
+            ]);
         }
-
-        $request->user()->save();
-
-        return Redirect::route('profile.edit');
     }
 
     /**

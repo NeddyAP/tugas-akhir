@@ -7,23 +7,24 @@ import SecondaryButton from "@/Components/Front/SecondaryButton";
 import PrimaryButton from "@/Components/Front/PrimaryButton";
 import avatarProfile from "@images/avatar-profile.jpg";
 
-export default function ProfilePage({ mustVerifyEmail, status }) {
+export default function ProfilePage({ mustVerifyEmail, status, profileData }) {
     const user = usePage().props.auth.user;
     const [profileImage, setProfileImage] = useState(avatarProfile);
 
-    const { data, setData, post, processing, errors } = useForm({
-        name: user.name || "",
-        email: user.email || "",
-        phone: user.profilable?.phone || "",
-        address: user.profilable?.address || "",
-        ...(user.role === "mahasiswa" && {
-            nim: user.profilable?.nim || "",
-            angkatan: user.profilable?.angkatan || "",
-            prodi: user.profilable?.prodi || "",
-            fakultas: user.profilable?.fakultas || "",
+    // Initialize form with merged user and profile data
+    const { data, setData, patch, processing, errors } = useForm({
+        name: user?.name || "",
+        email: user?.email || "",
+        phone: user?.profilable?.phone || "",
+        address: user?.profilable?.address || "",
+        ...(user?.role === "mahasiswa" && {
+            nim: user?.profilable?.nim || "",
+            angkatan: user?.profilable?.angkatan || "",
+            prodi: user?.profilable?.prodi || "",
+            fakultas: user?.profilable?.fakultas || "",
         }),
-        ...(user.role === "dosen" && {
-            nip: user.profilable?.nip || "",
+        ...(user?.role === "dosen" && {
+            nip: user?.profilable?.nip || "",
         }),
     });
 
@@ -113,46 +114,51 @@ export default function ProfilePage({ mustVerifyEmail, status }) {
             ...(roleSpecificFields[user.role] || []),
         ];
 
-        return fieldsToRender.map((field) => (
-            <div key={field}>
-                <label
-                    htmlFor={field}
-                    className="block text-sm font-medium text-gray-700 dark:text-gray-200"
-                >
-                    {field
-                        .split("_")
-                        .map(
-                            (word) =>
-                                word.charAt(0).toUpperCase() + word.slice(1)
-                        )
-                        .join(" ")}{" "}
-                    *
-                </label>
-                {field === "angkatan" ? (
-                    <SearchableSelect
-                        value={data[field]}
-                        onChange={(value) => setData(field, value)}
-                        options={getYearOptions()}
-                        placeholder="Pilih Angkatan"
-                    />
-                ) : (
-                    <input
-                        type="text"
-                        id={field}
-                        name={field}
-                        value={data[field]}
-                        onChange={handleChange}
-                        className="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                        required
-                    />
-                )}
-                {errors[field] && (
-                    <p className="mt-1 text-sm text-red-600 dark:text-red-400">
-                        {errors[field]}
-                    </p>
-                )}
-            </div>
-        ));
+        return fieldsToRender.map((field) => {
+            // Check if field is optional
+            const isOptional = ["prodi", "fakultas"].includes(field);
+
+            return (
+                <div key={field}>
+                    <label
+                        htmlFor={field}
+                        className="block text-sm font-medium text-gray-700 dark:text-gray-200"
+                    >
+                        {field
+                            .split("_")
+                            .map(
+                                (word) =>
+                                    word.charAt(0).toUpperCase() + word.slice(1)
+                            )
+                            .join(" ")}{" "}
+                        {!isOptional && "*"}
+                    </label>
+                    {field === "angkatan" ? (
+                        <SearchableSelect
+                            value={data[field]}
+                            onChange={(value) => setData(field, value)}
+                            options={getYearOptions()}
+                            placeholder="Pilih Angkatan"
+                        />
+                    ) : (
+                        <input
+                            type="text"
+                            id={field}
+                            name={field}
+                            value={data[field]}
+                            onChange={handleChange}
+                            className="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            required={!isOptional}
+                        />
+                    )}
+                    {errors[field] && (
+                        <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+                            {errors[field]}
+                        </p>
+                    )}
+                </div>
+            );
+        });
     };
 
     const handleImageChange = (event) => {
@@ -166,9 +172,15 @@ export default function ProfilePage({ mustVerifyEmail, status }) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        post(route("profile.update"), {
+        patch(route("profile.update"), {
             preserveState: true,
             preserveScroll: true,
+            onSuccess: () => {
+                // Show success message
+            },
+            onError: (errors) => {
+                // Handle errors
+            },
         });
     };
 
