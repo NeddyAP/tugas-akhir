@@ -26,7 +26,7 @@ export default function LandingPage() {
                             </p>
                             <div className="flex flex-col justify-center gap-4 sm:flex-row lg:justify-start">
                                 <PrimaryButton
-                                    href={route("login")}
+                                    href={route("laporan.index")}
                                     className="text-lg"
                                 >
                                     {auth.user ? "Submit" : "Login"}

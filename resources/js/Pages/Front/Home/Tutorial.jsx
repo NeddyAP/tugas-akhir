@@ -68,8 +68,11 @@ const Tutorial = ({ tutorial }) => {
                                 {data.description}
                             </p>
                             <div className="flex justify-center lg:justify-start">
-                                <PrimaryButton href={route("login")}>
-                                    Login
+                                <PrimaryButton
+                                    href={route("laporan.index")}
+                                    className="text-lg"
+                                >
+                                    Submit
                                 </PrimaryButton>
                             </div>
                         </div>
