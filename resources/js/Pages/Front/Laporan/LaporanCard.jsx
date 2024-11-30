@@ -14,7 +14,12 @@ import {
 import { renderStatusBadge } from "@/utils/constants";
 import { useForm, router } from "@inertiajs/react";
 
-export default function LaporanCard({ data, type, processing, onUpload }) {
+export default function LaporanCard({
+    data = null,
+    type,
+    processing,
+    onUpload,
+}) {
     const handleDelete = (data) => {
         if (confirm("Apakah Anda yakin ingin menghapus laporan ini?")) {
             router.delete(route("laporan.destroy", data.laporan.id), {
@@ -223,7 +228,7 @@ LaporanCard.propTypes = {
             id: PropTypes.number,
             keterangan: PropTypes.string,
         }),
-    }).isRequired,
+    }),
     type: PropTypes.oneOf(["kkl", "kkn"]).isRequired,
     processing: PropTypes.bool.isRequired,
     onUpload: PropTypes.func.isRequired,
