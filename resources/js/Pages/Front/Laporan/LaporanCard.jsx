@@ -21,14 +21,20 @@ export default function LaporanCard({
     onUpload,
 }) {
     const handleDelete = (data) => {
-        if (confirm("Apakah Anda yakin ingin menghapus laporan ini?")) {
+        let confirmMessage = "Apakah Anda yakin ingin menghapus laporan ini?";
+
+        if (data.status.toLowerCase() === "approved") {
+            confirmMessage =
+                "PERHATIAN! Laporan ini sudah disetujui. Menghapus laporan yang sudah disetujui mungkin memerlukan pengajuan ulang.\n\nApakah Anda tetap ingin menghapus laporan ini?";
+        }
+
+        if (window.confirm(confirmMessage)) {
             router.delete(route("laporan.destroy", data.laporan.id), {
                 preserveScroll: true,
                 preserveState: true,
             });
         }
     };
-
     if (!data) {
         return (
             <div className="p-6 text-center bg-white border rounded-xl dark:bg-gray-800/50 dark:border-gray-700">

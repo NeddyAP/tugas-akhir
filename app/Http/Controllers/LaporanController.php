@@ -40,7 +40,7 @@ class LaporanController extends Controller
         $kknData = $type === 'kkn' ?
             DataKkn::when(true, $baseQuery)->latest()->paginate($perPage) : null;
 
-        // Transform the data to include the file download route
+        
         $transformData = function ($data) {
             if (!$data) return null;
 
@@ -111,7 +111,7 @@ class LaporanController extends Controller
                 ]);
             }
 
-            // Ensure status is a string
+            
             $kkl->update([
                 'status' => (string) $validated['status'],
             ]);
@@ -143,7 +143,7 @@ class LaporanController extends Controller
                 ]);
             }
 
-            // Ensure status is a string
+            
             $kkn->update([
                 'status' => (string) $validated['status'],
             ]);
@@ -161,25 +161,25 @@ class LaporanController extends Controller
             try {
                 $laporan = Laporan::findOrFail($id);
 
-                // Check if user owns this laporan
+                
                 if ($laporan->user_id !== Auth::id()) {
                     abort(403, 'Unauthorized action.');
                 }
 
-                // Delete file if exists
+                
                 if ($laporan->file) {
                     Storage::disk('private')->delete($laporan->file);
                 }
 
-                // Find and update the related KKL/KKN data
+                
                 $kklData = DataKkl::where('id_laporan', $id)->first();
                 $kknData = DataKkn::where('id_laporan', $id)->first();
 
                 if ($kklData) {
-                    $kklData->update(['id_laporan' => null]);
+                    $kklData->update(['id_laporan' => null, 'status' => 'pending']);
                 }
                 if ($kknData) {
-                    $kknData->update(['id_laporan' => null]);
+                    $kknData->update(['id_laporan' => null, 'status' => 'pending']);
                 }
 
                 $laporan->delete();
