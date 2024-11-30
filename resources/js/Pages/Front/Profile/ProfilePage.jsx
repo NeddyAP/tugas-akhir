@@ -221,13 +221,6 @@ export default function ProfilePage({ mustVerifyEmail, status, profileData }) {
                             <PrimaryButton type="submit" disabled={processing}>
                                 {processing ? "Menyimpan..." : "Simpan"}
                             </PrimaryButton>
-                            <SecondaryButton
-                                type="reset"
-                                disabled={processing}
-                                preserveScroll
-                            >
-                                Batal
-                            </SecondaryButton>
                         </div>
                     </form>
                 </div>
@@ -284,13 +277,6 @@ export default function ProfilePage({ mustVerifyEmail, status, profileData }) {
                                     ? "Menyimpan..."
                                     : "Ubah Password"}
                             </PrimaryButton>
-                            <SecondaryButton
-                                type="button"
-                                disabled={passwordProcessing}
-                                onClick={() => resetPassword()}
-                            >
-                                Batal
-                            </SecondaryButton>
                         </div>
                     </form>
                 </div>
