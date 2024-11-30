@@ -1,11 +1,12 @@
 import { Suspense, useState, useCallback } from "react";
-import { router } from "@inertiajs/react";
+import { router, useForm } from "@inertiajs/react";
 import FrontLayout from "@/Layouts/FrontLayout";
 import { Head } from "@inertiajs/react";
 import LaporanCard from "./LaporanCard";
+import DataTable from "@/Components/ui/DataTable";
 import GenericModal from "@/Components/ui/GenericModal";
-import { useForm } from "@inertiajs/react";
 import PropTypes from "prop-types";
+import LaporanTable from "@/Components/Tables/LaporanTable";
 
 const LoadingFallback = () => (
     <div className="animate-pulse">
@@ -19,14 +20,17 @@ export default function LaporanPage({
     kklData = null,
     kknData = null,
     type = "kkl",
+    auth,
 }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [editingData, setEditingData] = useState(null);
 
-    const { data, setData, post, processing, errors, reset, clearErrors } =
+    const { data, setData, post, put, processing, errors, reset, clearErrors } =
         useForm({
             type: type,
             keterangan: "",
             file: null,
+            status: "",
         });
 
     const handleTabClick = (tab) => {
@@ -71,9 +75,9 @@ export default function LaporanPage({
     };
 
     const currentData =
-        type === "kkl"
-            ? kklData?.data?.[0] ?? null
-            : kknData?.data?.[0] ?? null;
+        type === "kkl" ? kklData?.data ?? [] : kknData?.data ?? [];
+
+    const isDosenRole = auth?.user?.role === "dosen";
 
     return (
         <FrontLayout>
@@ -98,47 +102,132 @@ export default function LaporanPage({
                     </nav>
                 </div>
 
-                <LaporanCard
-                    data={currentData}
-                    type={type}
-                    processing={processing}
-                    onUpload={handleModal}
-                    isModalOpen={isModalOpen}
-                    onCloseModal={() => {
-                        setIsModalOpen(false);
-                        reset();
-                        clearErrors();
-                    }}
-                />
+                {isDosenRole ? (
+                    <LaporanTable
+                        data={currentData}
+                        type={type}
+                        pagination={{
+                            pageIndex:
+                                type === "kkl"
+                                    ? (kklData?.meta?.current_page || 1) - 1
+                                    : (kknData?.meta?.current_page || 1) - 1,
+                            pageCount:
+                                type === "kkl"
+                                    ? kklData?.meta?.last_page || 1
+                                    : kknData?.meta?.last_page || 1,
+                            pageSize:
+                                type === "kkl"
+                                    ? kklData?.meta?.per_page || 10
+                                    : kknData?.meta?.per_page || 10,
+                            total:
+                                type === "kkl"
+                                    ? kklData?.meta?.total || 1
+                                    : kknData?.meta?.total || 0,
+                            from:
+                                type === "kkl"
+                                    ? kklData?.meta?.from || 1
+                                    : kknData?.meta?.from || 0,
+                            to:
+                                type === "kkl"
+                                    ? kklData?.meta?.to || 1
+                                    : kknData?.meta?.to || 0,
+                        }}
+                    />
+                ) : (
+                    <LaporanCard
+                        data={currentData?.[0] ?? null}
+                        type={type}
+                        processing={processing}
+                        onUpload={handleModal}
+                        isModalOpen={isModalOpen}
+                        onCloseModal={() => {
+                            setIsModalOpen(false);
+                            reset();
+                            clearErrors();
+                        }}
+                    />
+                )}
 
-                <GenericModal
-                    isOpen={isModalOpen}
-                    onClose={() => {
-                        setIsModalOpen(false);
-                        reset();
-                        clearErrors();
-                    }}
-                    title={`Tambah Laporan ${type.toUpperCase()}`}
-                    fields={[
-                        {
-                            name: "keterangan",
-                            label: "Keterangan",
-                            type: "textarea",
-                            rows: 3,
-                        },
-                        {
-                            name: "file",
-                            label: "File Laporan",
-                            type: "file",
-                            accept: ".pdf,.doc,.docx",
-                        },
-                    ]}
-                    data={data}
-                    setData={setData}
-                    errors={errors}
-                    processing={processing}
-                    handleSubmit={handleSubmit}
-                />
+                {/* Change this condition to show upload modal for mahasiswa */}
+                {!isDosenRole && (
+                    <GenericModal
+                        isOpen={isModalOpen}
+                        onClose={() => {
+                            setIsModalOpen(false);
+                            reset();
+                            clearErrors();
+                        }}
+                        title={`Tambah Laporan ${type.toUpperCase()}`}
+                        fields={[
+                            {
+                                name: "keterangan",
+                                label: "Keterangan",
+                                type: "textarea",
+                                rows: 3,
+                            },
+                            {
+                                name: "file",
+                                label: "File Laporan",
+                                type: "file",
+                                accept: ".pdf,.doc,.docx",
+                            },
+                        ]}
+                        data={data}
+                        setData={setData}
+                        errors={errors}
+                        processing={processing}
+                        handleSubmit={handleSubmit}
+                    />
+                )}
+
+                {/* Keep the dosen status update modal */}
+                {isDosenRole && (
+                    <GenericModal
+                        isOpen={isModalOpen}
+                        onClose={() => {
+                            setIsModalOpen(false);
+                            reset();
+                            clearErrors();
+                        }}
+                        title={`Update ${type.toUpperCase()} Status`}
+                        fields={[
+                            {
+                                name: "status",
+                                label: "Status",
+                                type: "select",
+                                options: [
+                                    { value: "pending", label: "Pending" },
+                                    { value: "approved", label: "Approved" },
+                                    { value: "rejected", label: "Rejected" },
+                                ],
+                            },
+                            {
+                                name: "keterangan",
+                                label: "Keterangan",
+                                type: "textarea",
+                                rows: 3,
+                            },
+                        ]}
+                        data={data}
+                        setData={setData}
+                        errors={errors}
+                        processing={processing}
+                        handleSubmit={(e) => {
+                            e.preventDefault();
+                            put(
+                                route(`laporan.${type}.update`, {
+                                    id: editingData.id,
+                                }),
+                                {
+                                    onSuccess: () => {
+                                        setIsModalOpen(false);
+                                        reset();
+                                    },
+                                }
+                            );
+                        }}
+                    />
+                )}
             </div>
         </FrontLayout>
     );
@@ -152,4 +241,9 @@ LaporanPage.propTypes = {
         data: PropTypes.array,
     }),
     type: PropTypes.oneOf(["kkl", "kkn"]),
+    auth: PropTypes.shape({
+        user: PropTypes.shape({
+            role: PropTypes.string,
+        }),
+    }),
 };

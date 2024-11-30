@@ -16,21 +16,47 @@ class LaporanController extends Controller
     {
         $type = $request->input('type', 'kkl');
         $user = Auth::user();
+        $search = $request->input('search');
+        $perPage = $request->input('per_page', 10);
 
-        $baseQuery = function ($query) use ($user) {
-            $query->where('user_id', $user->id)
-                ->with(['mahasiswa:id,name', 'pembimbing:id,name', 'laporan']);
+        $baseQuery = function ($query) use ($user, $search) {
+            if ($user->role === 'dosen') {
+                $query->where('dosen_id', $user->id);
+            } else {
+                $query->where('user_id', $user->id);
+            }
+
+            $query->with(['mahasiswa:id,name', 'pembimbing:id,name', 'laporan'])
+                ->when($search, function ($query) use ($search) {
+                    $query->whereHas('mahasiswa', function ($q) use ($search) {
+                        $q->where('name', 'like', "%{$search}%");
+                    });
+                });
         };
 
         $kklData = $type === 'kkl' ?
-            DataKkl::when(true, $baseQuery)->latest()->paginate(10) : null;
+            DataKkl::when(true, $baseQuery)->latest()->paginate($perPage) : null;
 
         $kknData = $type === 'kkn' ?
-            DataKkn::when(true, $baseQuery)->latest()->paginate(10) : null;
+            DataKkn::when(true, $baseQuery)->latest()->paginate($perPage) : null;
+
+        // Transform the data to include the file download route
+        $transformData = function($data) {
+            if (!$data) return null;
+            
+            $data->getCollection()->transform(function ($item) {
+                if ($item->laporan && $item->laporan->file) {
+                    $item->laporan->file_url = route('files.laporan', ['filename' => basename($item->laporan->file)]);
+                }
+                return $item;
+            });
+            
+            return $data;
+        };
 
         return inertia('Front/Laporan/LaporanPage', [
-            'kklData' => $kklData,
-            'kknData' => $kknData,
+            'kklData' => $transformData($kklData),
+            'kknData' => $transformData($kknData),
             'type' => $type,
         ]);
     }
@@ -61,6 +87,74 @@ class LaporanController extends Controller
             return back()->with('flash', [
                 'type' => 'success',
                 'message' => 'Laporan berhasil ditambahkan',
+            ]);
+        });
+    }
+
+    public function updateKkl(Request $request, $id)
+    {
+        $user = Auth::user();
+        
+        if ($user->role !== 'dosen') {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $validated = $request->validate([
+            'status' => 'required|in:pending,approved,rejected',
+            'keterangan' => 'nullable|string',
+        ]);
+
+        return DB::transaction(function () use ($validated, $id, $user) {
+            $kkl = DataKkl::where('dosen_id', $user->id)
+                ->findOrFail($id);
+
+            if ($kkl->laporan) {
+                $kkl->laporan->update([
+                    'keterangan' => $validated['keterangan'],
+                ]);
+            }
+
+            $kkl->update([
+                'status' => $validated['status'],
+            ]);
+
+            return back()->with('flash', [
+                'type' => 'success',
+                'message' => 'Status laporan berhasil diperbarui',
+            ]);
+        });
+    }
+
+    public function updateKkn(Request $request, $id)
+    {
+        $user = Auth::user();
+        
+        if ($user->role !== 'dosen') {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $validated = $request->validate([
+            'status' => 'required|in:pending,approved,rejected',
+            'keterangan' => 'nullable|string',
+        ]);
+
+        return DB::transaction(function () use ($validated, $id, $user) {
+            $kkn = DataKkn::where('dosen_id', $user->id)
+                ->findOrFail($id);
+
+            if ($kkn->laporan) {
+                $kkn->laporan->update([
+                    'keterangan' => $validated['keterangan'],
+                ]);
+            }
+
+            $kkn->update([
+                'status' => $validated['status'],
+            ]);
+
+            return back()->with('flash', [
+                'type' => 'success',
+                'message' => 'Status laporan berhasil diperbarui',
             ]);
         });
     }
