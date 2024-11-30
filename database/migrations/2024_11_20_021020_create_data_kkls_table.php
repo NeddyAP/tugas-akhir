@@ -21,8 +21,10 @@ return new class extends Migration
                 ->constrained('laporans')->nullOnDelete();
             $table->date('tanggal_mulai')->nullable();
             $table->date('tanggal_selesai')->nullable();
-            $table->enum('status', ['pending', 'completed', 'rejected'])
-                ->default('pending')->nullable();
+            $table->string('status')
+                ->default('pending')
+                ->nullable()
+                ->check('status in ("pending", "approved", "rejected")');
             $table->timestamps();
         });
     }

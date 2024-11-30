@@ -231,7 +231,7 @@ export default function BaseLaporanData({
                 type: "select",
                 options: [
                     { value: "pending", label: "Pending" },
-                    { value: "completed", label: "Completed" },
+                    { value: "approved", label: "Approved" },
                     { value: "rejected", label: "Rejected" },
                 ],
                 required: true,

@@ -25,13 +25,13 @@ class LaporanController extends Controller
                     $q->where('name', 'like', "%{$search}%")
                         ->orWhereHas(
                             'profilable',
-                            fn ($q) => $q->where('nim', 'like', "%{$search}%")
+                            fn($q) => $q->where('nim', 'like', "%{$search}%")
                         );
                 })->orWhereHas('pembimbing', function ($q) use ($search) {
                     $q->where('name', 'like', "%{$search}%")
                         ->orWhereHas(
                             'profilable',
-                            fn ($q) => $q->where('nip', 'like', "%{$search}%")
+                            fn($q) => $q->where('nip', 'like', "%{$search}%")
                         );
                 });
             });
@@ -42,7 +42,7 @@ class LaporanController extends Controller
             return User::mahasiswa()
                 ->select('id', 'name')
                 ->get()
-                ->map(fn ($user) => [
+                ->map(fn($user) => [
                     'value' => $user->id,
                     'label' => $user->name,
                 ]);
@@ -52,7 +52,7 @@ class LaporanController extends Controller
             return User::dosen()
                 ->select('id', 'name')
                 ->get()
-                ->map(fn ($user) => [
+                ->map(fn($user) => [
                     'value' => $user->id,
                     'label' => $user->name,
                 ]);
@@ -73,11 +73,11 @@ class LaporanController extends Controller
         // Fetch all KKL and KKN data without pagination for filtering
         $allKklData = DataKkl::select('user_id')
             ->get()
-            ->map(fn ($item) => ['user_id' => $item->user_id, 'type' => 'kkl']);
+            ->map(fn($item) => ['user_id' => $item->user_id, 'type' => 'kkl']);
 
         $allKknData = DataKkn::select('user_id')
             ->get()
-            ->map(fn ($item) => ['user_id' => $item->user_id, 'type' => 'kkn']);
+            ->map(fn($item) => ['user_id' => $item->user_id, 'type' => 'kkn']);
 
         // Combine all laporans data
         $allLaporansData = $allKklData->merge($allKknData)->values();
@@ -101,7 +101,7 @@ class LaporanController extends Controller
             'dosen_id' => 'required|exists:users,id',
             'tanggal_mulai' => 'required|date',
             'tanggal_selesai' => 'required|date|after:tanggal_mulai',
-            'status' => 'required|in:pending,completed,rejected',
+            'status' => 'required|in:pending,approved,rejected',
         ]);
 
         $model = $validated['type'] === 'kkl' ? DataKkl::class : DataKkn::class;
@@ -113,7 +113,7 @@ class LaporanController extends Controller
             'status' => $validated['status'],
         ]);
 
-        return redirect()->back()->with('flash', ['message' => 'Data '.$validated['type'].' berhasil ditambahkan.', 'type' => 'success']);
+        return redirect()->back()->with('flash', ['message' => 'Data ' . $validated['type'] . ' berhasil ditambahkan.', 'type' => 'success']);
     }
 
     public function update(Request $request, $id)
@@ -124,7 +124,7 @@ class LaporanController extends Controller
             'dosen_id' => 'required|exists:users,id',
             'tanggal_mulai' => 'required|date',
             'tanggal_selesai' => 'required|date|after:tanggal_mulai',
-            'status' => 'required|in:pending,completed,rejected',
+            'status' => 'required|in:pending,approved,rejected',
         ]);
 
         $model = $validated['type'] === 'kkl' ? DataKkl::class : DataKkn::class;
@@ -139,7 +139,7 @@ class LaporanController extends Controller
         ]);
 
         return redirect()->back()->with('flash', [
-            'message' => 'Data '.$validated['type'].' berhasil diperbarui.',
+            'message' => 'Data ' . $validated['type'] . ' berhasil diperbarui.',
             'type' => 'success',
         ]);
     }
@@ -162,7 +162,7 @@ class LaporanController extends Controller
 
             $data->delete();
 
-            return redirect()->back()->with('flash', ['message' => 'Data '.$type.' berhasil dihapus.', 'type' => 'success']);
+            return redirect()->back()->with('flash', ['message' => 'Data ' . $type . ' berhasil dihapus.', 'type' => 'success']);
         });
     }
 }

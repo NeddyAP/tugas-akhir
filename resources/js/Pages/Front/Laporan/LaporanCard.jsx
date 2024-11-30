@@ -57,7 +57,7 @@ export default function LaporanCard({
                             data.status
                         )}`}
                     >
-                        {data.status}
+                        {data.status.toUpperCase()}
                     </span>
                 </div>
             </div>

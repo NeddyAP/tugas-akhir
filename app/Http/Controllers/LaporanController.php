@@ -41,16 +41,16 @@ class LaporanController extends Controller
             DataKkn::when(true, $baseQuery)->latest()->paginate($perPage) : null;
 
         // Transform the data to include the file download route
-        $transformData = function($data) {
+        $transformData = function ($data) {
             if (!$data) return null;
-            
+
             $data->getCollection()->transform(function ($item) {
                 if ($item->laporan && $item->laporan->file) {
                     $item->laporan->file_url = route('files.laporan', ['filename' => basename($item->laporan->file)]);
                 }
                 return $item;
             });
-            
+
             return $data;
         };
 
@@ -82,7 +82,7 @@ class LaporanController extends Controller
                 'file' => $request->file('file')->store('laporans', 'private'),
             ]);
 
-            $data->update(['id_laporan' => $laporan->id]);
+            $data->update(['id_laporan' => $laporan->id, 'status' => 'pending']);
 
             return back()->with('flash', [
                 'type' => 'success',
@@ -93,9 +93,7 @@ class LaporanController extends Controller
 
     public function updateKkl(Request $request, $id)
     {
-        $user = Auth::user();
-        
-        if ($user->role !== 'dosen') {
+        if (Auth::user()->role !== 'dosen') {
             abort(403, 'Unauthorized action.');
         }
 
@@ -104,9 +102,8 @@ class LaporanController extends Controller
             'keterangan' => 'nullable|string',
         ]);
 
-        return DB::transaction(function () use ($validated, $id, $user) {
-            $kkl = DataKkl::where('dosen_id', $user->id)
-                ->findOrFail($id);
+        return DB::transaction(function () use ($validated, $id) {
+            $kkl = DataKkl::findOrFail($id);
 
             if ($kkl->laporan) {
                 $kkl->laporan->update([
@@ -114,8 +111,9 @@ class LaporanController extends Controller
                 ]);
             }
 
+            // Ensure status is a string
             $kkl->update([
-                'status' => $validated['status'],
+                'status' => (string) $validated['status'],
             ]);
 
             return back()->with('flash', [
@@ -127,9 +125,7 @@ class LaporanController extends Controller
 
     public function updateKkn(Request $request, $id)
     {
-        $user = Auth::user();
-        
-        if ($user->role !== 'dosen') {
+        if (Auth::user()->role !== 'dosen') {
             abort(403, 'Unauthorized action.');
         }
 
@@ -138,9 +134,8 @@ class LaporanController extends Controller
             'keterangan' => 'nullable|string',
         ]);
 
-        return DB::transaction(function () use ($validated, $id, $user) {
-            $kkn = DataKkn::where('dosen_id', $user->id)
-                ->findOrFail($id);
+        return DB::transaction(function () use ($validated, $id) {
+            $kkn = DataKkn::findOrFail($id);
 
             if ($kkn->laporan) {
                 $kkn->laporan->update([
@@ -148,8 +143,9 @@ class LaporanController extends Controller
                 ]);
             }
 
+            // Ensure status is a string
             $kkn->update([
-                'status' => $validated['status'],
+                'status' => (string) $validated['status'],
             ]);
 
             return back()->with('flash', [
@@ -195,7 +191,7 @@ class LaporanController extends Controller
             } catch (\Exception $e) {
                 return back()->with('flash', [
                     'type' => 'error',
-                    'message' => 'Gagal menghapus laporan: '.$e->getMessage(),
+                    'message' => 'Gagal menghapus laporan: ' . $e->getMessage(),
                 ]);
             }
         });
