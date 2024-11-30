@@ -24,6 +24,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('logbook', LogbookController::class);
     Route::resource('laporan', LaporanController::class);
 
+    Route::put('/laporan/kkl/{id}', [LaporanController::class, 'updateKkl'])->name('laporan.kkl.update');
+    Route::put('/laporan/kkn/{id}', [LaporanController::class, 'updateKkn'])->name('laporan.kkn.update');
     Route::get('files/laporan/{filename}', [HomeController::class, 'downloadLaporan'])
         ->name('files.laporan');
 
@@ -33,12 +35,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
-    Route::middleware(['auth', 'role:dosen'])->group(function () {
-        Route::put('/laporan/kkl/{id}', [LaporanController::class, 'updateKkl'])->name('laporan.kkl.update');
-        Route::put('/laporan/kkn/{id}', [LaporanController::class, 'updateKkn'])->name('laporan.kkn.update');
-    });
-
     // Admin Page
     Route::prefix('admin')->as('admin.')->middleware(AdminMiddleware::class)->group(function () {
         Route::get('/dashboard', function () {
