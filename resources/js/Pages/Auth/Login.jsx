@@ -17,11 +17,11 @@ const Login = () => {
 
     return (
         <AuthLayout title="Login">
-            <form onSubmit={handleSubmit}>
-                <div className="mb-4">
+            <form onSubmit={handleSubmit} className="w-full">
+                <div className="mb-4 space-y-1">
                     <label
                         htmlFor="email"
-                        className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-200"
+                        className="block text-sm font-medium text-gray-700 dark:text-gray-200"
                     >
                         Email
                     </label>
@@ -29,7 +29,7 @@ const Login = () => {
                         <input
                             type="email"
                             id="email"
-                            className={`w-full px-3 py-2 pl-10 border rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 ${
+                            className={`w-full px-3 py-2.5 pl-10 text-sm sm:text-base border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 ${
                                 errors.email
                                     ? "border-red-500"
                                     : "border-gray-300"
@@ -41,20 +41,20 @@ const Login = () => {
                         />
                         <Mail
                             className="absolute text-gray-400 transform -translate-y-1/2 left-3 top-1/2"
-                            size={18}
+                            size={16}
                         />
                     </div>
                     {errors.email && (
                         <div className="flex items-center mt-1 text-red-500">
-                            <AlertCircle size={16} className="mr-1" />
+                            <AlertCircle size={14} className="mr-1" />
                             <p className="text-xs">{errors.email}</p>
                         </div>
                     )}
                 </div>
-                <div className="mb-4">
+                <div className="mb-4 space-y-1">
                     <label
                         htmlFor="password"
-                        className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-200"
+                        className="block text-sm font-medium text-gray-700 dark:text-gray-200"
                     >
                         Password
                     </label>
@@ -62,7 +62,7 @@ const Login = () => {
                         <input
                             type="password"
                             id="password"
-                            className={`w-full px-3 py-2 pl-10 border rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 ${
+                            className={`w-full px-3 py-2.5 pl-10 text-sm sm:text-base border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 ${
                                 errors.password
                                     ? "border-red-500"
                                     : "border-gray-300"
@@ -76,17 +76,17 @@ const Login = () => {
                         />
                         <Lock
                             className="absolute text-gray-400 transform -translate-y-1/2 left-3 top-1/2"
-                            size={18}
+                            size={16}
                         />
                     </div>
                     {errors.password && (
                         <div className="flex items-center mt-1 text-red-500">
-                            <AlertCircle size={16} className="mr-1" />
+                            <AlertCircle size={14} className="mr-1" />
                             <p className="text-xs">{errors.password}</p>
                         </div>
                     )}
                 </div>
-                <div className="flex items-center justify-between mb-6">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 space-y-2 sm:space-y-0">
                     <div className="flex items-center">
                         <input
                             type="checkbox"
@@ -99,24 +99,24 @@ const Login = () => {
                         />
                         <label
                             htmlFor="remember"
-                            className="block ml-2 text-sm text-gray-700 dark:text-gray-200"
+                            className="ml-2 text-sm text-gray-700 dark:text-gray-200"
                         >
-                            Ingat username
+                            Remember me
                         </label>
                     </div>
                     <Link
                         href={route("password.request")}
-                        className="text-sm text-teal-600 hover:underline"
+                        className="text-sm text-teal-600 hover:underline dark:text-teal-400"
                     >
-                        Lupa Password?
+                        Forgot your password?
                     </Link>
                 </div>
                 <button
                     type="submit"
-                    className="w-full px-4 py-2 text-white bg-teal-600 rounded-md hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 dark:bg-teal-500 dark:hover:bg-teal-600"
+                    className="w-full px-4 py-2.5 text-sm sm:text-base font-medium text-white bg-teal-600 rounded-lg hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 disabled:opacity-50 disabled:cursor-not-allowed"
                     disabled={processing}
                 >
-                    Login
+                    {processing ? "Logging in..." : "Login"}
                 </button>
             </form>
         </AuthLayout>

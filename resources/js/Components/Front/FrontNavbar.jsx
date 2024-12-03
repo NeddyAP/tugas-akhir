@@ -1,8 +1,8 @@
 import React, { useCallback, useState, useEffect } from "react";
 import { Link, usePage } from "@inertiajs/react";
-import { Moon, Sun, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import avatarProfile from "@images/avatar-profile.jpg";
-import { useDarkMode } from "@/Contexts/DarkModeContext";
+import DarkmodeToggle from "../ui/DarkmodeToggle";
 
 const NavLink = ({ href, children }) => (
     <Link
@@ -33,7 +33,7 @@ const AuthButton = ({ user }) => {
         <div className="relative avatar-dropdown">
             <button
                 onClick={toggleDropdown}
-                className="relative z-10 block w-8 h-8 overflow-hidden rounded-full shadow focus:outline-none"
+                className="block overflow-hidden relative z-10 w-8 h-8 rounded-full shadow focus:outline-none"
             >
                 <img
                     className="object-cover w-full h-full"
@@ -42,11 +42,11 @@ const AuthButton = ({ user }) => {
                 />
             </button>
             {isOpen && (
-                <div className="absolute right-0 z-20 w-48 py-2 mt-2 text-black bg-white rounded-md shadow-xl dark:text-white dark:bg-gray-700">
+                <div className="absolute right-0 z-20 py-2 mt-2 w-48 text-black bg-white rounded-md shadow-xl dark:text-white dark:bg-gray-700">
                     <Link
                         href={route("profile.edit")}
                         as="button"
-                        className="block w-full px-4 py-2 text-left transition-colors hover:bg-gray-100 dark:hover:bg-gray-600"
+                        className="block px-4 py-2 w-full text-left transition-colors hover:bg-gray-100 dark:hover:bg-gray-600"
                     >
                         Profile
                     </Link>
@@ -54,7 +54,7 @@ const AuthButton = ({ user }) => {
                         <Link
                             href={route("admin.dashboard")}
                             as="button"
-                            className="block w-full px-4 py-2 text-left transition-colors hover:bg-gray-100 dark:hover:bg-gray-600"
+                            className="block px-4 py-2 w-full text-left transition-colors hover:bg-gray-100 dark:hover:bg-gray-600"
                         >
                             Dahsboard
                         </Link>
@@ -63,7 +63,7 @@ const AuthButton = ({ user }) => {
                         method="post"
                         href={route("logout")}
                         as="button"
-                        className="block w-full px-4 py-2 text-left text-red-500 transition-colors hover:bg-gray-100 dark:hover:bg-gray-600"
+                        className="block px-4 py-2 w-full text-left text-red-500 transition-colors hover:bg-gray-100 dark:hover:bg-gray-600"
                     >
                         Logout
                     </Link>
@@ -72,27 +72,10 @@ const AuthButton = ({ user }) => {
         </div>
     ) : (
         <Link href={route("login")} className="mr-4">
-            <button className="px-2 py-1 text-white transition-colors bg-teal-700 rounded-md hover:bg-teal-800">
+            <button className="px-2 py-1 text-white bg-teal-700 rounded-md transition-colors hover:bg-teal-800">
                 Login
             </button>
         </Link>
-    );
-};
-
-const DarkModeToggle = () => {
-    const { darkMode, toggleDarkMode } = useDarkMode();
-
-    return (
-        <button
-            onClick={toggleDarkMode}
-            className="p-2 mr-4 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
-        >
-            {darkMode ? (
-                <Sun className="w-5 h-5" />
-            ) : (
-                <Moon className="w-5 h-5" />
-            )}
-        </button>
     );
 };
 
@@ -103,12 +86,12 @@ const MobileMenu = ({ isOpen, onClose, user }) => (
         } transition-transform duration-300 ease-in-out lg:hidden`}
     >
         <div
-            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            className="absolute inset-0 backdrop-blur-sm bg-black/50"
             onClick={onClose}
         ></div>
-        <div className="absolute inset-y-0 left-0 px-6 py-4 bg-white shadow-lg w-72 dark:bg-gray-800">
+        <div className="absolute inset-y-0 left-0 px-6 py-4 w-72 bg-white shadow-lg dark:bg-gray-800">
             <div className="flex flex-col h-full">
-                <div className="flex items-center justify-between mb-8">
+                <div className="flex justify-between items-center mb-8">
                     <Link
                         href={route("home")}
                         className="text-2xl font-bold text-teal-600 dark:text-white"
@@ -171,8 +154,8 @@ const FrontNavbar = () => {
                     isVisible ? "translate-y-0" : "-translate-y-full"
                 }`}
             >
-                <div className="container max-w-6xl px-8 py-3 mx-auto sm:px-12 md:px-16 lg:px-24 xl:px-32">
-                    <div className="flex items-center justify-between">
+                <div className="container px-8 py-3 mx-auto max-w-6xl sm:px-12 md:px-16 lg:px-24 xl:px-32">
+                    <div className="flex justify-between items-center">
                         <Link
                             href={route("home")}
                             className="text-xl font-bold text-white sm:text-2xl"
@@ -186,7 +169,7 @@ const FrontNavbar = () => {
                                 <NavLink href="logbook.index">Logbook</NavLink>
                                 <NavLink href="laporan.index">Laporan</NavLink>
                             </div>
-                            <DarkModeToggle />
+                            <DarkmodeToggle />
                             <AuthButton user={auth.user} />
                             <button
                                 className="p-2 text-white rounded-md lg:hidden hover:bg-teal-700 dark:hover:bg-gray-700"
