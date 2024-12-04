@@ -20,8 +20,8 @@ export function LoadingProvider({ children }) {
             value={{ isLoading, showLoading, hideLoading }}
         >
             {isLoading && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center">
-                    <Loading size="w-16 h-16" />
+                <div className="fixed inset-0 z-50 flex items-center justify-center lg:justify-end lg:mt-20 lg:mr-5 lg:items-start">
+                    <Loading size="w-12 h-12" />
                 </div>
             )}
             {children}

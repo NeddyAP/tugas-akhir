@@ -62,7 +62,7 @@ export default function LogbookPage({ logbooks, bimbingans }) {
             e.preventDefault();
             const isEditing = modalState.editingData;
             const type = modalState.type.toLowerCase();
-            const baseRoute = type === "logbook" ? "logbooks" : "bimbingans";
+            const baseRoute = type === "logbook" ? "logbook" : "bimbingan";
 
             form[isEditing ? "put" : "post"](
                 route(
@@ -88,7 +88,7 @@ export default function LogbookPage({ logbooks, bimbingans }) {
             if (!window.confirm("Yakin ingin menghapus data ini?")) return;
 
             const isLogbook = activeTab === "Logbook";
-            const baseRoute = isLogbook ? "logbooks" : "bimbingans";
+            const baseRoute = isLogbook ? "logbook" : "bimbingan";
 
             form.delete(route(`${baseRoute}.destroy`, row.id));
         },
