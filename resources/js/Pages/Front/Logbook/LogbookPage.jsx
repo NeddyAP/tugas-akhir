@@ -43,8 +43,14 @@ export default function LogbookPage({ logbooks, bimbingans }) {
     );
 
     const handleAdd = useCallback(() => {
+        form.reset();
+        form.setData({
+            tanggal: "",
+            catatan: "",
+            keterangan: "",
+        });
         setModalState({ isOpen: true, type: activeTab, editingData: null });
-    }, [activeTab]);
+    }, [activeTab, form]);
 
     const handleEdit = useCallback(
         (row) => {
