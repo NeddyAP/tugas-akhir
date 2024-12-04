@@ -40,16 +40,10 @@ const Login = () => {
                             required
                         />
                         <Mail
-                            className="absolute text-gray-400 transform -translate-y-1/2 left-3 top-1/2"
+                            className="absolute left-3 top-1/2 text-gray-400 transform -translate-y-1/2"
                             size={16}
                         />
                     </div>
-                    {errors.email && (
-                        <div className="flex items-center mt-1 text-red-500">
-                            <AlertCircle size={14} className="mr-1" />
-                            <p className="text-xs">{errors.email}</p>
-                        </div>
-                    )}
                 </div>
                 <div className="mb-4 space-y-1">
                     <label
@@ -75,23 +69,17 @@ const Login = () => {
                             required
                         />
                         <Lock
-                            className="absolute text-gray-400 transform -translate-y-1/2 left-3 top-1/2"
+                            className="absolute left-3 top-1/2 text-gray-400 transform -translate-y-1/2"
                             size={16}
                         />
                     </div>
-                    {errors.password && (
-                        <div className="flex items-center mt-1 text-red-500">
-                            <AlertCircle size={14} className="mr-1" />
-                            <p className="text-xs">{errors.password}</p>
-                        </div>
-                    )}
                 </div>
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 space-y-2 sm:space-y-0">
+                <div className="flex flex-col mb-6 space-y-2 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
                     <div className="flex items-center">
                         <input
                             type="checkbox"
                             id="remember"
-                            className="w-4 h-4 text-teal-600 border-gray-300 rounded focus:ring-teal-500"
+                            className="w-4 h-4 text-teal-600 rounded border-gray-300 focus:ring-teal-500"
                             checked={data.remember}
                             onChange={(e) =>
                                 setData("remember", e.target.checked)
@@ -118,6 +106,13 @@ const Login = () => {
                 >
                     {processing ? "Logging in..." : "Login"}
                 </button>
+                
+                {errors.email && (
+                        <div className="flex items-center mt-3 text-red-500">
+                            <AlertCircle size={14} className="mr-1" />
+                            <p className="text-xs">{errors.email}</p>
+                        </div>
+                    )}
             </form>
         </AuthLayout>
     );
