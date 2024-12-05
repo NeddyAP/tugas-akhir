@@ -1,17 +1,37 @@
 import React, { useState } from "react";
 import { Head, useForm, usePage } from "@inertiajs/react";
-import { User } from "lucide-react";
+import {
+    User,
+    Mail,
+    Phone,
+    MapPin,
+    Clipboard,
+    Calendar,
+    GraduationCap,
+    Building2,
+} from "lucide-react";
 import Select from "react-select";
 import FrontLayout from "@/Layouts/FrontLayout";
 import SecondaryButton from "@/Components/Front/SecondaryButton";
 import PrimaryButton from "@/Components/Front/PrimaryButton";
 import avatarProfile from "@images/avatar-profile.jpg";
 
+const prodiOptions = [
+    { value: "Teknik Informatika", label: "Teknik Informatika" },
+    { value: "Sistem Informasi", label: "Sistem Informasi" },
+    { value: "Teknologi Informasi", label: "Teknologi Informasi" },
+];
+
+const fakultasOptions = [
+    { value: "Fakultas Ilmu Komputer", label: "Fakultas Ilmu Komputer" },
+    { value: "Fakultas Teknik", label: "Fakultas Teknik" },
+    { value: "Fakultas Ekonomi", label: "Fakultas Ekonomi" },
+];
+
 export default function ProfilePage({ mustVerifyEmail, status, profileData }) {
     const user = usePage().props.auth.user;
     const [profileImage, setProfileImage] = useState(avatarProfile);
 
-    // Initialize form with merged user and profile data
     const { data, setData, patch, processing, errors } = useForm({
         name: user?.name || "",
         email: user?.email || "",
@@ -51,14 +71,6 @@ export default function ProfilePage({ mustVerifyEmail, status, profileData }) {
         setPasswordData(name, value);
     };
 
-    const commonFields = ["name", "email", "phone", "address"];
-
-    const roleSpecificFields = {
-        mahasiswa: ["nim", "angkatan", "prodi", "fakultas"],
-        dosen: ["nip"],
-        admin: [],
-    };
-
     const getYearOptions = () => {
         const currentYear = new Date().getFullYear();
         const startYear = 2021;
@@ -76,89 +88,196 @@ export default function ProfilePage({ mustVerifyEmail, status, profileData }) {
             value={options.find((option) => option.value === value)}
             onChange={(selected) => onChange(selected ? selected.value : "")}
             options={options}
-            classNamePrefix="select"
-            isClearable
-            isSearchable
-            placeholder={placeholder}
-            className="block w-full mt-1"
+            className="block mt-1 w-full"
             classNames={{
                 control: () =>
-                    "border rounded-md shadow-sm bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 hover:border-teal-500 dark:hover:border-teal-500",
-                input: () => "text-gray-900 dark:text-gray-100",
+                    "pl-10 h-[42px] bg-white/5 dark:bg-gray-700 border border-gray-200 dark:border-0 rounded-md shadow-sm hover:border-teal-500 dark:hover:border-0 focus:ring-1 focus:ring-teal-500 dark:focus:ring-0 relative",
+                input: () => "text-gray-900 dark:text-white",
                 placeholder: () => "text-gray-500 dark:text-gray-400",
-                singleValue: () => "text-gray-900 dark:text-gray-100",
+                singleValue: () => "text-gray-900 dark:text-white",
                 menu: () =>
-                    "mt-1 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg dark:text-gray-100",
+                    "mt-1 bg-white dark:bg-gray-700 border dark:border-0 rounded-md shadow-lg absolute w-full z-[60]",
                 option: ({ isFocused, isSelected }) =>
-                    [
-                        "px-3 py-2 cursor-pointer",
-                        isFocused && "bg-teal-50 dark:bg-teal-900/50",
-                        isSelected && "bg-teal-100 dark:bg-teal-900",
-                        !isFocused &&
-                            !isSelected &&
-                            "hover:bg-gray-100 dark:hover:bg-gray-600",
-                    ]
-                        .filter(Boolean)
-                        .join(" "),
-                noOptionsMessage: () => "text-gray-500 dark:text-gray-400 p-3",
+                    `px-4 py-2 cursor-pointer ${
+                        isSelected
+                            ? "bg-teal-600 text-white"
+                            : isFocused
+                            ? "bg-teal-50 dark:bg-gray-600 text-gray-900 dark:text-white"
+                            : "text-gray-900 dark:text-white hover:bg-teal-50 dark:hover:bg-gray-600"
+                    }`,
+                noOptionsMessage: () => "p-3 text-gray-500 dark:text-gray-400",
+                valueContainer: () => "",
+                dropdownIndicator: () =>
+                    "text-gray-400 hover:text-teal-500 dark:hover:text-teal-400 px-2",
+                clearIndicator: () =>
+                    "text-gray-400 hover:text-teal-500 dark:hover:text-teal-400 px-2",
             }}
             components={{
                 IndicatorSeparator: () => null,
             }}
+            isClearable
+            isSearchable
+            unstyled
+            placeholder={` ${
+                placeholder.charAt(0).toUpperCase() + placeholder.slice(1)
+            }`}
         />
     );
 
     const renderFormFields = () => {
-        const fieldsToRender = [
-            ...commonFields,
-            ...(roleSpecificFields[user.role] || []),
+        const commonFields = ["name", "email", "phone", "address"];
+
+        const roleSpecificFields = {
+            mahasiswa: ["nim", "angkatan", "prodi", "fakultas"],
+            dosen: ["nip"],
+            admin: [],
+        };
+
+        const userRoleFields = roleSpecificFields[user.role] || [];
+
+        const fieldPairs = [
+            ["name", "nim"],
+            ["email", "angkatan"],
+            ["phone", "prodi"],
+            ["address", "fakultas"],
         ];
 
-        return fieldsToRender.map((field) => {
-            // Check if field is optional
-            const isOptional = ["prodi", "fakultas"].includes(field);
+        const fieldIcons = {
+            name: User,
+            email: Mail,
+            phone: Phone,
+            address: MapPin,
+            nim: Clipboard,
+            angkatan: Calendar,
+            prodi: GraduationCap,
+            fakultas: Building2,
+            nip: Clipboard,
+        };
+
+        const renderRightField = (rightField) => {
+            if (!rightField || !userRoleFields.includes(rightField))
+                return null;
+
+            const isDropdown = ["angkatan", "prodi", "fakultas"].includes(
+                rightField
+            );
+            const Icon = fieldIcons[rightField];
 
             return (
-                <div key={field}>
+                <div className="relative">
                     <label
-                        htmlFor={field}
+                        htmlFor={rightField}
                         className="block text-sm font-medium text-gray-700 dark:text-gray-200"
                     >
-                        {field
-                            .split("_")
-                            .map(
-                                (word) =>
-                                    word.charAt(0).toUpperCase() + word.slice(1)
-                            )
-                            .join(" ")}{" "}
-                        {!isOptional && "*"}
+                        {rightField.charAt(0).toUpperCase() +
+                            rightField.slice(1)}{" "}
+                        {!["prodi", "fakultas"].includes(rightField) && "*"}
                     </label>
-                    {field === "angkatan" ? (
-                        <SearchableSelect
-                            value={data[field]}
-                            onChange={(value) => setData(field, value)}
-                            options={getYearOptions()}
-                            placeholder="Pilih Angkatan"
-                        />
-                    ) : (
-                        <input
-                            type="text"
-                            id={field}
-                            name={field}
-                            value={data[field]}
-                            onChange={handleChange}
-                            className="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                            required={!isOptional}
-                        />
-                    )}
-                    {errors[field] && (
+                    <div className="relative">
+                        {isDropdown ? (
+                            <div className="relative">
+                                {React.createElement(Icon, {
+                                    className:
+                                        "absolute left-3 top-[13px] text-gray-400 w-5 h-5 pointer-events-none z-[1]",
+                                })}
+                                <div className="relative">
+                                    <SearchableSelect
+                                        value={data[rightField]}
+                                        onChange={(value) =>
+                                            setData(rightField, value)
+                                        }
+                                        options={
+                                            rightField === "angkatan"
+                                                ? getYearOptions()
+                                                : rightField === "prodi"
+                                                ? prodiOptions
+                                                : rightField === "fakultas"
+                                                ? fakultasOptions
+                                                : []
+                                        }
+                                        placeholder={` ${
+                                            rightField.charAt(0).toUpperCase() +
+                                            rightField.slice(1)
+                                        }`}
+                                    />
+                                </div>
+                            </div>
+                        ) : (
+                            <React.Fragment>
+                                {React.createElement(Icon, {
+                                    className:
+                                        "absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5",
+                                })}
+                                <input
+                                    type="text"
+                                    id={rightField}
+                                    name={rightField}
+                                    value={data[rightField]}
+                                    onChange={handleChange}
+                                    className="block pl-10 mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    required={
+                                        !["prodi", "fakultas"].includes(
+                                            rightField
+                                        )
+                                    }
+                                />
+                            </React.Fragment>
+                        )}
+                    </div>
+                    {errors[rightField] && (
                         <p className="mt-1 text-sm text-red-600 dark:text-red-400">
-                            {errors[field]}
+                            {errors[rightField]}
                         </p>
                     )}
                 </div>
             );
-        });
+        };
+
+        return (
+            <div className="grid grid-cols-2 gap-4">
+                {fieldPairs.map(([leftField, rightField]) => (
+                    <React.Fragment key={`${leftField}-${rightField}`}>
+                        {leftField && (
+                            <div className="relative">
+                                <label
+                                    htmlFor={leftField}
+                                    className="block text-sm font-medium text-gray-700 dark:text-gray-200"
+                                >
+                                    {leftField.charAt(0).toUpperCase() +
+                                        leftField.slice(1)}{" "}
+                                    *
+                                </label>
+                                <div className="relative">
+                                    {React.createElement(
+                                        fieldIcons[leftField],
+                                        {
+                                            className:
+                                                "absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5",
+                                        }
+                                    )}
+                                    <input
+                                        type="text"
+                                        id={leftField}
+                                        name={leftField}
+                                        value={data[leftField]}
+                                        onChange={handleChange}
+                                        className="block pl-10 mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                        required
+                                    />
+                                </div>
+                                {errors[leftField] && (
+                                    <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+                                        {errors[leftField]}
+                                    </p>
+                                )}
+                            </div>
+                        )}
+
+                        {renderRightField(rightField)}
+                    </React.Fragment>
+                ))}
+            </div>
+        );
     };
 
     const handleImageChange = (event) => {
@@ -175,12 +294,8 @@ export default function ProfilePage({ mustVerifyEmail, status, profileData }) {
         patch(route("profile.update"), {
             preserveState: true,
             preserveScroll: true,
-            onSuccess: () => {
-                // Show success message
-            },
-            onError: (errors) => {
-                // Handle errors
-            },
+            onSuccess: () => {},
+            onError: (errors) => {},
         });
     };
 
@@ -197,10 +312,10 @@ export default function ProfilePage({ mustVerifyEmail, status, profileData }) {
     return (
         <FrontLayout>
             <Head title="Profile" />
-            <div className="max-w-6xl p-6 mx-auto my-20 space-y-8">
+            <div className="p-6 mx-auto my-20 space-y-8 max-w-6xl">
                 <div className="p-6 bg-white rounded-lg shadow-md dark:bg-gray-800">
                     <div className="flex items-center mb-6">
-                        <User className="w-6 h-6 mr-2 text-gray-500 dark:text-gray-400" />
+                        <User className="mr-2 w-6 h-6 text-gray-500 dark:text-gray-400" />
                         <h2 className="text-xl font-semibold text-gray-700 dark:text-gray-200">
                             Profil Anda
                         </h2>
@@ -210,7 +325,7 @@ export default function ProfilePage({ mustVerifyEmail, status, profileData }) {
                         <img
                             src={profileImage}
                             alt="Profile"
-                            className="object-cover w-32 h-32 mb-4 rounded-full ring-2 ring-gray-200 dark:ring-gray-700"
+                            className="object-cover mb-4 w-32 h-32 rounded-full ring-2 ring-gray-200 dark:ring-gray-700"
                         />
                     </div>
 
@@ -227,7 +342,7 @@ export default function ProfilePage({ mustVerifyEmail, status, profileData }) {
 
                 <div className="p-6 bg-white rounded-lg shadow-md dark:bg-gray-800">
                     <div className="flex items-center mb-6">
-                        <User className="w-6 h-6 mr-2 text-gray-500 dark:text-gray-400" />
+                        <User className="mr-2 w-6 h-6 text-gray-500 dark:text-gray-400" />
                         <h2 className="text-xl font-semibold text-gray-700 dark:text-gray-200">
                             Ubah Password
                         </h2>
@@ -257,7 +372,7 @@ export default function ProfilePage({ mustVerifyEmail, status, profileData }) {
                                     name={field}
                                     value={passwordData[field]}
                                     onChange={handlePasswordChange}
-                                    className="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    className="block mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                     required
                                 />
                                 {passwordErrors[field] && (
