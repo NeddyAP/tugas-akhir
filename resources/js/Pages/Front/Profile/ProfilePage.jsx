@@ -17,15 +17,14 @@ import PrimaryButton from "@/Components/Front/PrimaryButton";
 import avatarProfile from "@images/avatar-profile.jpg";
 
 const prodiOptions = [
-    { value: "Teknik Informatika", label: "Teknik Informatika" },
-    { value: "Sistem Informasi", label: "Sistem Informasi" },
-    { value: "Teknologi Informasi", label: "Teknologi Informasi" },
+    { value: "Ilmu Komputer", label: "Ilmu Komputer" },
+    // prodi lainnya
 ];
 
 const fakultasOptions = [
     { value: "Fakultas Ilmu Komputer", label: "Fakultas Ilmu Komputer" },
-    { value: "Fakultas Teknik", label: "Fakultas Teknik" },
-    { value: "Fakultas Ekonomi", label: "Fakultas Ekonomi" },
+    // fakultas lainnya
+    
 ];
 
 export default function ProfilePage({ mustVerifyEmail, status, profileData }) {
