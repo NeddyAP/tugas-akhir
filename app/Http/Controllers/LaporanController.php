@@ -91,9 +91,7 @@ class LaporanController extends Controller
         });
     }
 
-    public function bulkUpdate() {
-        
-    }
+    public function bulkUpdate() {}
 
     public function updateKkl(Request $request, $id)
     {
