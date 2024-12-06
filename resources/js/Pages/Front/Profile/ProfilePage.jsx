@@ -12,7 +12,6 @@ import {
 } from "lucide-react";
 import Select from "react-select";
 import FrontLayout from "@/Layouts/FrontLayout";
-import SecondaryButton from "@/Components/Front/SecondaryButton";
 import PrimaryButton from "@/Components/Front/PrimaryButton";
 import avatarProfile from "@images/avatar-profile.jpg";
 
@@ -24,7 +23,6 @@ const prodiOptions = [
 const fakultasOptions = [
     { value: "Fakultas Ilmu Komputer", label: "Fakultas Ilmu Komputer" },
     // fakultas lainnya
-    
 ];
 
 export default function ProfilePage({ mustVerifyEmail, status, profileData }) {

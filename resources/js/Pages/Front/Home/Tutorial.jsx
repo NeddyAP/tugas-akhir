@@ -6,8 +6,8 @@ const Tutorial = ({ tutorial }) => {
 
     const placeholderData = {
         link: "",
-        title: "Tutorial Video",
-        description: "login.",
+        title: "Judul Tutorial",
+        description: "isi deskripsi video disini.",
     };
 
     const data = tutorial || placeholderData;
@@ -15,13 +15,13 @@ const Tutorial = ({ tutorial }) => {
     return (
         <section
             id="tutorial"
-            className="w-full py-12 sm:py-16 lg:py-20 scroll-mt-20"
+            className="py-12 w-full sm:py-16 lg:py-20 scroll-mt-20"
         >
-            <div className="container max-w-6xl px-8 mx-auto sm:px-12 md:px-16 lg:px-24 xl:px-32">
+            <div className="container px-8 mx-auto max-w-6xl sm:px-12 md:px-16 lg:px-24 xl:px-32">
                 <div className="grid grid-cols-1 gap-8 lg:grid-cols-3 lg:gap-12">
                     <div className="lg:col-span-2">
                         <div
-                            className="relative w-full overflow-hidden transition-colors duration-200 bg-gray-100 shadow-lg rounded-2xl dark:bg-gray-800"
+                            className="overflow-hidden relative w-full bg-gray-100 rounded-2xl shadow-lg transition-colors duration-200 dark:bg-gray-800"
                             style={{ paddingTop: "56.25%" }}
                         >
                             {" "}
@@ -36,10 +36,10 @@ const Tutorial = ({ tutorial }) => {
                                     onError={() => setVideoError(true)}
                                 />
                             ) : (
-                                <div className="absolute inset-0 flex items-center justify-center">
+                                <div className="flex absolute inset-0 justify-center items-center">
                                     <div className="text-center">
                                         <svg
-                                            className="w-12 h-12 mx-auto mb-4 text-gray-400"
+                                            className="mx-auto mb-4 w-12 h-12 text-gray-400"
                                             fill="none"
                                             stroke="currentColor"
                                             viewBox="0 0 24 24"
@@ -60,14 +60,14 @@ const Tutorial = ({ tutorial }) => {
                         </div>
                     </div>
                     <div className="flex flex-col justify-center">
-                        <div className="space-y-6 text-center lg:text-left">
+                        <div className="space-y-6 text-center">
                             <h2 className="text-2xl font-bold text-gray-900 sm:text-3xl dark:text-white">
                                 {data.title}
                             </h2>
                             <p className="text-gray-600 dark:text-gray-300">
                                 {data.description}
                             </p>
-                            <div className="flex justify-center lg:justify-start">
+                            <div className="flex justify-center">
                                 <PrimaryButton
                                     href={route("laporan.index")}
                                     className="text-lg"
