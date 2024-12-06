@@ -11,16 +11,16 @@ const AuthLayout = ({ title, children }) => {
     return (
         <DarkModeProvider>
             <Head title={title} />
-            <div className="flex justify-center items-center p-4 min-h-screen bg-gradient-to-tr from-sky-100 via-sky-200 to-teal-600 dark:from-gray-900 dark:via-gray-800 dark:to-gray-700">
-                <div className="flex overflow-hidden relative flex-col w-full max-w-4xl bg-white rounded-lg shadow-lg md:flex-row dark:bg-gray-800">
-                    <div className="flex justify-center items-center p-4 w-full md:w-1/2 md:p-8">
+            <div className="flex items-center justify-center min-h-screen p-4 bg-gradient-to-tr from-sky-100 via-sky-200 to-teal-600 dark:from-gray-900 dark:via-gray-800 dark:to-gray-700">
+                <div className="relative flex flex-col w-full max-w-4xl overflow-hidden bg-white rounded-lg shadow-lg md:flex-row dark:bg-gray-800">
+                    <div className="flex items-center justify-center w-full p-4 md:w-1/2 md:p-8">
                         <div className="relative w-full max-w-md">
-                            <div className="flex justify-between items-center mb-8">
+                            <div className="flex items-center justify-between mb-8">
                                 <Link
                                     href={route("home")}
                                     className="flex items-center text-teal-600 dark:text-teal-400 hover:underline"
                                 >
-                                    <ArrowLeft className="mr-1 w-4 h-4" />
+                                    <ArrowLeft className="w-4 h-4 mr-1" />
                                     Home
                                 </Link>
                                 <DarkModeToggle />
@@ -32,11 +32,11 @@ const AuthLayout = ({ title, children }) => {
                             <ToastContainer />
                         </div>
                     </div>
-                    <div className="hidden justify-center items-center p-4 w-full bg-teal-100 sm:flex md:w-1/2 md:p-8 dark:bg-gray-700">
+                    <div className="items-center justify-center hidden w-full p-4 bg-teal-100 sm:flex md:w-1/2 md:p-8 dark:bg-gray-700">
                         <img
                             src={salyImage}
                             alt={`${title} illustration`}
-                            className="max-w-full h-auto"
+                            className="h-auto max-w-full"
                         />
                     </div>
                 </div>

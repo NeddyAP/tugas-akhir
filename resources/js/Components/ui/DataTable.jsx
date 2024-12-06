@@ -350,7 +350,8 @@ const DataTable = memo(function DataTable({
                                                             {...cell.getCellProps()}
                                                             key={cellIndex}
                                                             className={`px-6 py-4 text-sm text-gray-500 whitespace-normal dark:text-gray-300 ${
-                                                                cell.column.id ===
+                                                                cell.column
+                                                                    .id ===
                                                                 "actions"
                                                                     ? "relative"
                                                                     : ""

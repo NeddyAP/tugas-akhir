@@ -1,14 +1,14 @@
 import React from "react";
 import BaseLaporanData from "./components/BaseLaporanData";
 
-export default function DataKkl({ 
-    laporans, 
-    allLaporans, 
-    mahasiswas, 
-    dosens, 
+export default function DataKkl({
+    laporans,
+    allLaporans,
+    mahasiswas,
+    dosens,
     selectedIds,
     onSelectedIdsChange,
-    onBulkUpdate 
+    onBulkUpdate,
 }) {
     return (
         <BaseLaporanData

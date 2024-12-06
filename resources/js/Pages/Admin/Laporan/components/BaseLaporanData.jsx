@@ -3,7 +3,7 @@ import { useForm } from "@inertiajs/react";
 import DataTable from "@/Components/ui/DataTable";
 import TableHeader from "@/Components/ui/TableHeader";
 import GenericModal from "@/Components/ui/GenericModal";
-import Select from "react-select"; // Add this import
+import Select from "react-select";
 import { formatDate, getStatusColor } from "@/utils/helpers";
 import PropTypes from "prop-types";
 import { format } from "date-fns";
@@ -259,32 +259,34 @@ export default function BaseLaporanData({
     const customSelectStyles = {
         control: (base) => ({
             ...base,
-            '@media (prefers-color-scheme: dark)': {
-                backgroundColor: '#1f2937',
-                borderColor: '#374151',
+            "@media (prefers-color-scheme: dark)": {
+                backgroundColor: "#1f2937",
+                borderColor: "#374151",
             },
         }),
         menu: (base) => ({
             ...base,
-            '@media (prefers-color-scheme: dark)': {
-                backgroundColor: '#1f2937',
-                borderColor: '#374151',
+            "@media (prefers-color-scheme: dark)": {
+                backgroundColor: "#1f2937",
+                borderColor: "#374151",
             },
         }),
     };
 
-    // Add new state for bulk update data
     const [bulkUpdateData, setBulkUpdateData] = useState({});
 
-    // Add handler for bulk update confirmation
     const handleBulkUpdateConfirm = () => {
         if (Object.keys(bulkUpdateData).length === 0) {
             return;
         }
 
-        if (window.confirm(`Are you sure you want to update ${selectedIds.length} items?`)) {
+        if (
+            window.confirm(
+                `Are you sure you want to update ${selectedIds.length} items?`
+            )
+        ) {
             onBulkUpdate?.(bulkUpdateData);
-            setBulkUpdateData({}); // Reset after update
+            setBulkUpdateData({});
         }
     };
 
@@ -315,23 +317,38 @@ export default function BaseLaporanData({
                         <div className="flex items-center gap-2">
                             <Select
                                 onChange={(option) =>
-                                    setBulkUpdateData(prev => ({
+                                    setBulkUpdateData((prev) => ({
                                         ...prev,
-                                        status: option?.value
+                                        status: option?.value,
                                     }))
                                 }
                                 value={
-                                    bulkUpdateData.status 
-                                        ? { 
-                                            value: bulkUpdateData.status, 
-                                            label: bulkUpdateData.status.charAt(0).toUpperCase() + bulkUpdateData.status.slice(1) 
-                                        } 
+                                    bulkUpdateData.status
+                                        ? {
+                                              value: bulkUpdateData.status,
+                                              label:
+                                                  bulkUpdateData.status
+                                                      .charAt(0)
+                                                      .toUpperCase() +
+                                                  bulkUpdateData.status.slice(
+                                                      1
+                                                  ),
+                                          }
                                         : null
                                 }
                                 options={[
-                                    { value: "pending", label: "Set as Pending" },
-                                    { value: "approved", label: "Set as Approved" },
-                                    { value: "rejected", label: "Set as Rejected" },
+                                    {
+                                        value: "pending",
+                                        label: "Set as Pending",
+                                    },
+                                    {
+                                        value: "approved",
+                                        label: "Set as Approved",
+                                    },
+                                    {
+                                        value: "rejected",
+                                        label: "Set as Rejected",
+                                    },
                                 ]}
                                 isClearable
                                 placeholder="Update Status"
@@ -340,31 +357,38 @@ export default function BaseLaporanData({
                                 classNames={{
                                     control: ({ isFocused }) =>
                                         `!bg-white dark:!bg-gray-800 !border-gray-300 dark:!border-gray-700 ${
-                                            isFocused 
-                                                ? '!border-blue-500 !shadow-outline-blue dark:!border-blue-500' 
-                                                : ''
+                                            isFocused
+                                                ? "!border-blue-500 !shadow-outline-blue dark:!border-blue-500"
+                                                : ""
                                         }`,
                                     option: ({ isFocused, isSelected }) =>
-                                        `${isSelected 
-                                            ? '!bg-blue-500 !text-white'
-                                            : isFocused 
-                                                ? '!bg-gray-100 dark:!bg-gray-700' 
-                                                : '!text-gray-900 dark:!text-gray-100'
+                                        `${
+                                            isSelected
+                                                ? "!bg-blue-500 !text-white"
+                                                : isFocused
+                                                ? "!bg-gray-100 dark:!bg-gray-700"
+                                                : "!text-gray-900 dark:!text-gray-100"
                                         }`,
-                                    menu: () => '!bg-white dark:!bg-gray-800 !border dark:!border-gray-700',
-                                    singleValue: () => '!text-gray-900 dark:!text-gray-100',
+                                    menu: () =>
+                                        "!bg-white dark:!bg-gray-800 !border dark:!border-gray-700",
+                                    singleValue: () =>
+                                        "!text-gray-900 dark:!text-gray-100",
                                 }}
                             />
                             <Select
                                 onChange={(option) =>
-                                    setBulkUpdateData(prev => ({
+                                    setBulkUpdateData((prev) => ({
                                         ...prev,
-                                        dosen_id: option?.value
+                                        dosen_id: option?.value,
                                     }))
                                 }
                                 value={
                                     bulkUpdateData.dosen_id
-                                        ? dosens.find(d => d.value === bulkUpdateData.dosen_id)
+                                        ? dosens.find(
+                                              (d) =>
+                                                  d.value ===
+                                                  bulkUpdateData.dosen_id
+                                          )
                                         : null
                                 }
                                 options={dosens}
@@ -375,19 +399,22 @@ export default function BaseLaporanData({
                                 classNames={{
                                     control: ({ isFocused }) =>
                                         `!bg-white dark:!bg-gray-800 !border-gray-300 dark:!border-gray-700 ${
-                                            isFocused 
-                                                ? '!border-blue-500 !shadow-outline-blue dark:!border-blue-500' 
-                                                : ''
+                                            isFocused
+                                                ? "!border-blue-500 !shadow-outline-blue dark:!border-blue-500"
+                                                : ""
                                         }`,
                                     option: ({ isFocused, isSelected }) =>
-                                        `${isSelected 
-                                            ? '!bg-blue-500 !text-white'
-                                            : isFocused 
-                                                ? '!bg-gray-100 dark:!bg-gray-700' 
-                                                : '!text-gray-900 dark:!text-gray-100'
+                                        `${
+                                            isSelected
+                                                ? "!bg-blue-500 !text-white"
+                                                : isFocused
+                                                ? "!bg-gray-100 dark:!bg-gray-700"
+                                                : "!text-gray-900 dark:!text-gray-100"
                                         }`,
-                                    menu: () => '!bg-white dark:!bg-gray-800 !border dark:!border-gray-700',
-                                    singleValue: () => '!text-gray-900 dark:!text-gray-100',
+                                    menu: () =>
+                                        "!bg-white dark:!bg-gray-800 !border dark:!border-gray-700",
+                                    singleValue: () =>
+                                        "!text-gray-900 dark:!text-gray-100",
                                 }}
                             />
                             {Object.keys(bulkUpdateData).length > 0 && (

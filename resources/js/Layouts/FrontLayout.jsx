@@ -27,7 +27,7 @@ export default function FrontLayout({ children }) {
                     <meta
                         head-key="description"
                         name="description"
-                        content="This is the default description"
+                        content="Project Tugas Akhir - Ilmu Komputer 22"
                     />
                     <meta
                         name="viewport"

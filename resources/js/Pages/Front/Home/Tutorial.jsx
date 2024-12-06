@@ -15,13 +15,13 @@ const Tutorial = ({ tutorial }) => {
     return (
         <section
             id="tutorial"
-            className="py-12 w-full sm:py-16 lg:py-20 scroll-mt-20"
+            className="w-full py-12 sm:py-16 lg:py-20 scroll-mt-20"
         >
-            <div className="container px-8 mx-auto max-w-6xl sm:px-12 md:px-16 lg:px-24 xl:px-32">
+            <div className="container max-w-6xl px-8 mx-auto sm:px-12 md:px-16 lg:px-24 xl:px-32">
                 <div className="grid grid-cols-1 gap-8 lg:grid-cols-3 lg:gap-12">
                     <div className="lg:col-span-2">
                         <div
-                            className="overflow-hidden relative w-full bg-gray-100 rounded-2xl shadow-lg transition-colors duration-200 dark:bg-gray-800"
+                            className="relative w-full overflow-hidden transition-colors duration-200 bg-gray-100 shadow-lg rounded-2xl dark:bg-gray-800"
                             style={{ paddingTop: "56.25%" }}
                         >
                             {" "}
@@ -36,10 +36,10 @@ const Tutorial = ({ tutorial }) => {
                                     onError={() => setVideoError(true)}
                                 />
                             ) : (
-                                <div className="flex absolute inset-0 justify-center items-center">
+                                <div className="absolute inset-0 flex items-center justify-center">
                                     <div className="text-center">
                                         <svg
-                                            className="mx-auto mb-4 w-12 h-12 text-gray-400"
+                                            className="w-12 h-12 mx-auto mb-4 text-gray-400"
                                             fill="none"
                                             stroke="currentColor"
                                             viewBox="0 0 24 24"

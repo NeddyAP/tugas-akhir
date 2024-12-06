@@ -85,7 +85,7 @@ export default function ProfilePage({ mustVerifyEmail, status, profileData }) {
             value={options.find((option) => option.value === value)}
             onChange={(selected) => onChange(selected ? selected.value : "")}
             options={options}
-            className="block mt-1 w-full"
+            className="block w-full mt-1"
             classNames={{
                 control: () =>
                     "pl-10 h-[42px] bg-white/5 dark:bg-gray-700 border border-gray-200 dark:border-0 rounded-md shadow-sm hover:border-teal-500 dark:hover:border-0 focus:ring-1 focus:ring-teal-500 dark:focus:ring-0 relative",
@@ -211,7 +211,7 @@ export default function ProfilePage({ mustVerifyEmail, status, profileData }) {
                                     name={rightField}
                                     value={data[rightField]}
                                     onChange={handleChange}
-                                    className="block pl-10 mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    className="block w-full pl-10 mt-1 border-gray-300 rounded-md shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                     required={
                                         !["prodi", "fakultas"].includes(
                                             rightField
@@ -258,7 +258,7 @@ export default function ProfilePage({ mustVerifyEmail, status, profileData }) {
                                         name={leftField}
                                         value={data[leftField]}
                                         onChange={handleChange}
-                                        className="block pl-10 mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                        className="block w-full pl-10 mt-1 border-gray-300 rounded-md shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                         required
                                     />
                                 </div>
@@ -309,10 +309,10 @@ export default function ProfilePage({ mustVerifyEmail, status, profileData }) {
     return (
         <FrontLayout>
             <Head title="Profile" />
-            <div className="p-6 mx-auto my-20 space-y-8 max-w-6xl">
+            <div className="max-w-6xl p-6 mx-auto my-20 space-y-8">
                 <div className="p-6 bg-white rounded-lg shadow-md dark:bg-gray-800">
                     <div className="flex items-center mb-6">
-                        <User className="mr-2 w-6 h-6 text-gray-500 dark:text-gray-400" />
+                        <User className="w-6 h-6 mr-2 text-gray-500 dark:text-gray-400" />
                         <h2 className="text-xl font-semibold text-gray-700 dark:text-gray-200">
                             Profil Anda
                         </h2>
@@ -322,7 +322,7 @@ export default function ProfilePage({ mustVerifyEmail, status, profileData }) {
                         <img
                             src={profileImage}
                             alt="Profile"
-                            className="object-cover mb-4 w-32 h-32 rounded-full ring-2 ring-gray-200 dark:ring-gray-700"
+                            className="object-cover w-32 h-32 mb-4 rounded-full ring-2 ring-gray-200 dark:ring-gray-700"
                         />
                     </div>
 
@@ -339,7 +339,7 @@ export default function ProfilePage({ mustVerifyEmail, status, profileData }) {
 
                 <div className="p-6 bg-white rounded-lg shadow-md dark:bg-gray-800">
                     <div className="flex items-center mb-6">
-                        <User className="mr-2 w-6 h-6 text-gray-500 dark:text-gray-400" />
+                        <User className="w-6 h-6 mr-2 text-gray-500 dark:text-gray-400" />
                         <h2 className="text-xl font-semibold text-gray-700 dark:text-gray-200">
                             Ubah Password
                         </h2>
@@ -369,7 +369,7 @@ export default function ProfilePage({ mustVerifyEmail, status, profileData }) {
                                     name={field}
                                     value={passwordData[field]}
                                     onChange={handlePasswordChange}
-                                    className="block mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    className="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                     required
                                 />
                                 {passwordErrors[field] && (

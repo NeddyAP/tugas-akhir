@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import DataTable from "@/Components/ui/DataTable";
 import GenericModal from "@/Components/ui/GenericModal";
 import { useForm } from "@inertiajs/react";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 
 const LaporanTable = ({ data, type, pagination }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
