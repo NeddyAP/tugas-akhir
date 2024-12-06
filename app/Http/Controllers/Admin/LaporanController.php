@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
+use Illuminate\Validation\Rule;
 
 class LaporanController extends Controller
 {
@@ -17,9 +18,12 @@ class LaporanController extends Controller
     {
         $type = $request->input('type', 'kkl');
         $search = $request->input('search');
+        $groupBy = $request->input('groupBy');
+        $filters = $request->only(['pembimbing', 'status', 'angkatan']);
         $perPage = $request->input('per_page', 10);
 
-        $baseQuery = function ($query) use ($search) {
+        $baseQuery = function ($query) use ($search, $filters) {
+            // Existing search logic
             $query->when($search, function ($q) use ($search) {
                 $q->whereHas('mahasiswa', function ($q) use ($search) {
                     $q->where('name', 'like', "%{$search}%")
@@ -35,12 +39,34 @@ class LaporanController extends Controller
                         );
                 });
             });
+
+            // Supervisor filter
+            $query->when($filters['pembimbing'] ?? null, function ($q) use ($filters) {
+                $q->where('dosen_id', $filters['pembimbing']);
+            });
+
+            // Submission status filter
+            $query->when($filters['status'] ?? null, function ($q) use ($filters) {
+                if ($filters['status'] === 'submitted') {
+                    $q->whereNotNull('id_laporan');
+                } elseif ($filters['status'] === 'null') {
+                    $q->whereNull('id_laporan');
+                }
+            });
+
+            // Batch year filter
+            $query->when($filters['angkatan'] ?? null, function ($q) use ($filters) {
+                $q->whereHas('mahasiswa.profilable', function ($q) use ($filters) {
+                    $q->where('angkatan', $filters['angkatan']);
+                });
+            });
         };
 
         // Get all mahasiswa and dosen
         $mahasiswas = cache()->remember('mahasiswas', 3600, function () {
             return User::mahasiswa()
                 ->select('id', 'name')
+                ->orderBy('name')
                 ->get()
                 ->map(fn($user) => [
                     'value' => $user->id,
@@ -51,6 +77,7 @@ class LaporanController extends Controller
         $dosens = cache()->remember('dosens', 3600, function () {
             return User::dosen()
                 ->select('id', 'name')
+                ->orderBy('name')  // Add this line to sort by name
                 ->get()
                 ->map(fn($user) => [
                     'value' => $user->id,
@@ -58,38 +85,66 @@ class LaporanController extends Controller
                 ]);
         });
 
-        // Fetch paginated KKL data
-        $kklData = DataKkl::with(['mahasiswa:id,name', 'pembimbing:id,name', 'laporan'])
-            ->when($type === 'kkl', $baseQuery)
-            ->latest()
-            ->paginate($perPage);
+        // Modify the queries to include the necessary relations and sorting
+        $with = [
+            'mahasiswa:id,name',
+            'mahasiswa.profilable:user_id,angkatan',
+            'pembimbing:id,name',
+            'laporan'
+        ];
 
-        // Fetch paginated KKN data
-        $kknData = DataKkn::with(['mahasiswa:id,name', 'pembimbing:id,name', 'laporan'])
-            ->when($type === 'kkn', $baseQuery)
-            ->latest()
-            ->paginate($perPage);
+        // Get the appropriate model and data based on type
+        $model = $type === 'kkl' ? DataKkl::class : DataKkn::class;
+        $data = $model::with($with)
+            ->when($type === $type, $baseQuery)
+            ->join('users', 'users.id', '=', $type === 'kkl' ? 'data_kkls.user_id' : 'data_kkns.user_id')
+            ->orderBy('users.name')
+            ->select($type === 'kkl' ? 'data_kkls.*' : 'data_kkns.*');
 
-        // Fetch all KKL and KKN data without pagination for filtering
-        $allKklData = DataKkl::select('user_id')
-            ->get()
-            ->map(fn($item) => ['user_id' => $item->user_id, 'type' => 'kkl']);
+        // Apply grouping if specified
+        $groupedStats = null;
+        if ($groupBy) {
+            $groupedData = $data->get()->groupBy(function ($item) use ($groupBy) {
+                switch ($groupBy) {
+                    case 'pembimbing':
+                        return $item->pembimbing->name ?? 'Unassigned';
+                    case 'status':
+                        return $item->id_laporan ? 'Submitted' : 'Not Submitted';
+                    case 'angkatan':
+                        return $item->mahasiswa->profilable->angkatan ?? 'Unknown';
+                    default:
+                        return 'Ungrouped';
+                }
+            });
 
-        $allKknData = DataKkn::select('user_id')
-            ->get()
-            ->map(fn($item) => ['user_id' => $item->user_id, 'type' => 'kkn']);
+            $groupedStats = $groupedData->map(function ($group) {
+                return [
+                    'count' => $group->count(),
+                    'submitted' => $group->whereNotNull('id_laporan')->count(),
+                    'not_submitted' => $group->whereNull('id_laporan')->count(),
+                ];
+            });
+        }
 
-        // Combine all laporans data
-        $allLaporansData = $allKklData->merge($allKknData)->values();
+        // Paginate the results
+        $paginatedData = $data->paginate($perPage);
+
+        // Set the appropriate data variable based on type
+        $kklData = $type === 'kkl' ? $paginatedData : null;
+        $kknData = $type === 'kkn' ? $paginatedData : null;
 
         return Inertia::render('Admin/Laporan/LaporanPage', [
             'type' => $type,
             'kklData' => $kklData,
             'kknData' => $kknData,
-            'allLaporansData' => $allLaporansData,
+            'allLaporansData' => $allLaporansData ?? [],
             'mahasiswas' => $mahasiswas,
             'dosens' => $dosens,
-            'filters' => ['search' => $search],
+            'filters' => array_merge($filters, [
+                'search' => $search,
+                'groupBy' => $groupBy
+            ]),
+            'groupedStats' => $groupedStats,
         ]);
     }
 
@@ -136,6 +191,7 @@ class LaporanController extends Controller
             'tanggal_mulai' => $validated['tanggal_mulai'],
             'tanggal_selesai' => $validated['tanggal_selesai'],
             'status' => $validated['status'],
+            'updated_at' => now(),
         ]);
 
         return redirect()->back()->with('flash', [
@@ -163,6 +219,30 @@ class LaporanController extends Controller
             $data->delete();
 
             return redirect()->back()->with('flash', ['message' => 'Data ' . $type . ' berhasil dihapus.', 'type' => 'success']);
+        });
+    }
+
+    // Add new bulk update method
+    public function bulkUpdate(Request $request)
+    {
+        $validated = $request->validate([
+            'type' => 'required|in:kkl,kkn',
+            'ids' => 'required|array',
+            'ids.*' => 'required|integer',
+            'data' => 'required|array',
+            'data.status' => ['sometimes', Rule::in(['pending', 'approved', 'rejected'])],
+            'data.dosen_id' => 'sometimes|exists:users,id',
+        ]);
+
+        $model = $validated['type'] === 'kkl' ? DataKkl::class : DataKkn::class;
+
+        return DB::transaction(function () use ($validated, $model) {
+            $model::whereIn('id', $validated['ids'])->update($validated['data']);
+
+            return redirect()->back()->with('flash', [
+                'message' => 'Data berhasil diperbarui secara massal.',
+                'type' => 'success',
+            ]);
         });
     }
 }
