@@ -4,7 +4,9 @@ import Loading from "@/Components/ui/Loading";
 
 const LoadingContext = createContext();
 
-export function LoadingProvider({ children }) {
+const useLoading = () => useContext(LoadingContext);
+
+export const LoadingProvider = ({ children }) => {
     const [isLoading, setIsLoading] = useState(false);
 
     // Automatic loading for Inertia page transitions
@@ -27,6 +29,6 @@ export function LoadingProvider({ children }) {
             {children}
         </LoadingContext.Provider>
     );
-}
+};
 
-export const useLoading = () => useContext(LoadingContext);
+export { useLoading };

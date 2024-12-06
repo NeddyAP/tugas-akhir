@@ -2,7 +2,9 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 
 const DarkModeContext = createContext();
 
-export function DarkModeProvider({ children }) {
+const useDarkMode = () => useContext(DarkModeContext);
+
+export const DarkModeProvider = ({ children }) => {
     const [darkMode, setDarkMode] = useState(false);
 
     useEffect(() => {
@@ -27,6 +29,6 @@ export function DarkModeProvider({ children }) {
             {children}
         </DarkModeContext.Provider>
     );
-}
+};
 
-export const useDarkMode = () => useContext(DarkModeContext);
+export { useDarkMode };
