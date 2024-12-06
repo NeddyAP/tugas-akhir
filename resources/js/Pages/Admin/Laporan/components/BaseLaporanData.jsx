@@ -3,6 +3,7 @@ import { useForm } from "@inertiajs/react";
 import DataTable from "@/Components/ui/DataTable";
 import TableHeader from "@/Components/ui/TableHeader";
 import GenericModal from "@/Components/ui/GenericModal";
+import Select from "react-select"; // Add this import
 import { formatDate, getStatusColor } from "@/utils/helpers";
 import PropTypes from "prop-types";
 import { format } from "date-fns";
@@ -15,6 +16,9 @@ export default function BaseLaporanData({
     allLaporans,
     mahasiswas,
     dosens,
+    selectedIds,
+    onSelectedIdsChange,
+    onBulkUpdate,
 }) {
     const { delete: destroy } = useForm();
     const [modalState, setModalState] = useState({
@@ -252,6 +256,38 @@ export default function BaseLaporanData({
         [laporans]
     );
 
+    const customSelectStyles = {
+        control: (base) => ({
+            ...base,
+            '@media (prefers-color-scheme: dark)': {
+                backgroundColor: '#1f2937',
+                borderColor: '#374151',
+            },
+        }),
+        menu: (base) => ({
+            ...base,
+            '@media (prefers-color-scheme: dark)': {
+                backgroundColor: '#1f2937',
+                borderColor: '#374151',
+            },
+        }),
+    };
+
+    // Add new state for bulk update data
+    const [bulkUpdateData, setBulkUpdateData] = useState({});
+
+    // Add handler for bulk update confirmation
+    const handleBulkUpdateConfirm = () => {
+        if (Object.keys(bulkUpdateData).length === 0) {
+            return;
+        }
+
+        if (window.confirm(`Are you sure you want to update ${selectedIds.length} items?`)) {
+            onBulkUpdate?.(bulkUpdateData);
+            setBulkUpdateData({}); // Reset after update
+        }
+    };
+
     return (
         <div className="grid grid-cols-1 mb-8">
             <div className="flex flex-col gap-8">
@@ -271,6 +307,109 @@ export default function BaseLaporanData({
                     </button>
                 </header>
 
+                {selectedIds?.length > 0 && (
+                    <div className="flex gap-4 p-4 rounded-lg bg-gray-50 dark:bg-gray-800">
+                        <span className="text-sm text-gray-600 dark:text-gray-300">
+                            {selectedIds.length} item(s) selected
+                        </span>
+                        <div className="flex items-center gap-2">
+                            <Select
+                                onChange={(option) =>
+                                    setBulkUpdateData(prev => ({
+                                        ...prev,
+                                        status: option?.value
+                                    }))
+                                }
+                                value={
+                                    bulkUpdateData.status 
+                                        ? { 
+                                            value: bulkUpdateData.status, 
+                                            label: bulkUpdateData.status.charAt(0).toUpperCase() + bulkUpdateData.status.slice(1) 
+                                        } 
+                                        : null
+                                }
+                                options={[
+                                    { value: "pending", label: "Set as Pending" },
+                                    { value: "approved", label: "Set as Approved" },
+                                    { value: "rejected", label: "Set as Rejected" },
+                                ]}
+                                isClearable
+                                placeholder="Update Status"
+                                className="w-48"
+                                styles={customSelectStyles}
+                                classNames={{
+                                    control: ({ isFocused }) =>
+                                        `!bg-white dark:!bg-gray-800 !border-gray-300 dark:!border-gray-700 ${
+                                            isFocused 
+                                                ? '!border-blue-500 !shadow-outline-blue dark:!border-blue-500' 
+                                                : ''
+                                        }`,
+                                    option: ({ isFocused, isSelected }) =>
+                                        `${isSelected 
+                                            ? '!bg-blue-500 !text-white'
+                                            : isFocused 
+                                                ? '!bg-gray-100 dark:!bg-gray-700' 
+                                                : '!text-gray-900 dark:!text-gray-100'
+                                        }`,
+                                    menu: () => '!bg-white dark:!bg-gray-800 !border dark:!border-gray-700',
+                                    singleValue: () => '!text-gray-900 dark:!text-gray-100',
+                                }}
+                            />
+                            <Select
+                                onChange={(option) =>
+                                    setBulkUpdateData(prev => ({
+                                        ...prev,
+                                        dosen_id: option?.value
+                                    }))
+                                }
+                                value={
+                                    bulkUpdateData.dosen_id
+                                        ? dosens.find(d => d.value === bulkUpdateData.dosen_id)
+                                        : null
+                                }
+                                options={dosens}
+                                isClearable
+                                placeholder="Assign Supervisor"
+                                className="w-64"
+                                styles={customSelectStyles}
+                                classNames={{
+                                    control: ({ isFocused }) =>
+                                        `!bg-white dark:!bg-gray-800 !border-gray-300 dark:!border-gray-700 ${
+                                            isFocused 
+                                                ? '!border-blue-500 !shadow-outline-blue dark:!border-blue-500' 
+                                                : ''
+                                        }`,
+                                    option: ({ isFocused, isSelected }) =>
+                                        `${isSelected 
+                                            ? '!bg-blue-500 !text-white'
+                                            : isFocused 
+                                                ? '!bg-gray-100 dark:!bg-gray-700' 
+                                                : '!text-gray-900 dark:!text-gray-100'
+                                        }`,
+                                    menu: () => '!bg-white dark:!bg-gray-800 !border dark:!border-gray-700',
+                                    singleValue: () => '!text-gray-900 dark:!text-gray-100',
+                                }}
+                            />
+                            {Object.keys(bulkUpdateData).length > 0 && (
+                                <div className="flex gap-2">
+                                    <button
+                                        onClick={handleBulkUpdateConfirm}
+                                        className="px-4 py-2 text-sm text-white bg-teal-600 rounded hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
+                                    >
+                                        Update Selected
+                                    </button>
+                                    <button
+                                        onClick={() => setBulkUpdateData({})}
+                                        className="px-4 py-2 text-sm text-gray-600 bg-white border border-gray-300 rounded hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+                                    >
+                                        Cancel
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                )}
+
                 <div className="pb-4 overflow-x-auto">
                     <div className="inline-block min-w-full align-middle">
                         <div className="overflow-hidden">
@@ -279,6 +418,8 @@ export default function BaseLaporanData({
                                 data={laporans.data || []}
                                 actions={tableActions}
                                 pagination={pagination}
+                                selectedIds={selectedIds}
+                                onSelectedIdsChange={onSelectedIdsChange}
                             />
                         </div>
                     </div>
@@ -336,4 +477,7 @@ BaseLaporanData.propTypes = {
             label: PropTypes.string.isRequired,
         })
     ).isRequired,
+    selectedIds: PropTypes.arrayOf(PropTypes.number),
+    onSelectedIdsChange: PropTypes.func,
+    onBulkUpdate: PropTypes.func,
 };

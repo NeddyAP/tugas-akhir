@@ -40,16 +40,16 @@ const FILTERS = {
 const customSelectStyles = {
     control: (base) => ({
         ...base,
-        '@media (prefers-color-scheme: dark)': {
-            backgroundColor: '#1f2937',
-            borderColor: '#374151',
+        "@media (prefers-color-scheme: dark)": {
+            backgroundColor: "#1f2937",
+            borderColor: "#374151",
         },
     }),
     menu: (base) => ({
         ...base,
-        '@media (prefers-color-scheme: dark)': {
-            backgroundColor: '#1f2937',
-            borderColor: '#374151',
+        "@media (prefers-color-scheme: dark)": {
+            backgroundColor: "#1f2937",
+            borderColor: "#374151",
         },
     }),
 };
@@ -67,6 +67,10 @@ export default function LaporanPage({
     const [selectedIds, setSelectedIds] = useState([]);
 
     const handleBulkUpdate = async (data) => {
+        if (!data || Object.keys(data).length === 0) {
+            return;
+        }
+
         router.post(
             route("admin.laporan.bulk-update"),
             {
@@ -76,7 +80,12 @@ export default function LaporanPage({
             },
             {
                 preserveScroll: true,
-                onSuccess: () => setSelectedIds([]),
+                onSuccess: () => {
+                    setSelectedIds([]);
+                },
+                onError: (errors) => {
+                    console.error(errors);
+                },
             }
         );
     };
@@ -138,8 +147,14 @@ export default function LaporanPage({
             {/* Supervisor Filter */}
             <div className="w-64">
                 <Select
-                    value={sortedDosens.find(d => d.value.toString() === filters.pembimbing?.toString())}
-                    onChange={(option) => handleFilterChange('pembimbing', option?.value)}
+                    value={sortedDosens.find(
+                        (d) =>
+                            d.value.toString() ===
+                            filters.pembimbing?.toString()
+                    )}
+                    onChange={(option) =>
+                        handleFilterChange("pembimbing", option?.value)
+                    }
                     options={sortedDosens}
                     isClearable
                     placeholder={FILTERS.pembimbing.emptyOption}
@@ -150,29 +165,31 @@ export default function LaporanPage({
                         ...theme,
                         colors: {
                             ...theme.colors,
-                            primary: '#2563eb',
-                            primary25: '#e2e8f0',
-                            primary50: '#e2e8f0',
-                            neutral0: 'var(--tw-bg-opacity)',
-                            neutral80: 'var(--tw-text-opacity)',
+                            primary: "#2563eb",
+                            primary25: "#e2e8f0",
+                            primary50: "#e2e8f0",
+                            neutral0: "var(--tw-bg-opacity)",
+                            neutral80: "var(--tw-text-opacity)",
                         },
                     })}
                     classNames={{
                         control: ({ isFocused }) =>
                             `!bg-white dark:!bg-gray-800 !border-gray-300 dark:!border-gray-700 ${
-                                isFocused 
-                                    ? '!border-blue-500 !shadow-outline-blue dark:!border-blue-500' 
-                                    : ''
+                                isFocused
+                                    ? "!border-blue-500 !shadow-outline-blue dark:!border-blue-500"
+                                    : ""
                             }`,
                         option: ({ isFocused, isSelected }) =>
-                            `${isSelected 
-                                ? '!bg-blue-500 !text-white'
-                                : isFocused 
-                                    ? '!bg-gray-100 dark:!bg-gray-700' 
-                                    : '!text-gray-900 dark:!text-gray-100'
+                            `${
+                                isSelected
+                                    ? "!bg-blue-500 !text-white"
+                                    : isFocused
+                                    ? "!bg-gray-100 dark:!bg-gray-700"
+                                    : "!text-gray-900 dark:!text-gray-100"
                             }`,
-                        menu: () => '!bg-white dark:!bg-gray-800 !border dark:!border-gray-700',
-                        singleValue: () => '!text-gray-900 dark:!text-gray-100',
+                        menu: () =>
+                            "!bg-white dark:!bg-gray-800 !border dark:!border-gray-700",
+                        singleValue: () => "!text-gray-900 dark:!text-gray-100",
                     }}
                 />
             </div>
@@ -180,8 +197,12 @@ export default function LaporanPage({
             {/* Status Filter */}
             <div className="w-64">
                 <Select
-                    value={FILTERS.status.options.find(s => s.value === filters.status)}
-                    onChange={(option) => handleFilterChange('status', option?.value)}
+                    value={FILTERS.status.options.find(
+                        (s) => s.value === filters.status
+                    )}
+                    onChange={(option) =>
+                        handleFilterChange("status", option?.value)
+                    }
                     options={FILTERS.status.options}
                     isClearable
                     placeholder="Select Status"
@@ -191,19 +212,21 @@ export default function LaporanPage({
                     classNames={{
                         control: ({ isFocused }) =>
                             `!bg-white dark:!bg-gray-800 !border-gray-300 dark:!border-gray-700 ${
-                                isFocused 
-                                    ? '!border-blue-500 !shadow-outline-blue dark:!border-blue-500' 
-                                    : ''
+                                isFocused
+                                    ? "!border-blue-500 !shadow-outline-blue dark:!border-blue-500"
+                                    : ""
                             }`,
                         option: ({ isFocused, isSelected }) =>
-                            `${isSelected 
-                                ? '!bg-blue-500 !text-white'
-                                : isFocused 
-                                    ? '!bg-gray-100 dark:!bg-gray-700' 
-                                    : '!text-gray-900 dark:!text-gray-100'
+                            `${
+                                isSelected
+                                    ? "!bg-blue-500 !text-white"
+                                    : isFocused
+                                    ? "!bg-gray-100 dark:!bg-gray-700"
+                                    : "!text-gray-900 dark:!text-gray-100"
                             }`,
-                        menu: () => '!bg-white dark:!bg-gray-800 !border dark:!border-gray-700',
-                        singleValue: () => '!text-gray-900 dark:!text-gray-100',
+                        menu: () =>
+                            "!bg-white dark:!bg-gray-800 !border dark:!border-gray-700",
+                        singleValue: () => "!text-gray-900 dark:!text-gray-100",
                     }}
                 />
             </div>
@@ -211,8 +234,12 @@ export default function LaporanPage({
             {/* Batch Year Filter */}
             <div className="w-64">
                 <Select
-                    value={FILTERS.angkatan.options.find(a => a.value === filters.angkatan)}
-                    onChange={(option) => handleFilterChange('angkatan', option?.value)}
+                    value={FILTERS.angkatan.options.find(
+                        (a) => a.value === filters.angkatan
+                    )}
+                    onChange={(option) =>
+                        handleFilterChange("angkatan", option?.value)
+                    }
                     options={FILTERS.angkatan.options}
                     isClearable
                     placeholder="Select Batch"
@@ -222,19 +249,21 @@ export default function LaporanPage({
                     classNames={{
                         control: ({ isFocused }) =>
                             `!bg-white dark:!bg-gray-800 !border-gray-300 dark:!border-gray-700 ${
-                                isFocused 
-                                    ? '!border-blue-500 !shadow-outline-blue dark:!border-blue-500' 
-                                    : ''
+                                isFocused
+                                    ? "!border-blue-500 !shadow-outline-blue dark:!border-blue-500"
+                                    : ""
                             }`,
                         option: ({ isFocused, isSelected }) =>
-                            `${isSelected 
-                                ? '!bg-blue-500 !text-white'
-                                : isFocused 
-                                    ? '!bg-gray-100 dark:!bg-gray-700' 
-                                    : '!text-gray-900 dark:!text-gray-100'
+                            `${
+                                isSelected
+                                    ? "!bg-blue-500 !text-white"
+                                    : isFocused
+                                    ? "!bg-gray-100 dark:!bg-gray-700"
+                                    : "!text-gray-900 dark:!text-gray-100"
                             }`,
-                        menu: () => '!bg-white dark:!bg-gray-800 !border dark:!border-gray-700',
-                        singleValue: () => '!text-gray-900 dark:!text-gray-100',
+                        menu: () =>
+                            "!bg-white dark:!bg-gray-800 !border dark:!border-gray-700",
+                        singleValue: () => "!text-gray-900 dark:!text-gray-100",
                     }}
                 />
             </div>
@@ -279,6 +308,9 @@ export default function LaporanPage({
                         allLaporans={allLaporansData}
                         mahasiswas={defaultMahasiswas}
                         dosens={defaultDosens}
+                        selectedIds={selectedIds}
+                        onSelectedIdsChange={setSelectedIds}
+                        onBulkUpdate={handleBulkUpdate}
                     />
                 );
             case "kkn":
@@ -291,6 +323,9 @@ export default function LaporanPage({
                         allLaporans={allLaporansData}
                         mahasiswas={defaultMahasiswas}
                         dosens={defaultDosens}
+                        selectedIds={selectedIds}
+                        onSelectedIdsChange={setSelectedIds}
+                        onBulkUpdate={handleBulkUpdate}
                     />
                 );
             default:
@@ -313,46 +348,6 @@ export default function LaporanPage({
                 ))}
             </div>
             {renderFilters()}
-            <div className="flex flex-wrap gap-4 mb-4">
-                {selectedIds.length > 0 && (
-                    <div className="flex gap-2 mb-4">
-                        <div className="w-64">
-                            <Select
-                                onChange={(option) =>
-                                    handleBulkUpdate({ status: option?.value })
-                                }
-                                options={[
-                                    { value: "pending", label: "Pending" },
-                                    { value: "approved", label: "Approved" },
-                                    { value: "rejected", label: "Rejected" },
-                                ]}
-                                isClearable
-                                placeholder="Update Status"
-                                className="react-select-container"
-                                classNamePrefix="react-select"
-                                styles={customSelectStyles}
-                                classNames={{
-                                    control: ({ isFocused }) =>
-                                        `!bg-white dark:!bg-gray-800 !border-gray-300 dark:!border-gray-700 ${
-                                            isFocused 
-                                                ? '!border-blue-500 !shadow-outline-blue dark:!border-blue-500' 
-                                                : ''
-                                        }`,
-                                    option: ({ isFocused, isSelected }) =>
-                                        `${isSelected 
-                                            ? '!bg-blue-500 !text-white'
-                                            : isFocused 
-                                                ? '!bg-gray-100 dark:!bg-gray-700' 
-                                                : '!text-gray-900 dark:!text-gray-100'
-                                        }`,
-                                    menu: () => '!bg-white dark:!bg-gray-800 !border dark:!border-gray-700',
-                                    singleValue: () => '!text-gray-900 dark:!text-gray-100',
-                                }}
-                            />
-                        </div>
-                    </div>
-                )}
-            </div>
 
             {renderGroupedStats()}
 

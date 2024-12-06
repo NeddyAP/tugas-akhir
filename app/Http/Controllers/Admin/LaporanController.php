@@ -225,24 +225,49 @@ class LaporanController extends Controller
     // Add new bulk update method
     public function bulkUpdate(Request $request)
     {
-        $validated = $request->validate([
-            'type' => 'required|in:kkl,kkn',
-            'ids' => 'required|array',
-            'ids.*' => 'required|integer',
-            'data' => 'required|array',
-            'data.status' => ['sometimes', Rule::in(['pending', 'approved', 'rejected'])],
-            'data.dosen_id' => 'sometimes|exists:users,id',
-        ]);
+        try {
+            $validated = $request->validate([
+                'type' => 'required|in:kkl,kkn',
+                'ids' => 'required|array',
+                'ids.*' => 'required|integer',
+                'data' => 'required|array',
+                'data.status' => ['sometimes', Rule::in(['pending', 'approved', 'rejected'])],
+                'data.dosen_id' => 'sometimes|exists:users,id',
+            ]);
 
-        $model = $validated['type'] === 'kkl' ? DataKkl::class : DataKkn::class;
+            $model = $validated['type'] === 'kkl' ? DataKkl::class : DataKkn::class;
+            
+            DB::beginTransaction();
+            
+            // Update only allowed fields
+            $updateData = array_intersect_key($validated['data'], array_flip(['status', 'dosen_id']));
+            
+            // Add updated_at timestamp
+            $updateData['updated_at'] = now();
+            
+            $updated = $model::whereIn('id', $validated['ids'])->update($updateData);
+            
+            DB::commit();
 
-        return DB::transaction(function () use ($validated, $model) {
-            $model::whereIn('id', $validated['ids'])->update($validated['data']);
+            if ($updated) {
+                return redirect()->back()->with('flash', [
+                    'message' => $updated . ' data berhasil diperbarui.',
+                    'type' => 'success'
+                ]);
+            }
 
             return redirect()->back()->with('flash', [
-                'message' => 'Data berhasil diperbarui secara massal.',
-                'type' => 'success',
+                'message' => 'Tidak ada data yang diperbarui.',
+                'type' => 'info'
             ]);
-        });
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            
+            return redirect()->back()->with('flash', [
+                'message' => 'Gagal memperbarui data: ' . $e->getMessage(),
+                'type' => 'error'
+            ]);
+        }
     }
 }

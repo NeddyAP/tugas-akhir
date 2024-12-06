@@ -1,7 +1,15 @@
 import React from "react";
 import BaseLaporanData from "./components/BaseLaporanData";
 
-export default function DataKkn({ laporans, allLaporans, mahasiswas, dosens }) {
+export default function DataKkn({ 
+    laporans, 
+    allLaporans, 
+    mahasiswas, 
+    dosens,
+    selectedIds,
+    onSelectedIdsChange,
+    onBulkUpdate 
+}) {
     return (
         <BaseLaporanData
             type="kkn"
@@ -11,8 +19,13 @@ export default function DataKkn({ laporans, allLaporans, mahasiswas, dosens }) {
             allLaporans={allLaporans}
             mahasiswas={mahasiswas}
             dosens={dosens}
+            selectedIds={selectedIds}
+            onSelectedIdsChange={onSelectedIdsChange}
+            onBulkUpdate={onBulkUpdate}
         />
     );
 }
 
-DataKkn.propTypes = BaseLaporanData.propTypes;
+DataKkn.propTypes = {
+    ...BaseLaporanData.propTypes,
+};

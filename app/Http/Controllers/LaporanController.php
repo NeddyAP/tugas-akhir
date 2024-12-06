@@ -40,7 +40,7 @@ class LaporanController extends Controller
         $kknData = $type === 'kkn' ?
             DataKkn::when(true, $baseQuery)->latest()->paginate($perPage) : null;
 
-        
+
         $transformData = function ($data) {
             if (!$data) return null;
 
@@ -91,6 +91,10 @@ class LaporanController extends Controller
         });
     }
 
+    public function bulkUpdate() {
+        
+    }
+
     public function updateKkl(Request $request, $id)
     {
         if (Auth::user()->role !== 'dosen') {
@@ -111,7 +115,7 @@ class LaporanController extends Controller
                 ]);
             }
 
-            
+
             $kkl->update([
                 'status' => (string) $validated['status'],
             ]);
@@ -143,7 +147,7 @@ class LaporanController extends Controller
                 ]);
             }
 
-            
+
             $kkn->update([
                 'status' => (string) $validated['status'],
             ]);
@@ -161,17 +165,17 @@ class LaporanController extends Controller
             try {
                 $laporan = Laporan::findOrFail($id);
 
-                
+
                 if ($laporan->user_id !== Auth::id()) {
                     abort(403, 'Unauthorized action.');
                 }
 
-                
+
                 if ($laporan->file) {
                     Storage::disk('private')->delete($laporan->file);
                 }
 
-                
+
                 $kklData = DataKkl::where('id_laporan', $id)->first();
                 $kknData = DataKkn::where('id_laporan', $id)->first();
 

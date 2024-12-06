@@ -51,8 +51,8 @@ Route::middleware('auth')->group(function () {
 
         Route::resource('informations', AdminInformationController::class);
 
-        Route::post('admin/laporan/bulk-update', [LaporanController::class, 'bulkUpdate'])
-            ->name('admin.laporan.bulk-update');
+        Route::post('laporan/bulk-update', [AdminLaporanController::class, 'bulkUpdate'])
+            ->name('laporan.bulk-update');
     });
 });
 
