@@ -12,7 +12,7 @@ export const useExport = ({ routeName, searchParams = {}, columns }) => {
             });
             return exportHandler();
         },
-        [routeName, searchParams, columns]
+        [routeName, searchParams, columns],
     );
 
     return handleExport;

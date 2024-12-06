@@ -47,7 +47,7 @@ export default function Question({ informations }) {
             ],
             defaultSort: "created_at",
         }),
-        []
+        [],
     );
 
     useEffect(() => {
@@ -84,13 +84,13 @@ export default function Question({ informations }) {
                         {
                             preserveScroll: true,
                             preserveState: true,
-                        }
+                        },
                     );
                 }
             },
             handleAdd: () => setModalState({ isOpen: true, editingData: null }),
         }),
-        [destroy]
+        [destroy],
     );
 
     const handleSubmit = useCallback(
@@ -100,7 +100,7 @@ export default function Question({ informations }) {
                 put(
                     route(
                         "admin.informations.update",
-                        modalState.editingData.id
+                        modalState.editingData.id,
                     ),
                     {
                         ...data,
@@ -109,7 +109,7 @@ export default function Question({ informations }) {
                             setModalState({ isOpen: false, editingData: null });
                             clearErrors();
                         },
-                    }
+                    },
                 );
             } else {
                 post(route("admin.informations.store"), {
@@ -121,7 +121,7 @@ export default function Question({ informations }) {
                 });
             }
         },
-        [modalState.editingData, data, put, post, clearErrors]
+        [modalState.editingData, data, put, post, clearErrors],
     );
 
     const pagination = useMemo(
@@ -133,7 +133,7 @@ export default function Question({ informations }) {
             from: informations.from,
             to: informations.to,
         }),
-        [informations]
+        [informations],
     );
 
     return (

@@ -51,7 +51,7 @@ const CardGrid = React.memo(({ panduans }) => {
 
     const filteredPanduans = useMemo(() => {
         return panduans.filter((panduan) =>
-            panduan.title.toLowerCase().includes(searchQuery.toLowerCase())
+            panduan.title.toLowerCase().includes(searchQuery.toLowerCase()),
         );
     }, [panduans, searchQuery]);
 
@@ -90,7 +90,7 @@ CardGrid.propTypes = {
             title: PropTypes.string.isRequired,
             description: PropTypes.string.isRequired,
             file: PropTypes.string.isRequired,
-        })
+        }),
     ).isRequired,
 };
 
@@ -100,7 +100,7 @@ PedomanPage.propTypes = {
             title: PropTypes.string.isRequired,
             description: PropTypes.string.isRequired,
             file: PropTypes.string.isRequired,
-        })
+        }),
     ).isRequired,
 };
 

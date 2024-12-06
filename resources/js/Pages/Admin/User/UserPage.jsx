@@ -25,7 +25,7 @@ const UserPage = ({ users, dosens, mahasiswas, allUsers, tab = "admin" }) => {
         router.get(
             route(route().current(), { tab: newType }),
             {},
-            { preserveState: true, preserveScroll: true }
+            { preserveState: true, preserveScroll: true },
         );
     };
 
@@ -36,7 +36,7 @@ const UserPage = ({ users, dosens, mahasiswas, allUsers, tab = "admin" }) => {
             mahasiswa: <Mahasiswa users={mahasiswas} />,
             all: <AllData users={allUsers} />,
         }),
-        [users, dosens, mahasiswas, allUsers]
+        [users, dosens, mahasiswas, allUsers],
     );
 
     return (

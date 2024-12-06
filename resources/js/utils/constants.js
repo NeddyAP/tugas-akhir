@@ -247,7 +247,7 @@ export const LAPORAN_CONFIG = {
                 Cell: ({ value }) => ({
                     value,
                     className: `px-2 py-1 rounded-full text-xs ${renderStatusBadge(
-                        value
+                        value,
                     )}`,
                 }),
             },
@@ -361,7 +361,7 @@ export const getLaporanConfig = (mahasiswas, dosens) => ({
             Cell: ({ value }) => ({
                 value,
                 className: `px-2 py-1 rounded-full text-xs ${renderStatusBadge(
-                    value
+                    value,
                 )}`,
             }),
         },

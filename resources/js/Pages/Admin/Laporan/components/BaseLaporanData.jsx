@@ -44,12 +44,12 @@ export default function BaseLaporanData({
 
         if (modalState.editingData) {
             existingUserIds = existingUserIds.filter(
-                (id) => id !== modalState.editingData.user_id
+                (id) => id !== modalState.editingData.user_id,
             );
         }
 
         const newFilteredMahasiswas = mahasiswas.filter(
-            (m) => !existingUserIds.includes(m.value)
+            (m) => !existingUserIds.includes(m.value),
         );
         setFilteredMahasiswas(newFilteredMahasiswas);
     }, [data.type, mahasiswas, allLaporans, modalState.editingData]);
@@ -82,7 +82,7 @@ export default function BaseLaporanData({
                 });
             }
         },
-        [modalState.editingData, data, post, put, reset, setModalState]
+        [modalState.editingData, data, post, put, reset, setModalState],
     );
 
     const formatDateForInput = (dateString) => {
@@ -107,11 +107,11 @@ export default function BaseLaporanData({
             handleDelete: (row) => {
                 if (
                     window.confirm(
-                        "Apakah Anda yakin ingin menghapus data ini?"
+                        "Apakah Anda yakin ingin menghapus data ini?",
                     )
                 ) {
                     destroy(
-                        route("admin.laporans.destroy", [row.id, { type }])
+                        route("admin.laporans.destroy", [row.id, { type }]),
                     );
                 }
             },
@@ -120,7 +120,7 @@ export default function BaseLaporanData({
                 reset();
             },
         }),
-        [destroy, type, setData, reset]
+        [destroy, type, setData, reset],
     );
 
     const columns = useMemo(
@@ -137,7 +137,7 @@ export default function BaseLaporanData({
                 Cell: ({ value }) => (
                     <span
                         className={`px-2 py-1 rounded-full text-xs ${getStatusColor(
-                            value
+                            value,
                         )}`}
                     >
                         {value || "pending"}
@@ -165,7 +165,7 @@ export default function BaseLaporanData({
                         <a
                             href={route(
                                 "files.laporan",
-                                laporan.file.split("/").pop()
+                                laporan.file.split("/").pop(),
                             )}
                             target="_blank"
                             rel="noopener noreferrer"
@@ -185,7 +185,7 @@ export default function BaseLaporanData({
                     row.original.laporan?.keterangan || "Belum ada keterangan",
             },
         ],
-        []
+        [],
     );
 
     const modalFields = useMemo(
@@ -241,7 +241,7 @@ export default function BaseLaporanData({
                 required: true,
             },
         ],
-        [filteredMahasiswas, dosens, modalState.editingData]
+        [filteredMahasiswas, dosens, modalState.editingData],
     );
 
     const pagination = useMemo(
@@ -253,7 +253,7 @@ export default function BaseLaporanData({
             from: laporans.from,
             to: laporans.to,
         }),
-        [laporans]
+        [laporans],
     );
 
     const customSelectStyles = {
@@ -282,7 +282,7 @@ export default function BaseLaporanData({
 
         if (
             window.confirm(
-                `Are you sure you want to update ${selectedIds.length} items?`
+                `Are you sure you want to update ${selectedIds.length} items?`,
             )
         ) {
             onBulkUpdate?.(bulkUpdateData);
@@ -331,7 +331,7 @@ export default function BaseLaporanData({
                                                       .charAt(0)
                                                       .toUpperCase() +
                                                   bulkUpdateData.status.slice(
-                                                      1
+                                                      1,
                                                   ),
                                           }
                                         : null
@@ -366,8 +366,8 @@ export default function BaseLaporanData({
                                             isSelected
                                                 ? "!bg-blue-500 !text-white"
                                                 : isFocused
-                                                ? "!bg-gray-100 dark:!bg-gray-700"
-                                                : "!text-gray-900 dark:!text-gray-100"
+                                                  ? "!bg-gray-100 dark:!bg-gray-700"
+                                                  : "!text-gray-900 dark:!text-gray-100"
                                         }`,
                                     menu: () =>
                                         "!bg-white dark:!bg-gray-800 !border dark:!border-gray-700",
@@ -387,7 +387,7 @@ export default function BaseLaporanData({
                                         ? dosens.find(
                                               (d) =>
                                                   d.value ===
-                                                  bulkUpdateData.dosen_id
+                                                  bulkUpdateData.dosen_id,
                                           )
                                         : null
                                 }
@@ -408,8 +408,8 @@ export default function BaseLaporanData({
                                             isSelected
                                                 ? "!bg-blue-500 !text-white"
                                                 : isFocused
-                                                ? "!bg-gray-100 dark:!bg-gray-700"
-                                                : "!text-gray-900 dark:!text-gray-100"
+                                                  ? "!bg-gray-100 dark:!bg-gray-700"
+                                                  : "!text-gray-900 dark:!text-gray-100"
                                         }`,
                                     menu: () =>
                                         "!bg-white dark:!bg-gray-800 !border dark:!border-gray-700",
@@ -490,19 +490,19 @@ BaseLaporanData.propTypes = {
         PropTypes.shape({
             user_id: PropTypes.number.isRequired,
             type: PropTypes.string.isRequired,
-        })
+        }),
     ).isRequired,
     mahasiswas: PropTypes.arrayOf(
         PropTypes.shape({
             value: PropTypes.number.isRequired,
             label: PropTypes.string.isRequired,
-        })
+        }),
     ).isRequired,
     dosens: PropTypes.arrayOf(
         PropTypes.shape({
             value: PropTypes.number.isRequired,
             label: PropTypes.string.isRequired,
-        })
+        }),
     ).isRequired,
     selectedIds: PropTypes.arrayOf(PropTypes.number),
     onSelectedIdsChange: PropTypes.func,

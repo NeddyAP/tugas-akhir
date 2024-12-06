@@ -51,16 +51,16 @@ const LogbookPage = ({ logbooks }) => {
             form[isEditing ? "put" : "post"](
                 route(
                     `admin.logbooks.${isEditing ? "update" : "store"}`,
-                    isEditing?.id
+                    isEditing?.id,
                 ),
                 {
                     onSuccess: () => {
                         setModalState({ isOpen: false, editingData: null });
                     },
-                }
+                },
             );
         },
-        [modalState.editingData, form]
+        [modalState.editingData, form],
     );
 
     const handleDelete = useCallback(
@@ -69,7 +69,7 @@ const LogbookPage = ({ logbooks }) => {
                 form.delete(route("admin.logbooks.destroy", row.id));
             }
         },
-        [form]
+        [form],
     );
 
     const columns = [

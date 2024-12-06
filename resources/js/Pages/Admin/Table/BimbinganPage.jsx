@@ -73,16 +73,16 @@ const BimbinganPage = ({ bimbingans }) => {
             form[isEditing ? "put" : "post"](
                 route(
                     `admin.bimbingans.${isEditing ? "update" : "store"}`,
-                    isEditing?.id
+                    isEditing?.id,
                 ),
                 {
                     onSuccess: () => {
                         setModalState({ isOpen: false, editingData: null });
                     },
-                }
+                },
             );
         },
-        [modalState.editingData, form]
+        [modalState.editingData, form],
     );
 
     const handleDelete = useCallback(
@@ -91,7 +91,7 @@ const BimbinganPage = ({ bimbingans }) => {
                 form.delete(route("admin.bimbingans.destroy", row.id));
             }
         },
-        [form]
+        [form],
     );
 
     const modalFields = [

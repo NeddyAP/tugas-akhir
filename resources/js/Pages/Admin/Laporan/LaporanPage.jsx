@@ -86,7 +86,7 @@ export default function LaporanPage({
                 onError: (errors) => {
                     console.error(errors);
                 },
-            }
+            },
         );
     };
 
@@ -94,7 +94,7 @@ export default function LaporanPage({
         router.get(
             route(route().current(), { type: newType }),
             {},
-            { preserveState: true, preserveScroll: true }
+            { preserveState: true, preserveScroll: true },
         );
     };
 
@@ -106,7 +106,7 @@ export default function LaporanPage({
                 type,
                 [filterType]: value || undefined, // Remove empty filters
             },
-            { preserveState: true }
+            { preserveState: true },
         );
     };
 
@@ -150,7 +150,7 @@ export default function LaporanPage({
                     value={sortedDosens.find(
                         (d) =>
                             d.value.toString() ===
-                            filters.pembimbing?.toString()
+                            filters.pembimbing?.toString(),
                     )}
                     onChange={(option) =>
                         handleFilterChange("pembimbing", option?.value)
@@ -184,8 +184,8 @@ export default function LaporanPage({
                                 isSelected
                                     ? "!bg-blue-500 !text-white"
                                     : isFocused
-                                    ? "!bg-gray-100 dark:!bg-gray-700"
-                                    : "!text-gray-900 dark:!text-gray-100"
+                                      ? "!bg-gray-100 dark:!bg-gray-700"
+                                      : "!text-gray-900 dark:!text-gray-100"
                             }`,
                         menu: () =>
                             "!bg-white dark:!bg-gray-800 !border dark:!border-gray-700",
@@ -198,7 +198,7 @@ export default function LaporanPage({
             <div className="w-64">
                 <Select
                     value={FILTERS.status.options.find(
-                        (s) => s.value === filters.status
+                        (s) => s.value === filters.status,
                     )}
                     onChange={(option) =>
                         handleFilterChange("status", option?.value)
@@ -221,8 +221,8 @@ export default function LaporanPage({
                                 isSelected
                                     ? "!bg-blue-500 !text-white"
                                     : isFocused
-                                    ? "!bg-gray-100 dark:!bg-gray-700"
-                                    : "!text-gray-900 dark:!text-gray-100"
+                                      ? "!bg-gray-100 dark:!bg-gray-700"
+                                      : "!text-gray-900 dark:!text-gray-100"
                             }`,
                         menu: () =>
                             "!bg-white dark:!bg-gray-800 !border dark:!border-gray-700",
@@ -235,7 +235,7 @@ export default function LaporanPage({
             <div className="w-64">
                 <Select
                     value={FILTERS.angkatan.options.find(
-                        (a) => a.value === filters.angkatan
+                        (a) => a.value === filters.angkatan,
                     )}
                     onChange={(option) =>
                         handleFilterChange("angkatan", option?.value)
@@ -258,8 +258,8 @@ export default function LaporanPage({
                                 isSelected
                                     ? "!bg-blue-500 !text-white"
                                     : isFocused
-                                    ? "!bg-gray-100 dark:!bg-gray-700"
-                                    : "!text-gray-900 dark:!text-gray-100"
+                                      ? "!bg-gray-100 dark:!bg-gray-700"
+                                      : "!text-gray-900 dark:!text-gray-100"
                             }`,
                         menu: () =>
                             "!bg-white dark:!bg-gray-800 !border dark:!border-gray-700",
@@ -275,7 +275,7 @@ export default function LaporanPage({
                         router.get(
                             route(route().current()),
                             { type },
-                            { preserveState: true }
+                            { preserveState: true },
                         )
                     }
                     className="px-3 py-1 text-sm text-red-600 border border-red-600 rounded dark:text-red-400 dark:border-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
@@ -381,26 +381,26 @@ LaporanPage.propTypes = {
         PropTypes.shape({
             user_id: PropTypes.number.isRequired,
             type: PropTypes.string.isRequired,
-        })
+        }),
     ).isRequired,
     type: PropTypes.oneOf(["kkl", "kkn"]),
     mahasiswas: PropTypes.arrayOf(
         PropTypes.shape({
             value: PropTypes.number.isRequired,
             label: PropTypes.string.isRequired,
-        })
+        }),
     ).isRequired,
     dosens: PropTypes.arrayOf(
         PropTypes.shape({
             value: PropTypes.number.isRequired,
             label: PropTypes.string.isRequired,
-        })
+        }),
     ).isRequired,
     groupedStats: PropTypes.objectOf(
         PropTypes.shape({
             count: PropTypes.number.isRequired,
             submitted: PropTypes.number.isRequired,
             not_submitted: PropTypes.number.isRequired,
-        })
+        }),
     ),
 };

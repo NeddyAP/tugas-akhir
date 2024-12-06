@@ -72,7 +72,7 @@ const AllData = ({ users }) => {
                         setModalState({ isOpen: false, editingData: null });
                         form.reset();
                     },
-                }
+                },
             );
         },
         [
@@ -81,7 +81,7 @@ const AllData = ({ users }) => {
             form,
             handleUnauthorizedAction,
             canManageRole,
-        ]
+        ],
     );
 
     const handleDelete = useCallback(
@@ -100,7 +100,7 @@ const AllData = ({ users }) => {
                 preserveScroll: true,
             });
         },
-        [currentUserRole, form, handleUnauthorizedAction, canManageRole]
+        [currentUserRole, form, handleUnauthorizedAction, canManageRole],
     );
 
     const handleDownload = useExport({
@@ -188,7 +188,12 @@ const AllData = ({ users }) => {
             },
             handleDelete,
         }),
-        [currentUserRole, handleDelete, handleUnauthorizedAction, canManageRole]
+        [
+            currentUserRole,
+            handleDelete,
+            handleUnauthorizedAction,
+            canManageRole,
+        ],
     );
 
     // Memoize the modal props
@@ -216,7 +221,7 @@ const AllData = ({ users }) => {
             handleSubmit,
             form.clearErrors,
             getFields,
-        ]
+        ],
     );
 
     return (

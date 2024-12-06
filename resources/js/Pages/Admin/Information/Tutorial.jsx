@@ -18,7 +18,7 @@ const formatDate = (dateString) => {
 const getYouTubeId = (url) => {
     if (!url) return false;
     const match = url.match(
-        /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/
+        /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/,
     );
     return match && match[7].length === 11 ? match[7] : url;
 };
@@ -100,7 +100,7 @@ export default function Tutorial({ informations }) {
             ],
             defaultSort: "created_at",
         }),
-        []
+        [],
     );
 
     useEffect(() => {
@@ -139,13 +139,13 @@ export default function Tutorial({ informations }) {
                         {
                             preserveScroll: true,
                             preserveState: true,
-                        }
+                        },
                     );
                 }
             },
             handleAdd: () => setModalState({ isOpen: true, editingData: null }),
         }),
-        [destroy]
+        [destroy],
     );
 
     const handleSubmit = useCallback(
@@ -165,7 +165,7 @@ export default function Tutorial({ informations }) {
                 put(
                     route(
                         "admin.informations.update",
-                        modalState.editingData.id
+                        modalState.editingData.id,
                     ),
                     {
                         ...formData,
@@ -174,7 +174,7 @@ export default function Tutorial({ informations }) {
                             setModalState({ isOpen: false, editingData: null });
                             clearErrors();
                         },
-                    }
+                    },
                 );
             } else {
                 post(route("admin.informations.store"), {
@@ -186,7 +186,7 @@ export default function Tutorial({ informations }) {
                 });
             }
         },
-        [modalState.editingData, data, put, post, clearErrors]
+        [modalState.editingData, data, put, post, clearErrors],
     );
 
     const pagination = useMemo(
@@ -198,7 +198,7 @@ export default function Tutorial({ informations }) {
             from: informations.from,
             to: informations.to,
         }),
-        [informations]
+        [informations],
     );
 
     return (

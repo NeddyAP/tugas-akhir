@@ -28,7 +28,7 @@ export const copyToClipboard = async (headers, data) => {
     try {
         const headerRow = headers.join("\t");
         const dataRows = data.map((row) =>
-            headers.map((header) => row[header] || "").join("\t")
+            headers.map((header) => row[header] || "").join("\t"),
         );
         const text = [headerRow, ...dataRows].join("\n");
 
@@ -66,7 +66,7 @@ export const createExportHandler =
         try {
             if (format === "copy") {
                 const response = await fetch(
-                    route({ ...params, format: "all" })
+                    route({ ...params, format: "all" }),
                 );
                 if (!response.ok) throw new Error("Failed to fetch data");
                 const { data } = await response.json();
@@ -78,8 +78,8 @@ export const createExportHandler =
                             ...acc,
                             [col.Header]: row[col.accessor],
                         }),
-                        {}
-                    )
+                        {},
+                    ),
                 );
 
                 const result = await copyToClipboard(headers, tableData);

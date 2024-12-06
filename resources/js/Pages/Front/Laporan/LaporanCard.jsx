@@ -60,7 +60,7 @@ export default function LaporanCard({
                     </h3>
                     <span
                         className={`px-3 py-1 rounded-full text-sm font-medium inline-flex items-center gap-1.5 ${renderStatusBadge(
-                            data.status
+                            data.status,
                         )}`}
                     >
                         {data.status.toUpperCase()}
@@ -94,12 +94,12 @@ export default function LaporanCard({
                                     <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
                                         {format(
                                             new Date(data.tanggal_mulai),
-                                            "dd MMM yyyy"
+                                            "dd MMM yyyy",
                                         )}{" "}
                                         -{" "}
                                         {format(
                                             new Date(data.tanggal_selesai),
-                                            "dd MMM yyyy"
+                                            "dd MMM yyyy",
                                         )}
                                     </p>
                                 </div>
@@ -161,7 +161,7 @@ export default function LaporanCard({
                                         {data.updated_at
                                             ? format(
                                                   new Date(data.updated_at),
-                                                  "dd MMM yyyy HH:mm"
+                                                  "dd MMM yyyy HH:mm",
                                               )
                                             : "-"}
                                     </p>
@@ -176,7 +176,7 @@ export default function LaporanCard({
                             <a
                                 href={route(
                                     "files.laporan",
-                                    data.laporan.file.split("/").pop()
+                                    data.laporan.file.split("/").pop(),
                                 )}
                                 className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white transition-colors bg-teal-500 rounded-lg hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
                                 disabled={processing}

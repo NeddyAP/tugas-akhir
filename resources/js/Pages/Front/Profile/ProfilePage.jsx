@@ -99,8 +99,8 @@ export default function ProfilePage({ mustVerifyEmail, status, profileData }) {
                         isSelected
                             ? "bg-teal-600 text-white"
                             : isFocused
-                            ? "bg-teal-50 dark:bg-gray-600 text-gray-900 dark:text-white"
-                            : "text-gray-900 dark:text-white hover:bg-teal-50 dark:hover:bg-gray-600"
+                              ? "bg-teal-50 dark:bg-gray-600 text-gray-900 dark:text-white"
+                              : "text-gray-900 dark:text-white hover:bg-teal-50 dark:hover:bg-gray-600"
                     }`,
                 noOptionsMessage: () => "p-3 text-gray-500 dark:text-gray-400",
                 valueContainer: () => "",
@@ -156,7 +156,7 @@ export default function ProfilePage({ mustVerifyEmail, status, profileData }) {
                 return null;
 
             const isDropdown = ["angkatan", "prodi", "fakultas"].includes(
-                rightField
+                rightField,
             );
             const Icon = fieldIcons[rightField];
 
@@ -187,10 +187,10 @@ export default function ProfilePage({ mustVerifyEmail, status, profileData }) {
                                             rightField === "angkatan"
                                                 ? getYearOptions()
                                                 : rightField === "prodi"
-                                                ? prodiOptions
-                                                : rightField === "fakultas"
-                                                ? fakultasOptions
-                                                : []
+                                                  ? prodiOptions
+                                                  : rightField === "fakultas"
+                                                    ? fakultasOptions
+                                                    : []
                                         }
                                         placeholder={` ${
                                             rightField.charAt(0).toUpperCase() +
@@ -214,7 +214,7 @@ export default function ProfilePage({ mustVerifyEmail, status, profileData }) {
                                     className="block w-full pl-10 mt-1 border-gray-300 rounded-md shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                     required={
                                         !["prodi", "fakultas"].includes(
-                                            rightField
+                                            rightField,
                                         )
                                     }
                                 />
@@ -250,7 +250,7 @@ export default function ProfilePage({ mustVerifyEmail, status, profileData }) {
                                         {
                                             className:
                                                 "absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5",
-                                        }
+                                        },
                                     )}
                                     <input
                                         type="text"
@@ -359,8 +359,8 @@ export default function ProfilePage({ mustVerifyEmail, status, profileData }) {
                                     {field === "current_password"
                                         ? "Password Saat Ini"
                                         : field === "password"
-                                        ? "Password Baru"
-                                        : "Konfirmasi Password Baru"}{" "}
+                                          ? "Password Baru"
+                                          : "Konfirmasi Password Baru"}{" "}
                                     *
                                 </label>
                                 <input

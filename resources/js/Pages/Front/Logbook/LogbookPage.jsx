@@ -17,7 +17,7 @@ export default function LogbookPage({ logbooks, bimbingans }) {
 
     const tableConfigs = useMemo(
         () => getTableConfigs(logbooks, bimbingans, formatDate),
-        [logbooks?.data, bimbingans?.data]
+        [logbooks?.data, bimbingans?.data],
     );
     const [activeTab, setActiveTab] = useState("Logbook");
     const [modalState, setModalState] = useState({
@@ -39,7 +39,7 @@ export default function LogbookPage({ logbooks, bimbingans }) {
                 to: tableConfigs[activeTab].pagination.to,
             },
         }),
-        [activeTab, tableConfigs]
+        [activeTab, tableConfigs],
     );
 
     const handleAdd = useCallback(() => {
@@ -60,7 +60,7 @@ export default function LogbookPage({ logbooks, bimbingans }) {
                 editingData: row,
             });
         },
-        [activeTab]
+        [activeTab],
     );
 
     const handleSubmit = useCallback(
@@ -73,7 +73,7 @@ export default function LogbookPage({ logbooks, bimbingans }) {
             form[isEditing ? "put" : "post"](
                 route(
                     `${baseRoute}.${isEditing ? "update" : "store"}`,
-                    isEditing?.id
+                    isEditing?.id,
                 ),
                 {
                     onSuccess: () => {
@@ -83,10 +83,10 @@ export default function LogbookPage({ logbooks, bimbingans }) {
                             editingData: null,
                         });
                     },
-                }
+                },
             );
         },
-        [modalState, form]
+        [modalState, form],
     );
 
     const handleDelete = useCallback(
@@ -98,7 +98,7 @@ export default function LogbookPage({ logbooks, bimbingans }) {
 
             form.delete(route(`${baseRoute}.destroy`, row.id));
         },
-        [activeTab, form]
+        [activeTab, form],
     );
 
     const handleDownload = useCallback(
@@ -110,7 +110,7 @@ export default function LogbookPage({ logbooks, bimbingans }) {
             try {
                 if (format === "copy") {
                     const headers = currentConfig.columns.map(
-                        (col) => col.Header
+                        (col) => col.Header,
                     );
                     const tableData = data.map((row) =>
                         currentConfig.columns.reduce(
@@ -121,8 +121,8 @@ export default function LogbookPage({ logbooks, bimbingans }) {
                                         ? formatDate(row[col.accessor])
                                         : row[col.accessor],
                             }),
-                            {}
-                        )
+                            {},
+                        ),
                     );
 
                     const result = await copyToClipboard(headers, tableData);
@@ -136,7 +136,7 @@ export default function LogbookPage({ logbooks, bimbingans }) {
                 const url = route(exportRoute, {
                     format,
                     search: new URLSearchParams(window.location.search).get(
-                        "search"
+                        "search",
                     ),
                 });
 
@@ -146,7 +146,7 @@ export default function LogbookPage({ logbooks, bimbingans }) {
                 alert("Gagal mengekspor data. Silakan coba lagi.");
             }
         },
-        [activeTab, tableConfigs]
+        [activeTab, tableConfigs],
     );
 
     const tableActions = useMemo(
@@ -156,7 +156,7 @@ export default function LogbookPage({ logbooks, bimbingans }) {
             handleDelete,
             handleDownload,
         }),
-        [handleAdd, handleEdit, handleDelete, handleDownload]
+        [handleAdd, handleEdit, handleDelete, handleDownload],
     );
 
     // Effect to handle form data when modal state changes

@@ -77,7 +77,7 @@ export default function Panduan({ informations }) {
             ],
             defaultSort: "created_at",
         }),
-        [modalState.editingData]
+        [modalState.editingData],
     );
 
     useEffect(() => {
@@ -108,7 +108,7 @@ export default function Panduan({ informations }) {
             handleDelete: (row) => {
                 if (
                     window.confirm(
-                        "Apakah Anda yakin ingin menghapus panduan ini?"
+                        "Apakah Anda yakin ingin menghapus panduan ini?",
                     )
                 ) {
                     destroy(
@@ -117,13 +117,13 @@ export default function Panduan({ informations }) {
                         {
                             preserveScroll: true,
                             preserveState: true,
-                        }
+                        },
                     );
                 }
             },
             handleAdd: () => setModalState({ isOpen: true, editingData: null }),
         }),
-        [destroy]
+        [destroy],
     );
 
     const handleSubmit = useCallback(
@@ -142,7 +142,7 @@ export default function Panduan({ informations }) {
                 put(
                     route(
                         "admin.informations.update",
-                        modalState.editingData.id
+                        modalState.editingData.id,
                     ),
                     formData,
                     {
@@ -153,7 +153,7 @@ export default function Panduan({ informations }) {
                             handleModalClose();
                             reset();
                         },
-                    }
+                    },
                 );
             } else {
                 const formData = new FormData();
@@ -173,7 +173,7 @@ export default function Panduan({ informations }) {
                 });
             }
         },
-        [modalState.editingData, data, put, post, reset, handleModalClose]
+        [modalState.editingData, data, put, post, reset, handleModalClose],
     );
 
     const handleFileChange = useCallback(
@@ -186,7 +186,7 @@ export default function Panduan({ informations }) {
                 e.target.value = "";
             }
         },
-        [setData]
+        [setData],
     );
 
     const pagination = useMemo(
@@ -198,7 +198,7 @@ export default function Panduan({ informations }) {
             from: informations.from,
             to: informations.to,
         }),
-        [informations]
+        [informations],
     );
 
     return (

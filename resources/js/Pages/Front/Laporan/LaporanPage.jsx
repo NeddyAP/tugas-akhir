@@ -39,7 +39,7 @@ export default function LaporanPage({
         router.get(
             route(route().current(), { type: newType }),
             {},
-            { preserveState: true }
+            { preserveState: true },
         );
     };
 
@@ -66,7 +66,7 @@ export default function LaporanPage({
                 },
             });
         },
-        [data, post, reset]
+        [data, post, reset],
     );
 
     const handleModal = () => {
@@ -75,7 +75,7 @@ export default function LaporanPage({
     };
 
     const currentData =
-        type === "kkl" ? kklData?.data ?? [] : kknData?.data ?? [];
+        type === "kkl" ? (kklData?.data ?? []) : (kknData?.data ?? []);
 
     const isDosenRole = auth?.user?.role === "dosen";
 
@@ -223,7 +223,7 @@ export default function LaporanPage({
                                         setIsModalOpen(false);
                                         reset();
                                     },
-                                }
+                                },
                             );
                         }}
                     />

@@ -65,7 +65,7 @@ const Mahasiswa = ({ users }) => {
                         setModalState({ isOpen: false, editingData: null });
                         form.reset();
                     },
-                }
+                },
             );
         },
         [
@@ -73,7 +73,7 @@ const Mahasiswa = ({ users }) => {
             modalState.editingData,
             form,
             handleUnauthorizedAction,
-        ]
+        ],
     );
 
     const handleDelete = useCallback(
@@ -91,7 +91,7 @@ const Mahasiswa = ({ users }) => {
                 preserveScroll: true,
             });
         },
-        [currentUserRole, form, handleUnauthorizedAction]
+        [currentUserRole, form, handleUnauthorizedAction],
     );
 
     const tableActions = useMemo(
@@ -105,7 +105,7 @@ const Mahasiswa = ({ users }) => {
             },
             handleDelete,
         }),
-        [currentUserRole, handleDelete, handleUnauthorizedAction]
+        [currentUserRole, handleDelete, handleUnauthorizedAction],
     );
 
     useEffect(() => {
@@ -154,7 +154,7 @@ const Mahasiswa = ({ users }) => {
             form.processing,
             handleSubmit,
             form.clearErrors,
-        ]
+        ],
     );
 
     return (

@@ -35,7 +35,7 @@ export default function InformationPage({
         router.get(
             route(route().current(), { type: newType }),
             {},
-            { preserveState: true, preserveScroll: true }
+            { preserveState: true, preserveScroll: true },
         );
     };
 

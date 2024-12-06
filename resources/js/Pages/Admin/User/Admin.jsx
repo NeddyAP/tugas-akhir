@@ -62,7 +62,7 @@ const Admin = ({ users }) => {
                         setModalState({ isOpen: false, editingData: null });
                         form.reset();
                     },
-                }
+                },
             );
         },
         [
@@ -70,7 +70,7 @@ const Admin = ({ users }) => {
             modalState.editingData,
             form,
             handleUnauthorizedAction,
-        ]
+        ],
     );
 
     const handleDelete = useCallback(
@@ -89,7 +89,7 @@ const Admin = ({ users }) => {
                 preserveScroll: true,
             });
         },
-        [currentUserRole, form, handleUnauthorizedAction]
+        [currentUserRole, form, handleUnauthorizedAction],
     );
 
     const tableActions = useMemo(
@@ -103,7 +103,7 @@ const Admin = ({ users }) => {
             },
             handleDelete,
         }),
-        [currentUserRole, handleDelete, handleUnauthorizedAction]
+        [currentUserRole, handleDelete, handleUnauthorizedAction],
     );
 
     const emptyStateMessage = useMemo(
@@ -111,7 +111,7 @@ const Admin = ({ users }) => {
             currentUserRole !== "superadmin"
                 ? "Anda tidak memiliki akses untuk melihat detail data admin"
                 : "Tidak ada data admin",
-        [currentUserRole]
+        [currentUserRole],
     );
 
     useEffect(() => {
@@ -157,7 +157,7 @@ const Admin = ({ users }) => {
             form.processing,
             handleSubmit,
             form.clearErrors,
-        ]
+        ],
     );
 
     return (

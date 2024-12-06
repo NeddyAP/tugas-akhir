@@ -15,7 +15,7 @@ const ForgotPassword = () => {
         post(route("password.email"), {
             onSuccess: () => {
                 toast.success(
-                    "Reset link berhasil dikirim, periksa email anda"
+                    "Reset link berhasil dikirim, periksa email anda",
                 );
                 setData("email", "");
             },

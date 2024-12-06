@@ -65,7 +65,7 @@ const Dosen = ({ users }) => {
                         setModalState({ isOpen: false, editingData: null });
                         form.reset();
                     },
-                }
+                },
             );
         },
         [
@@ -73,7 +73,7 @@ const Dosen = ({ users }) => {
             modalState.editingData,
             form,
             handleUnauthorizedAction,
-        ]
+        ],
     );
 
     const handleDelete = useCallback(
@@ -91,7 +91,7 @@ const Dosen = ({ users }) => {
                 preserveScroll: true,
             });
         },
-        [currentUserRole, form, handleUnauthorizedAction]
+        [currentUserRole, form, handleUnauthorizedAction],
     );
 
     const tableActions = useMemo(
@@ -105,7 +105,7 @@ const Dosen = ({ users }) => {
             },
             handleDelete,
         }),
-        [currentUserRole, handleDelete, handleUnauthorizedAction]
+        [currentUserRole, handleDelete, handleUnauthorizedAction],
     );
 
     useEffect(() => {
@@ -152,7 +152,7 @@ const Dosen = ({ users }) => {
             form.processing,
             handleSubmit,
             form.clearErrors,
-        ]
+        ],
     );
 
     return (
