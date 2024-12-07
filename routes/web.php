@@ -1,11 +1,11 @@
 <?php
 
 use App\Http\Controllers\Admin\BimbinganController as AdminBimbinganController;
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ExportController as AdminExportController;
 use App\Http\Controllers\Admin\InformationController as AdminInformationController;
 use App\Http\Controllers\Admin\LaporanController as AdminLaporanController;
 use App\Http\Controllers\Admin\LogbookController as AdminLogbookController;
-use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\BimbinganController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LaporanController;
@@ -14,7 +14,6 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 Route::get('/', [HomeController::class, 'home'])->name('home');
 Route::get('/pedoman', [HomeController::class, 'pedoman'])->name('pedoman');
@@ -40,7 +39,6 @@ Route::middleware('auth')->group(function () {
     Route::prefix('admin')->as('admin.')->middleware(AdminMiddleware::class)->group(function () {
         Route::resource('dashboard', DashboardController::class)->only('index');
 
-
         Route::resource('logbooks', AdminLogbookController::class);
         Route::resource('bimbingans', AdminBimbinganController::class);
         Route::resource('laporans', AdminLaporanController::class);
@@ -56,4 +54,4 @@ Route::middleware('auth')->group(function () {
     });
 });
 
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';

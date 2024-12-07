@@ -32,11 +32,11 @@ class LaporanController extends Controller
         ]);
 
         // Apply filters
-        if (!empty($filters['pembimbing'])) {
+        if (! empty($filters['pembimbing'])) {
             $query->where('dosen_id', $filters['pembimbing']);
         }
 
-        if (!empty($filters['status'])) {
+        if (! empty($filters['status'])) {
             if ($filters['status'] === 'submitted') {
                 $query->whereNotNull('id_laporan');
             } elseif ($filters['status'] === 'null') {
@@ -44,7 +44,7 @@ class LaporanController extends Controller
             }
         }
 
-        if (!empty($filters['angkatan'])) {
+        if (! empty($filters['angkatan'])) {
             $query->whereHas('mahasiswa.profilable', function ($query) use ($filters) {
                 $query->where('angkatan', $filters['angkatan']);
             });
@@ -53,10 +53,10 @@ class LaporanController extends Controller
         // Get paginated results
         $laporans = $query->latest()->paginate($perPage)->through(function ($item) {
             $mahasiswaData = $item->mahasiswa;
-            
+
             // Ensure we have the profilable data before accessing it
             $mahasiswaProfile = $mahasiswaData?->profilable;
-            
+
             return [
                 'id' => $item->id,
                 'user_id' => $item->user_id,
@@ -127,11 +127,11 @@ class LaporanController extends Controller
         $query = $type === 'kkl' ? DataKkl::query() : DataKkn::query();
 
         // Apply existing filters except status
-        if (!empty($filters['pembimbing'])) {
+        if (! empty($filters['pembimbing'])) {
             $query->where('dosen_id', $filters['pembimbing']);
         }
 
-        if (!empty($filters['angkatan'])) {
+        if (! empty($filters['angkatan'])) {
             $query->whereHas('mahasiswa.profilable', function ($query) use ($filters) {
                 $query->where('angkatan', $filters['angkatan']);
             });
@@ -168,7 +168,7 @@ class LaporanController extends Controller
             'status' => $validated['status'],
         ]);
 
-        return redirect()->back()->with('flash', ['message' => 'Data ' . $validated['type'] . ' berhasil ditambahkan.', 'type' => 'success']);
+        return redirect()->back()->with('flash', ['message' => 'Data '.$validated['type'].' berhasil ditambahkan.', 'type' => 'success']);
     }
 
     public function update(Request $request, $id)
@@ -195,7 +195,7 @@ class LaporanController extends Controller
         ]);
 
         return redirect()->back()->with('flash', [
-            'message' => 'Data ' . $validated['type'] . ' berhasil diperbarui.',
+            'message' => 'Data '.$validated['type'].' berhasil diperbarui.',
             'type' => 'success',
         ]);
     }
@@ -218,7 +218,7 @@ class LaporanController extends Controller
 
             $data->delete();
 
-            return redirect()->back()->with('flash', ['message' => 'Data ' . $type . ' berhasil dihapus.', 'type' => 'success']);
+            return redirect()->back()->with('flash', ['message' => 'Data '.$type.' berhasil dihapus.', 'type' => 'success']);
         });
     }
 
@@ -251,21 +251,21 @@ class LaporanController extends Controller
 
             if ($updated) {
                 return redirect()->back()->with('flash', [
-                    'message' => $updated . ' data berhasil diperbarui.',
-                    'type' => 'success'
+                    'message' => $updated.' data berhasil diperbarui.',
+                    'type' => 'success',
                 ]);
             }
 
             return redirect()->back()->with('flash', [
                 'message' => 'Tidak ada data yang diperbarui.',
-                'type' => 'info'
+                'type' => 'info',
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
 
             return redirect()->back()->with('flash', [
-                'message' => 'Gagal memperbarui data: ' . $e->getMessage(),
-                'type' => 'error'
+                'message' => 'Gagal memperbarui data: '.$e->getMessage(),
+                'type' => 'error',
             ]);
         }
     }

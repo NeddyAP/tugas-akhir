@@ -5,9 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Panduan;
 use App\Models\Question;
 use App\Models\Tutorial;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Http\Response;
 
 class HomeController extends Controller
 {
@@ -30,9 +30,9 @@ class HomeController extends Controller
 
     public function downloadLaporan($filename)
     {
-        $path = 'laporans/' . $filename;
-        
-        if (!Storage::disk('private')->exists($path)) {
+        $path = 'laporans/'.$filename;
+
+        if (! Storage::disk('private')->exists($path)) {
             abort(404);
         }
 
@@ -41,9 +41,9 @@ class HomeController extends Controller
 
         $response = new Response($file, 200);
         $response->header('Content-Type', $type);
-        
+
         // Set response to display in browser instead of downloading
-        $response->header('Content-Disposition', 'inline; filename="' . $filename . '"');
+        $response->header('Content-Disposition', 'inline; filename="'.$filename.'"');
 
         return $response;
     }

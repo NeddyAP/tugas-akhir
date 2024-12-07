@@ -40,14 +40,16 @@ class LaporanController extends Controller
         $kknData = $type === 'kkn' ?
             DataKkn::when(true, $baseQuery)->latest()->paginate($perPage) : null;
 
-
         $transformData = function ($data) {
-            if (!$data) return null;
+            if (! $data) {
+                return null;
+            }
 
             $data->getCollection()->transform(function ($item) {
                 if ($item->laporan && $item->laporan->file) {
                     $item->laporan->file_url = route('files.laporan', ['filename' => basename($item->laporan->file)]);
                 }
+
                 return $item;
             });
 
@@ -113,7 +115,6 @@ class LaporanController extends Controller
                 ]);
             }
 
-
             $kkl->update([
                 'status' => (string) $validated['status'],
             ]);
@@ -145,7 +146,6 @@ class LaporanController extends Controller
                 ]);
             }
 
-
             $kkn->update([
                 'status' => (string) $validated['status'],
             ]);
@@ -163,16 +163,13 @@ class LaporanController extends Controller
             try {
                 $laporan = Laporan::findOrFail($id);
 
-
                 if ($laporan->user_id !== Auth::id()) {
                     abort(403, 'Unauthorized action.');
                 }
 
-
                 if ($laporan->file) {
                     Storage::disk('private')->delete($laporan->file);
                 }
-
 
                 $kklData = DataKkl::where('id_laporan', $id)->first();
                 $kknData = DataKkn::where('id_laporan', $id)->first();
@@ -193,7 +190,7 @@ class LaporanController extends Controller
             } catch (\Exception $e) {
                 return back()->with('flash', [
                     'type' => 'error',
-                    'message' => 'Gagal menghapus laporan: ' . $e->getMessage(),
+                    'message' => 'Gagal menghapus laporan: '.$e->getMessage(),
                 ]);
             }
         });
