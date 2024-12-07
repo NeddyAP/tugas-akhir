@@ -75,7 +75,7 @@ const AdminNavbar = memo(
                 <div className="items-center hidden space-x-8 md:flex">
                     <div className="flex items-center text-gray-500 dark:text-gray-300">
                         <Link
-                            href={route("admin.dashboard")}
+                            href={route("admin.dashboard.index")}
                             className="hover:text-gray-700 dark:hover:text-gray-200"
                         >
                             Admin
@@ -124,7 +124,7 @@ const AdminNavbar = memo(
                         <div className="p-4">
                             <div className="flex items-center mb-4 space-x-2 text-gray-500 dark:text-gray-300">
                                 <Link
-                                    href={route("admin.dashboard")}
+                                    href={route("admin.dashboard.index")}
                                     className="hover:text-gray-700 dark:hover:text-gray-200"
                                 >
                                     Admin
@@ -146,7 +146,7 @@ const AdminNavbar = memo(
                 )}
             </nav>
         );
-    }
+    },
 );
 
 AdminNavbar.displayName = "AdminNavbar";

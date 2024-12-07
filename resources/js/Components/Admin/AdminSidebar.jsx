@@ -34,7 +34,7 @@ const NAVIGATION_ITEMS = [
         type: "item",
         icon: <LayoutDashboard />,
         label: "Dashboard",
-        href: route("admin.dashboard"),
+        href: route("admin.dashboard.index"),
     },
     {
         type: "dropdown",
@@ -105,7 +105,7 @@ const SidebarTooltip = memo(({ children, label, show }) =>
         </div>
     ) : (
         children
-    )
+    ),
 );
 
 const isUrlMatch = (href, currentUrl, currentTab) => {
@@ -123,7 +123,7 @@ const SidebarItem = memo(({ icon, label, href, isCollapsed }) => {
     const isActive = isUrlMatch(
         href,
         url.split("?")[0],
-        new URLSearchParams(window.location.search).get("tab")
+        new URLSearchParams(window.location.search).get("tab"),
     );
 
     return (
@@ -158,7 +158,7 @@ const SidebarDropdown = memo(({ icon, label, children, isCollapsed }) => {
     const currentTab = urlParams.get("tab");
 
     const isActive = React.Children.toArray(children).some((child) =>
-        isUrlMatch(child.props.href, urlWithoutParams, currentTab)
+        isUrlMatch(child.props.href, urlWithoutParams, currentTab),
     );
 
     const [isOpen, setIsOpen] = useState(isActive);
@@ -268,7 +268,7 @@ const AdminSidebar = memo(
         }
         md:translate-x-0
     `,
-            [isCollapsed, isMobileMenuOpen]
+            [isCollapsed, isMobileMenuOpen],
         );
 
         return (
@@ -331,7 +331,7 @@ const AdminSidebar = memo(
                                                     {...child}
                                                     isCollapsed={isCollapsed}
                                                 />
-                                            )
+                                            ),
                                         )}
                                     </SidebarDropdown>
                                 ) : (
@@ -340,7 +340,7 @@ const AdminSidebar = memo(
                                         {...item}
                                         isCollapsed={isCollapsed}
                                     />
-                                )
+                                ),
                             )}
                         </nav>
 
@@ -390,7 +390,7 @@ const AdminSidebar = memo(
                 )}
             </>
         );
-    }
+    },
 );
 
 AdminSidebar.displayName = "AdminSidebar";

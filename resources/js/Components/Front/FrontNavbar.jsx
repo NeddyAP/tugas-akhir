@@ -52,7 +52,7 @@ const AuthButton = ({ user }) => {
                     </Link>
                     {(user.role === "admin" || user.role === "superadmin") && (
                         <Link
-                            href={route("admin.dashboard")}
+                            href={route("admin.dashboard.index")}
                             as="button"
                             className="block w-full px-4 py-2 text-left transition-colors hover:bg-gray-100 dark:hover:bg-gray-600"
                         >

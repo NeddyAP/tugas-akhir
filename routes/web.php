@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\ExportController as AdminExportController;
 use App\Http\Controllers\Admin\InformationController as AdminInformationController;
 use App\Http\Controllers\Admin\LaporanController as AdminLaporanController;
 use App\Http\Controllers\Admin\LogbookController as AdminLogbookController;
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\BimbinganController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LaporanController;
@@ -37,9 +38,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     // Admin Page
     Route::prefix('admin')->as('admin.')->middleware(AdminMiddleware::class)->group(function () {
-        Route::get('/dashboard', function () {
-            return Inertia::render('Admin/Dashboard');
-        })->name('dashboard');
+        Route::resource('dashboard', DashboardController::class)->only('index');
+
 
         Route::resource('logbooks', AdminLogbookController::class);
         Route::resource('bimbingans', AdminBimbinganController::class);
