@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Models\AdminProfile;
 use App\Models\DataKkl;
 use App\Models\DataKkn;
@@ -27,7 +28,7 @@ class UserController extends Controller
         $query = User::with('profilable');
 
         if ($search) {
-            $searchWildcard = '%'.$search.'%';
+            $searchWildcard = '%' . $search . '%';
             $query->where(function ($q) use ($searchWildcard) {
                 $q->where('name', 'like', $searchWildcard)
                     ->orWhere('email', 'like', $searchWildcard)
@@ -158,7 +159,7 @@ class UserController extends Controller
         // Check if the current user can manage the target user role
         if (! $this->canManageUser(Auth::user(), $targetUserRole)) {
             return redirect()->back()->with('flash', [
-                'message' => 'Anda tidak memiliki izin untuk menambahkan '.$this->getUserTypeLabel($tab),
+                'message' => 'Anda tidak memiliki izin untuk menambahkan ' . $this->getUserTypeLabel($tab),
                 'type' => 'error',
             ]);
         }
@@ -219,12 +220,12 @@ class UserController extends Controller
             });
 
             return redirect()->back()->with('flash', [
-                'message' => ucfirst($tab).' berhasil ditambahkan',
+                'message' => ucfirst($tab) . ' berhasil ditambahkan',
                 'type' => 'success',
             ]);
         } catch (Exception $e) {
             return redirect()->back()->with('flash', [
-                'message' => 'Gagal menambahkan '.$this->getUserTypeLabel($tab),
+                'message' => 'Gagal menambahkan ' . $this->getUserTypeLabel($tab),
                 'type' => 'error',
             ]);
         }
@@ -238,7 +239,7 @@ class UserController extends Controller
             // Check if the current user can manage the target user
             if (! $this->canManageUser(Auth::user(), $user->role)) {
                 return redirect()->back()->with('flash', [
-                    'message' => 'Anda tidak memiliki izin untuk mengubah '.$this->getUserTypeLabel($user->role),
+                    'message' => 'Anda tidak memiliki izin untuk mengubah ' . $this->getUserTypeLabel($user->role),
                     'type' => 'error',
                 ]);
             }
@@ -270,12 +271,12 @@ class UserController extends Controller
             });
 
             return redirect()->back()->with('flash', [
-                'message' => ucfirst($tab).' berhasil diperbarui',
+                'message' => ucfirst($tab) . ' berhasil diperbarui',
                 'type' => 'success',
             ]);
         } catch (Exception $e) {
             return redirect()->back()->with('flash', [
-                'message' => 'Gagal memperbarui '.$this->getUserTypeLabel($tab),
+                'message' => 'Gagal memperbarui ' . $this->getUserTypeLabel($tab),
                 'type' => 'error',
             ]);
         }
@@ -290,7 +291,7 @@ class UserController extends Controller
             // Check if the current user can manage the target user
             if (! $this->canManageUser(Auth::user(), $user->role)) {
                 return redirect()->back()->with('flash', [
-                    'message' => 'Anda tidak memiliki izin untuk menghapus '.$this->getUserTypeLabel($user->role),
+                    'message' => 'Anda tidak memiliki izin untuk menghapus ' . $this->getUserTypeLabel($user->role),
                     'type' => 'error',
                 ]);
             }
@@ -306,12 +307,12 @@ class UserController extends Controller
             $user->delete();
 
             return redirect()->back()->with('flash', [
-                'message' => ucfirst($tab).' berhasil dihapus',
+                'message' => ucfirst($tab) . ' berhasil dihapus',
                 'type' => 'success',
             ]);
         } catch (Exception $e) {
             return redirect()->back()->with('flash', [
-                'message' => 'Gagal menghapus '.$this->getUserTypeLabel($tab),
+                'message' => 'Gagal menghapus ' . $this->getUserTypeLabel($tab),
                 'type' => 'error',
             ]);
         }
