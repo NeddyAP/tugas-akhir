@@ -6,8 +6,6 @@ import {
     FileText,
     BookOpen,
     Clock,
-    Plus,
-    Filter,
     ChevronLeft,
     ChevronRight,
     PlayCircle,
@@ -15,19 +13,7 @@ import {
     FileQuestion,
 } from "lucide-react";
 import StatCard from "@/Components/Admin/StatCard";
-import TaskCard from "@/Components/Admin/TaskCard";
-import DataTable from "@/Components/ui/DataTable";
 import AdminLayout from "@/Layouts/AdminLayout";
-
-const QuickActionButton = ({ icon: Icon, label, onClick }) => (
-    <button
-        onClick={onClick}
-        className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white transition-colors bg-teal-600 rounded-lg hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
-    >
-        <Icon className="w-4 h-4" />
-        {label}
-    </button>
-);
 
 const ActivityStatusBadge = ({ status }) => {
     const getStatusColor = (status) => {
@@ -130,32 +116,11 @@ const formatDate = (dateString) => {
     });
 };
 
-// Update the COLUMNS constant
-const COLUMNS = {
-    logbook: [
-        { Header: "Nama Mahasiswa", accessor: "user.name", sortable: true },
-        { Header: "Catatan", accessor: "catatan", sortable: true },
-        {
-            Header: "Keterangan",
-            accessor: "keterangan",
-            sortable: true,
-        },
-        {
-            Header: "Created at",
-            accessor: "created_at",
-            Cell: ({ value }) => formatDate(value),
-        },
-    ],
-    bimbingan: [
-        // ...existing bimbingan columns...
-    ],
-};
-
 const ICONS = {
     "Total Logbooks": <FileText className="w-8 h-8 text-teal-600" />,
-    "Active Users": <Users className="w-8 h-8 text-teal-600" />,
+    "User Aktif": <Users className="w-8 h-8 text-teal-600" />,
     Bimbingans: <BookOpen className="w-8 h-8 text-teal-600" />,
-    "Completion Rate": <Layout className="w-8 h-8 text-teal-600" />,
+    "Penyelesaian Laporan": <Layout className="w-8 h-8 text-teal-600" />,
 };
 
 const PaginationButton = ({ onClick, disabled, children }) => (
@@ -170,19 +135,6 @@ const PaginationButton = ({ onClick, disabled, children }) => (
                     : "bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
             }
         `}
-    >
-        {children}
-    </button>
-);
-
-const TabButton = ({ active, onClick, children }) => (
-    <button
-        onClick={onClick}
-        className={`px-4 py-2 text-sm font-medium rounded-t-lg ${
-            active
-                ? "bg-white text-teal-600 border-t border-x border-gray-200"
-                : "text-gray-500 hover:text-gray-700 bg-gray-100"
-        }`}
     >
         {children}
     </button>
@@ -266,7 +218,6 @@ const Dashboard = ({
     return (
         <AdminLayout title="Dashboard" currentPage="Dashboard">
             <div className="flex-1 p-4 space-y-6 md:p-6 lg:p-8">
-                {/* Stats Grid */}
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 md:gap-6">
                     {stats.map((stat, index) => (
                         <StatCard
@@ -277,11 +228,8 @@ const Dashboard = ({
                     ))}
                 </div>
 
-                {/* Main Content Grid */}
                 <div className="grid gap-6 lg:grid-cols-3">
-                    {/* Information Section - Left Column */}
                     <div className="space-y-6 lg:col-span-2">
-                        {/* Latest Tutorial */}
                         <div className="p-4 bg-white rounded-lg shadow-sm dark:bg-gray-800">
                             <div className="flex items-center justify-between mb-4">
                                 <h2 className="text-lg font-semibold dark:text-white">
@@ -320,7 +268,6 @@ const Dashboard = ({
                             )}
                         </div>
 
-                        {/* Latest FAQs */}
                         <div className="p-4 bg-white rounded-lg shadow-sm dark:bg-gray-800">
                             <div className="flex items-center justify-between mb-4">
                                 <h2 className="text-lg font-semibold dark:text-white">
@@ -370,9 +317,7 @@ const Dashboard = ({
                         </div>
                     </div>
 
-                    {/* Right Column - Activities and Panduan */}
                     <div className="space-y-6">
-                        {/* Recent Activities Section */}
                         <div className="p-4 bg-white rounded-lg shadow-sm dark:bg-gray-800">
                             <div className="flex flex-col gap-3">
                                 <div className="flex items-center justify-between">
@@ -381,7 +326,6 @@ const Dashboard = ({
                                     </h2>
                                 </div>
 
-                                {/* Filters */}
                                 <div className="flex flex-wrap gap-2">
                                     <select
                                         value={selectedActivityFilter}
@@ -418,7 +362,6 @@ const Dashboard = ({
                                     </select>
                                 </div>
 
-                                {/* Activities List */}
                                 <div className="space-y-3">
                                     {recentActivities.data.length > 0 ? (
                                         recentActivities.data.map(
@@ -441,7 +384,6 @@ const Dashboard = ({
                                     )}
                                 </div>
 
-                                {/* Pagination */}
                                 {recentActivities.data.length > 0 &&
                                     recentActivities.last_page > 1 && (
                                         <div className="flex items-center justify-between pt-3 mt-4 border-t">
@@ -484,7 +426,6 @@ const Dashboard = ({
                             </div>
                         </div>
 
-                        {/* Latest Panduan */}
                         <div className="p-4 bg-white rounded-lg shadow-sm dark:bg-gray-800">
                             <div className="flex items-center justify-between mb-4">
                                 <h2 className="text-lg font-semibold dark:text-white">

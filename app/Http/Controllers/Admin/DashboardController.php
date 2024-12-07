@@ -20,12 +20,12 @@ class DashboardController extends Controller
 {
     public function index(Request $request)
     {
-        // Add filter parameters
+
         $activityFilter = $request->input('activity_filter', 'all');
         $statusFilter = $request->input('status_filter', 'all');
         $page = $request->input('page', 1);
 
-        // Get total counts for stats
+
         $totalLogbooks = Logbook::count();
         $activeUsers = User::where('role', User::ROLE_MAHASISWA)
             ->whereHas('logbook', function ($query) {
@@ -34,24 +34,24 @@ class DashboardController extends Controller
         $totalBimbingans = Bimbingan::count();
         $completionRate = $this->calculateCompletionRate();
 
-        // Get weekly changes for stats
+
         $lastWeekLogbooks = Logbook::where('created_at', '>=', now()->subWeek())->count();
         $newUsersThisWeek = User::where('role', User::ROLE_MAHASISWA)
             ->where('created_at', '>=', now()->subWeek())
             ->count();
         $todayBimbingans = Bimbingan::whereDate('created_at', Carbon::today())->count();
 
-        // Calculate completion rate change
+
         $lastWeekCompletionRate = $this->calculateCompletionRate(now()->subWeek());
         $completionRateChange = $completionRate - $lastWeekCompletionRate;
 
-        // Get recent activities
+
         $recentActivities = $this->getRecentActivities($activityFilter, $statusFilter, $page);
 
-        // Get recent submissions for data table
+
         $recentSubmissions = $this->getRecentSubmissions();
 
-        // Get latest information
+
         $latestTutorial = Tutorial::latest()->first();
         $latestFaqs = Question::latest()->select('question', 'answer')->take(3)->get();
         $latestPanduan = Panduan::latest()->first();
@@ -61,23 +61,23 @@ class DashboardController extends Controller
                 [
                     'title' => 'Total Logbooks',
                     'value' => (string)$totalLogbooks,
-                    'change' => "+{$lastWeekLogbooks} this week",
+                    'change' => "+{$lastWeekLogbooks} minggu ini",
                     'changeType' => 'increase'
                 ],
                 [
-                    'title' => 'Active Users',
+                    'title' => 'User Aktif',
                     'value' => (string)$activeUsers,
-                    'change' => "+{$newUsersThisWeek} new",
+                    'change' => "+{$newUsersThisWeek} baru",
                     'changeType' => 'increase'
                 ],
                 [
                     'title' => 'Bimbingans',
                     'value' => (string)$totalBimbingans,
-                    'change' => "+{$todayBimbingans} today",
+                    'change' => "+{$todayBimbingans} hari ini",
                     'changeType' => 'increase'
                 ],
                 [
-                    'title' => 'Completion Rate',
+                    'title' => 'Penyelesaian Laporan',
                     'value' => number_format($completionRate, 0) . '%',
                     'change' => sprintf('%+.1f%%', $completionRateChange),
                     'changeType' => $completionRateChange >= 0 ? 'increase' : 'decrease'
@@ -97,7 +97,7 @@ class DashboardController extends Controller
 
     private function calculateCompletionRate($date = null)
     {
-        // Query for KKL
+
         $kklQuery = DataKkl::query();
         $kknQuery = DataKkn::query();
 
@@ -106,28 +106,28 @@ class DashboardController extends Controller
             $kknQuery->where('created_at', '<=', $date);
         }
 
-        // Get total counts
+
         $totalKkl = $kklQuery->count();
         $totalKkn = $kknQuery->count();
         $totalSubmissions = $totalKkl + $totalKkn;
 
-        // If no submissions yet, return 0
+
         if ($totalSubmissions === 0) {
             return 0;
         }
 
-        // Get completed counts
+
         $completedKkl = (clone $kklQuery)->where('status', 'approved')->count();
         $completedKkn = (clone $kknQuery)->where('status', 'approved')->count();
         $totalCompleted = $completedKkl + $completedKkn;
 
-        // Calculate completion rate
+
         return ($totalCompleted / $totalSubmissions) * 100;
     }
 
     private function getRecentActivities($typeFilter = 'all', $statusFilter = 'all', $page = 1)
     {
-        // Base queries for KKL and KKN
+
         $kkl = DataKkl::select(
             'id',
             'user_id',
@@ -156,7 +156,7 @@ class DashboardController extends Controller
             END as status")
         );
 
-        // Apply status filter if needed
+
         if ($statusFilter !== 'all') {
             $mappedStatus = match ($statusFilter) {
                 'pending' => 'Pending',
@@ -175,19 +175,19 @@ class DashboardController extends Controller
             $kkn->where($statusCondition, $mappedStatus);
         }
 
-        // Combine queries based on type filter
+
         if ($typeFilter === 'kkl') {
             $query = $kkl;
         } elseif ($typeFilter === 'kkn') {
             $query = $kkn;
         } else {
-            // For 'all', combine both queries
+
             $query = $kkl->union($kkn);
         }
 
         $totalCount = $query->count();
 
-        // If no results, return empty paginator
+
         if ($totalCount === 0) {
             return new \Illuminate\Pagination\LengthAwarePaginator(
                 [],
@@ -198,7 +198,7 @@ class DashboardController extends Controller
             );
         }
 
-        // Get paginated results
+
         $activities = $query->orderBy('updated_at', 'desc')
             ->paginate(5, ['*'], 'page', $page)
             ->through(function ($activity) {
@@ -218,7 +218,7 @@ class DashboardController extends Controller
 
     private function getRecentSubmissions()
     {
-        $type = request()->input('tab', 'logbook'); // Default to logbook
+        $type = request()->input('tab', 'logbook');
         $search = request()->input('search');
         $perPage = request()->input('per_page', 10);
 
