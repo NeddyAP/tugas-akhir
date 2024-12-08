@@ -29,14 +29,21 @@ const FILTERS = {
     },
     angkatan: {
         label: "Filter by Batch",
-        options: Array.from({ length: 4 }, (_, i) => {
-            const year = 2021 + i;
-            return { value: year.toString(), label: `Angkatan ${year}` };
-        }),
+        options: (() => {
+            const currentYear = new Date().getFullYear();
+            const startYear = 2021;
+            const years = [];
+            for (let year = currentYear; year >= startYear; year--) {
+                years.push({
+                    value: year.toString(),
+                    label: `Angkatan ${year}`,
+                });
+            }
+            return years;
+        })(),
     },
 };
 
-// Remove selectStyles constant and replace with Tailwind classes
 const customSelectStyles = {
     control: (base) => ({
         ...base,
@@ -104,7 +111,7 @@ export default function LaporanPage({
             {
                 ...filters,
                 type,
-                [filterType]: value || undefined, // Remove empty filters
+                [filterType]: value || undefined,
             },
             { preserveState: true },
         );
@@ -157,7 +164,6 @@ export default function LaporanPage({
         );
     };
 
-    // Sort dosens by name
     const sortedDosens = useMemo(() => {
         return [...dosens].sort((a, b) => a.label.localeCompare(b.label));
     }, [dosens]);
