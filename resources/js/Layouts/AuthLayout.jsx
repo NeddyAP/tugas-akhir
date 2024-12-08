@@ -5,7 +5,7 @@ import salyImage from "../../images/Saly-10.png";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { DarkModeProvider } from "@/Contexts/DarkModeContext";
-import DarkModeToggle from "@/Components/ui/DarkmodeToggle";
+import DarkModeToggle from "@/Components/ui/DarkModeToggle";
 
 const AuthLayout = ({ title, children }) => {
     return (
