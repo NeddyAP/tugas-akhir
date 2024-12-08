@@ -107,13 +107,13 @@ const FrontFooter = () => {
                                     alt="Logo FILKOM"
                                 />
                                 <div className="flex flex-col">
-                                    <span className="text-xs font-light">
+                                    <span className="font-sans text-xs">
                                         FAKULTAS ILMU KOMPUTER
                                     </span>
                                     <span className="text-sm font-bold">
                                         UNIDA BOGOR
                                     </span>
-                                    <span className="text-xs font-light">
+                                    <span className="font-sans text-xs">
                                         KAMPUS BERTAUHID
                                     </span>
                                 </div>
