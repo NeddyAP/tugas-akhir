@@ -2,77 +2,55 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Bimbingan;
-use App\Models\Logbook;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Inertia\Inertia;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use App\Http\Requests\LogbookRequest;
+use App\Http\Traits\ResponseTrait;
+use App\Models\{Logbook, Bimbingan};
+use App\Services\{LogbookService, BimbinganService};
+use Illuminate\Http\RedirectResponse;
+use Inertia\{Response, Inertia};
 
 class LogbookController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    use AuthorizesRequests, ResponseTrait;
+
+    public function __construct(
+        protected LogbookService $logbookService,
+        protected BimbinganService $bimbinganService
+    ) {}
+
+    public function index(): Response
     {
-        $user = Auth::user();
+        $userId = auth()->id();
 
         return Inertia::render('Front/Logbook/LogbookPage', [
-            'logbooks' => Logbook::where('user_id', $user->id)->paginate(10),
-            'bimbingans' => Bimbingan::where('user_id', $user->id)->paginate(10),
+            'logbooks' => $this->logbookService->getUserLogbooks($userId),
+            'bimbingans' => $this->bimbinganService->getUserBimbingans($userId),
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(LogbookRequest $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'tanggal' => 'required',
-            'catatan' => 'required',
-            'keterangan' => 'required',
-        ]);
-        $validated['user_id'] = Auth::id();
+        $this->logbookService->create($request->validated());
 
-        Logbook::create($validated);
-
-        return redirect()->back()->with('flash', ['message' => 'Logbook baru berhasil ditambahkan.', 'type' => 'success']);
+        return $this->flashResponse('Logbook baru berhasil ditambahkan.');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Logbook $logbook)
+    public function update(LogbookRequest $request, Logbook $logbook): RedirectResponse
     {
+        $this->authorize('update', $logbook);
 
-        if ($logbook->user_id !== Auth::id()) {
-            abort(403);
-        }
+        $this->logbookService->update($logbook, $request->validated());
 
-        $validated = $request->validate([
-            'tanggal' => 'required|date',
-            'catatan' => 'required|string',
-            'keterangan' => 'required|string',
-        ]);
-
-        $logbook->update($validated);
-
-        return redirect()->back()->with('flash', ['message' => 'Logbook berhasil diperbarui.', 'type' => 'success']);
+        return $this->flashResponse('Logbook berhasil diperbarui.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Logbook $logbook)
+    public function destroy(Logbook $logbook): RedirectResponse
     {
+        $this->authorize('delete', $logbook);
 
-        if ($logbook->user_id !== Auth::id()) {
-            abort(403);
-        }
+        $this->logbookService->delete($logbook);
 
-        $logbook->delete();
-
-        return redirect()->back()->with('flash', ['message' => 'Logbook berhasil dihapus.', 'type' => 'success']);
+        return $this->flashResponse('Logbook berhasil dihapus.');
     }
 }

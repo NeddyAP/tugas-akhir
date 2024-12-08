@@ -3,67 +3,56 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\LogbookRequest;
 use App\Models\Logbook;
+use App\Services\LogbookService;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Inertia\Response;
 use Inertia\Inertia;
 
 class LogbookController extends Controller
 {
-    public function index(Request $request)
+    public function __construct(
+        protected LogbookService $logbookService
+    ) {}
+
+    public function index(Request $request): Response
     {
-        $query = Logbook::with('user');
-
-        if ($request->has('search')) {
-            $searchTerm = $request->search;
-            $query->where(function ($q) use ($searchTerm) {
-                $q->whereHas('user', function ($q) use ($searchTerm) {
-                    $q->where('name', 'like', "%{$searchTerm}%");
-                })
-                    ->orWhere('catatan', 'like', "%{$searchTerm}%")
-                    ->orWhere('keterangan', 'like', "%{$searchTerm}%");
-            });
-        }
-
-        $logbooks = $query->latest()->paginate($request->input('per_page', 10));
-
         return Inertia::render('Admin/Table/LogbookPage', [
-            'logbooks' => $logbooks,
+            'logbooks' => $this->logbookService->getFilteredLogbooks(
+                $request->get('search'),
+                $request->input('per_page', 10)
+            ),
         ]);
     }
 
-    public function store(Request $request)
+    public function store(LogbookRequest $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'tanggal' => 'required|date',
-            'catatan' => 'required|string',
-            'keterangan' => 'required|string',
-        ]);
+        $this->logbookService->create($request->validated());
 
-        $validated['user_id'] = auth()->id();
-
-        Logbook::create($validated);
-
-        return redirect()->back()->with('flash', ['message' => 'Logbook berhasil ditambahkan.', 'type' => 'success']);
+        return $this->successResponse('Logbook berhasil ditambahkan.');
     }
 
-    public function update(Request $request, Logbook $logbook)
+    public function update(LogbookRequest $request, Logbook $logbook): RedirectResponse
     {
-        $validated = $request->validate([
-            'tanggal' => 'required|date',
-            'catatan' => 'required|string',
-            'keterangan' => 'required|string',
-        ]);
-        $validated['updated_at'] = now();
+        $this->logbookService->update($logbook, $request->validated());
 
-        $logbook->update($validated);
-
-        return redirect()->back()->with('flash', ['message' => 'Logbook berhasil diperbarui.', 'type' => 'success']);
+        return $this->successResponse('Logbook berhasil diperbarui.');
     }
 
-    public function destroy(Logbook $logbook)
+    public function destroy(Logbook $logbook): RedirectResponse
     {
-        $logbook->delete();
+        $this->logbookService->delete($logbook);
 
-        return redirect()->back()->with('flash', ['message' => 'Logbook berhasil dihapus.', 'type' => 'success']);
+        return $this->successResponse('Logbook berhasil dihapus.');
+    }
+
+    protected function successResponse(string $message): RedirectResponse
+    {
+        return redirect()->back()->with('flash', [
+            'message' => $message,
+            'type' => 'success'
+        ]);
     }
 }

@@ -2,50 +2,43 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use App\Http\Requests\BimbinganRequest;
+use App\Http\Traits\ResponseTrait;
 use App\Models\Bimbingan;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use App\Services\BimbinganService;
+use Illuminate\Http\RedirectResponse;
 
 class BimbinganController extends Controller
 {
-    public function store(Request $request)
+    use AuthorizesRequests, ResponseTrait;
+
+    public function __construct(
+        protected BimbinganService $bimbinganService
+    ) {}
+
+    public function store(BimbinganRequest $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'tanggal' => 'required',
-            'keterangan' => 'required',
-        ]);
+        $this->bimbinganService->create($request->validated());
 
-        $validated['user_id'] = Auth::id();
-
-        Bimbingan::create($validated);
-
-        return redirect()->back()->with('flash', ['message' => 'Data bimbingan baru berhasil ditambahkan.', 'type' => 'success']);
+        return $this->flashResponse('Data bimbingan baru berhasil ditambahkan.');
     }
 
-    public function update(Request $request, Bimbingan $bimbingan)
+    public function update(BimbinganRequest $request, Bimbingan $bimbingan): RedirectResponse
     {
-        if ($bimbingan->user_id !== Auth::id()) {
-            abort(403);
-        }
+        $this->authorize('update', $bimbingan);
 
-        $validated = $request->validate([
-            'tanggal' => 'required|date',
-            'keterangan' => 'required|string',
-        ]);
+        $this->bimbinganService->update($bimbingan, $request->validated());
 
-        $bimbingan->update($validated);
-
-        return redirect()->back()->with('flash', ['message' => 'Data bimbingan berhasil diubah.', 'type' => 'success']);
+        return $this->flashResponse('Data bimbingan berhasil diubah.');
     }
 
-    public function destroy(Bimbingan $bimbingan)
+    public function destroy(Bimbingan $bimbingan): RedirectResponse
     {
-        if ($bimbingan->user_id !== Auth::id()) {
-            abort(403);
-        }
+        $this->authorize('delete', $bimbingan);
 
-        $bimbingan->delete();
+        $this->bimbinganService->delete($bimbingan);
 
-        return redirect()->back()->with('flash', ['message' => 'Data bimbingan berhasil dihapus.', 'type' => 'success']);
+        return $this->flashResponse('Data bimbingan berhasil dihapus.');
     }
 }

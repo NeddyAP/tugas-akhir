@@ -17,6 +17,7 @@ class LaporanController extends Controller
         $type = $request->input('type', 'kkl');
         $perPage = $request->input('per_page', 10);
         $filters = $request->only(['pembimbing', 'status', 'angkatan']);
+        $search = $request->input('search'); // Add this line
 
         // Base query for both KKL and KKN
         $query = $type === 'kkl' ? DataKkl::query() : DataKkn::query();
@@ -30,6 +31,21 @@ class LaporanController extends Controller
             'pembimbing:id,name',
             'laporan:id,file,keterangan',
         ]);
+
+        // Add search functionality
+        if ($search) {
+            $query->where(function ($query) use ($search) {
+                $query->whereHas('mahasiswa', function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                        ->orWhereHas('profilable', function ($q) use ($search) {
+                            $q->where('nim', 'like', "%{$search}%");
+                        });
+                })
+                    ->orWhereHas('pembimbing', function ($q) use ($search) {
+                        $q->where('name', 'like', "%{$search}%");
+                    });
+            });
+        }
 
         // Apply filters
         if (! empty($filters['pembimbing'])) {
@@ -168,7 +184,7 @@ class LaporanController extends Controller
             'status' => $validated['status'],
         ]);
 
-        return redirect()->back()->with('flash', ['message' => 'Data '.$validated['type'].' berhasil ditambahkan.', 'type' => 'success']);
+        return redirect()->back()->with('flash', ['message' => 'Data ' . $validated['type'] . ' berhasil ditambahkan.', 'type' => 'success']);
     }
 
     public function update(Request $request, $id)
@@ -195,7 +211,7 @@ class LaporanController extends Controller
         ]);
 
         return redirect()->back()->with('flash', [
-            'message' => 'Data '.$validated['type'].' berhasil diperbarui.',
+            'message' => 'Data ' . $validated['type'] . ' berhasil diperbarui.',
             'type' => 'success',
         ]);
     }
@@ -218,7 +234,7 @@ class LaporanController extends Controller
 
             $data->delete();
 
-            return redirect()->back()->with('flash', ['message' => 'Data '.$type.' berhasil dihapus.', 'type' => 'success']);
+            return redirect()->back()->with('flash', ['message' => 'Data ' . $type . ' berhasil dihapus.', 'type' => 'success']);
         });
     }
 
@@ -251,7 +267,7 @@ class LaporanController extends Controller
 
             if ($updated) {
                 return redirect()->back()->with('flash', [
-                    'message' => $updated.' data berhasil diperbarui.',
+                    'message' => $updated . ' data berhasil diperbarui.',
                     'type' => 'success',
                 ]);
             }
@@ -264,7 +280,7 @@ class LaporanController extends Controller
             DB::rollBack();
 
             return redirect()->back()->with('flash', [
-                'message' => 'Gagal memperbarui data: '.$e->getMessage(),
+                'message' => 'Gagal memperbarui data: ' . $e->getMessage(),
                 'type' => 'error',
             ]);
         }
