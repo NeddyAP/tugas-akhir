@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\InformationController as AdminInformationControll
 use App\Http\Controllers\Admin\LaporanController as AdminLaporanController;
 use App\Http\Controllers\Admin\LogbookController as AdminLogbookController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\BimbinganController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LaporanController;
@@ -42,6 +43,8 @@ Route::middleware('auth')->group(function () {
         Route::resource('logbooks', AdminLogbookController::class);
         Route::resource('bimbingans', AdminBimbinganController::class);
         Route::resource('laporans', AdminLaporanController::class);
+
+        Route::resource('settings', SettingController::class);
 
         Route::get('users/export', [AdminExportController::class, 'export'])
             ->name('users.export');

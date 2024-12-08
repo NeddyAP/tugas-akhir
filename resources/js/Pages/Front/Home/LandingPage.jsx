@@ -53,7 +53,6 @@ export default function LandingPage() {
                         </div>
                     </div>
                 </div>
-
                 <div className="absolute bottom-0 left-0 right-0">
                     <div className="h-16 bg-gradient-to-b from-transparent to-white/10 dark:to-gray-900/10"></div>
                     <div className="absolute hidden -translate-x-1/2 bottom-8 left-1/2 animate-bounce lg:block">

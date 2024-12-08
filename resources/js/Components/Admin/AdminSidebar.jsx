@@ -89,7 +89,7 @@ const NAVIGATION_ITEMS = [
         type: "item",
         icon: <Settings />,
         label: "Settings",
-        href: "",
+        href: route("admin.settings.create"),
     },
 ];
 

@@ -17,7 +17,7 @@ class LaporanController extends Controller
         $type = $request->input('type', 'kkl');
         $perPage = $request->input('per_page', 10);
         $filters = $request->only(['pembimbing', 'status', 'angkatan']);
-        $search = $request->input('search'); // Add this line
+        $search = $request->input('search');
 
         // Base query for both KKL and KKN
         $query = $type === 'kkl' ? DataKkl::query() : DataKkn::query();
