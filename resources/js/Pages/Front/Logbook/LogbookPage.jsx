@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useMemo, useEffect } from "react";
-import { Head, useForm } from "@inertiajs/react";
+import { Head, useForm, usePage } from "@inertiajs/react";
 import FrontLayout from "@/Layouts/FrontLayout";
 import DataTable from "@/Components/ui/DataTable";
 import GenericModal from "@/Components/ui/GenericModal";
@@ -9,6 +9,7 @@ import { getTableConfigs } from "@/utils/constants";
 import { formatDate } from "@/utils/utils";
 
 export default function LogbookPage({ logbooks, bimbingans }) {
+    const user = usePage().props.auth.user.role;
     const form = useForm({
         tanggal: "",
         catatan: "",
@@ -172,6 +173,63 @@ export default function LogbookPage({ logbooks, bimbingans }) {
         }
     }, [modalState.editingData]);
 
+    const renderContent = () => {
+        if (user === "dosen") {
+            return (
+                <div className="p-6 text-center bg-white border rounded-xl dark:bg-gray-800/50 dark:border-gray-700">
+                    <p className="text-gray-600 dark:text-gray-400">
+                        Tidak ada data{" "}
+                        <span className="text-red-500">{activeTab}</span> yang
+                        tersedia.
+                    </p>
+                    <p className="text-gray-600 dark:text-gray-400">
+                        Login sebagai{" "}
+                        <span className="text-red-500">Mahasiswa</span> untuk
+                        membuat {activeTab}.
+                    </p>
+                </div>
+            );
+        }
+
+        return (
+            <>
+                <TableHeader
+                    title={`${activeTab} Mahasiswa`}
+                    onDownload={(format) => handleDownload(format)}
+                    onAdd={() => handleAdd(activeTab)}
+                />
+
+                <DataTable
+                    columns={currentTableConfig.columns}
+                    data={currentTableConfig.data}
+                    pagination={currentTableConfig.pagination}
+                    actions={tableActions}
+                />
+
+                <GenericModal
+                    isOpen={modalState.isOpen}
+                    onClose={() =>
+                        setModalState({
+                            isOpen: false,
+                            type: null,
+                            editingData: null,
+                        })
+                    }
+                    title={`${
+                        modalState.editingData ? "Edit" : "Tambah"
+                    } ${modalState.type}`}
+                    data={form.data}
+                    setData={form.setData}
+                    errors={form.errors}
+                    processing={form.processing}
+                    handleSubmit={handleSubmit}
+                    clearErrors={form.clearErrors}
+                    fields={tableConfigs[modalState.type]?.modalFields || []}
+                />
+            </>
+        );
+    };
+
     return (
         <FrontLayout>
             <Head title="Logbook" />
@@ -199,42 +257,7 @@ export default function LogbookPage({ logbooks, bimbingans }) {
                                 </nav>
                             </div>
 
-                            <TableHeader
-                                title={`${activeTab} Mahasiswa`}
-                                onDownload={(format) => handleDownload(format)}
-                                onAdd={() => handleAdd(activeTab)}
-                            />
-
-                            <DataTable
-                                columns={currentTableConfig.columns}
-                                data={currentTableConfig.data}
-                                pagination={currentTableConfig.pagination}
-                                actions={tableActions}
-                            />
-
-                            <GenericModal
-                                isOpen={modalState.isOpen}
-                                onClose={() =>
-                                    setModalState({
-                                        isOpen: false,
-                                        type: null,
-                                        editingData: null,
-                                    })
-                                }
-                                title={`${
-                                    modalState.editingData ? "Edit" : "Tambah"
-                                } ${modalState.type}`}
-                                data={form.data}
-                                setData={form.setData}
-                                errors={form.errors}
-                                processing={form.processing}
-                                handleSubmit={handleSubmit}
-                                clearErrors={form.clearErrors}
-                                fields={
-                                    tableConfigs[modalState.type]
-                                        ?.modalFields || []
-                                }
-                            />
+                            {renderContent()}
                         </div>
                     </div>
                 </div>
