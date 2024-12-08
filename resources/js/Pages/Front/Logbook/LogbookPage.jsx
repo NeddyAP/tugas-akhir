@@ -6,7 +6,7 @@ import GenericModal from "@/Components/ui/GenericModal";
 import { copyToClipboard, downloadFile } from "@/utils/exportService";
 import TableHeader from "@/Components/ui/TableHeader";
 import { getTableConfigs } from "@/utils/constants";
-import { formatDate } from "@/utils/utils";
+import { formatDate2 } from "@/utils/helpers";
 
 export default function LogbookPage({ logbooks, bimbingans }) {
     const user = usePage().props.auth.user.role;
@@ -17,7 +17,7 @@ export default function LogbookPage({ logbooks, bimbingans }) {
     });
 
     const tableConfigs = useMemo(
-        () => getTableConfigs(logbooks, bimbingans, formatDate),
+        () => getTableConfigs(logbooks, bimbingans, formatDate2),
         [logbooks?.data, bimbingans?.data],
     );
     const [activeTab, setActiveTab] = useState("Logbook");
@@ -119,7 +119,7 @@ export default function LogbookPage({ logbooks, bimbingans }) {
                                 ...acc,
                                 [col.Header]:
                                     col.accessor === "tanggal"
-                                        ? formatDate(row[col.accessor])
+                                        ? formatDate2(row[col.accessor])
                                         : row[col.accessor],
                             }),
                             {},
