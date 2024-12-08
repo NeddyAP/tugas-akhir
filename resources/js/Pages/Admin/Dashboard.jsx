@@ -219,7 +219,7 @@ const Dashboard = ({
 
                 <div className="grid gap-6 lg:grid-cols-3">
                     <div className="space-y-6 lg:col-span-2">
-                        <div className="p-4 bg-white border rounded-lg shadow-sm dark:bg-gray-800">
+                        <div className="p-4 bg-white border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
                             <div className="flex items-center justify-between mb-4">
                                 <h2 className="text-lg font-semibold dark:text-white">
                                     <PlayCircle className="inline-block w-5 h-5 mr-2 text-teal-600" />
@@ -257,7 +257,7 @@ const Dashboard = ({
                             )}
                         </div>
 
-                        <div className="p-4 bg-white border rounded-lg shadow-sm dark:bg-gray-800">
+                        <div className="p-4 bg-white border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
                             <div className="flex items-center justify-between mb-4">
                                 <h2 className="text-lg font-semibold dark:text-white">
                                     <HelpCircle className="inline-block w-5 h-5 mr-2 text-teal-600" />
@@ -307,7 +307,7 @@ const Dashboard = ({
                     </div>
 
                     <div className="space-y-6">
-                        <div className="p-4 bg-white border rounded-lg shadow-sm dark:bg-gray-800">
+                        <div className="p-4 bg-white border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
                             <div className="flex flex-col gap-3">
                                 <div className="flex items-center justify-between">
                                     <h2 className="text-lg font-semibold dark:text-white">
@@ -415,7 +415,7 @@ const Dashboard = ({
                             </div>
                         </div>
 
-                        <div className="p-4 bg-white border rounded-lg shadow-sm dark:bg-gray-800">
+                        <div className="p-4 bg-white border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
                             <div className="flex items-center justify-between mb-4">
                                 <h2 className="text-lg font-semibold dark:text-white">
                                     <FileQuestion className="inline-block w-5 h-5 mr-2 text-teal-600" />
