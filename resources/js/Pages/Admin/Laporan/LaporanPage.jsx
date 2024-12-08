@@ -16,19 +16,18 @@ const TABS = [
 
 const FILTERS = {
     pembimbing: {
-        label: "Filter by Supervisor",
+        label: "Filter by Pembimbing",
         emptyOption: "Semua Dosen",
     },
     status: {
-        label: "Filter by Submission",
+        label: "Filter by Status",
         options: [
-            { value: "", label: "Semua Status" },
             { value: "submitted", label: "Sudah Mengumpulkan" },
             { value: "null", label: "Belum Mengumpulkan" },
         ],
     },
     angkatan: {
-        label: "Filter by Batch",
+        label: "Filter by Angkatan",
         options: (() => {
             const currentYear = new Date().getFullYear();
             const startYear = 2021;
@@ -174,7 +173,7 @@ export default function LaporanPage({
                 Filters
             </h2>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-                {/* Supervisor Filter */}
+                {/* Pembimbinga Filter */}
                 <div>
                     <Select
                         value={sortedDosens.find(
@@ -187,7 +186,7 @@ export default function LaporanPage({
                         }
                         options={sortedDosens}
                         isClearable
-                        placeholder="Semua Dosen"
+                        placeholder="Pilih Dosen"
                         className="react-select-container"
                         classNamePrefix="react-select"
                         styles={customSelectStyles}
@@ -236,7 +235,7 @@ export default function LaporanPage({
                         }
                         options={FILTERS.status.options}
                         isClearable
-                        placeholder="Select Status"
+                        placeholder="Pilih Status"
                         className="react-select-container"
                         classNamePrefix="react-select"
                         styles={customSelectStyles}
@@ -263,7 +262,7 @@ export default function LaporanPage({
                     />
                 </div>
 
-                {/* Batch Year Filter */}
+                {/* Angkatan Filter */}
                 <div>
                     <Select
                         value={FILTERS.angkatan.options.find(
@@ -274,7 +273,7 @@ export default function LaporanPage({
                         }
                         options={FILTERS.angkatan.options}
                         isClearable
-                        placeholder="Select Batch"
+                        placeholder="Pilih Angkatan"
                         className="react-select-container"
                         classNamePrefix="react-select"
                         styles={customSelectStyles}

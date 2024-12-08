@@ -411,7 +411,7 @@ export default function BaseLaporanData({
                                 }
                                 options={dosens}
                                 isClearable
-                                placeholder="Assign Supervisor"
+                                placeholder="Pilih Pembimbing"
                                 className="w-64"
                                 styles={customSelectStyles}
                                 classNames={{

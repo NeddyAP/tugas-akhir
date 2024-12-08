@@ -120,7 +120,7 @@ class DashboardRepository
                 $user = User::find($activity->user_id);
 
                 return [
-                    'title' => "Laporan {$activity->type} by {$user->name}",
+                    'title' => "Laporan {$activity->type} - {$user->name}",
                     'time' => Carbon::parse($activity->updated_at)->diffForHumans(),
                     'status' => $activity->status,
                     'type' => strtolower($activity->type),
