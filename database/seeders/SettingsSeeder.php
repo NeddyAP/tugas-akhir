@@ -13,14 +13,14 @@ class SettingsSeeder extends Seeder
             'language' => 'id',
             'contact_info' => [
                 'Jl. Tol Ciawi No. 1, Ciawi-Bogor, Jawa Barat, Indonesia.',
-                'info@example.com',
-                '+62 123 4567 890',
+                'filkom@unida.ac.id',
+                '02518240773',
             ],
             'sistem_online' => [
-                'Pendaftaran Online' => 'https://siakad.example.com',
-                'E-Learning' => 'https://elearning.example.com',
-                'Jurnal' => 'https://library.example.com',
-                'Jurnal Internasional' => 'https://library.example.com',
+                'Pendaftaran Online' => 'https://unida.ac.id/pmb',
+                'E-Learning' => 'https://cool.unida.ac.id/',
+                'Jurnal' => 'https://ojs.unida.ac.id/',
+                'Jurnal Internasional' => 'https://iojs.unida.ac.id/',
             ],
             'social_links' => [
                 'Facebook' => 'https://facebook.com/PmbUnida',

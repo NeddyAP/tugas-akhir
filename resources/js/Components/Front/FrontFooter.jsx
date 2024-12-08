@@ -113,7 +113,7 @@ const FrontFooter = () => {
                                     <span className="text-sm font-bold">
                                         UNIDA BOGOR
                                     </span>
-                                    <span className="text-xs text-gray-600 dark:text-gray-400">
+                                    <span className="text-xs font-light">
                                         KAMPUS BERTAUHID
                                     </span>
                                 </div>
