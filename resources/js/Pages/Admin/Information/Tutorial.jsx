@@ -3,17 +3,7 @@ import { useForm, usePage } from "@inertiajs/react";
 import DataTable from "@/Components/ui/DataTable";
 import GenericModal from "@/Components/ui/GenericModal";
 import PropTypes from "prop-types";
-
-const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("id-ID", {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-    });
-};
+import { formatDate2 } from "@/utils/helpers";
 
 const getYouTubeId = (url) => {
     if (!url) return false;
@@ -85,7 +75,7 @@ export default function Tutorial({ informations }) {
                     Header: "Tanggal Dibuat",
                     accessor: "created_at",
                     sortable: true,
-                    Cell: ({ value }) => formatDate(value),
+                    Cell: ({ value }) => formatDate2(value),
                 },
             ],
             modalFields: [

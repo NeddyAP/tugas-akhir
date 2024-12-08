@@ -105,17 +105,6 @@ const EmptyState = () => (
     </div>
 );
 
-const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("id-ID", {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-    });
-};
-
 const ICONS = {
     "Total Logbooks": <FileText className="w-8 h-8 text-teal-600" />,
     "User Aktif": <Users className="w-8 h-8 text-teal-600" />,

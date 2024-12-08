@@ -3,17 +3,7 @@ import DataTable from "@/Components/ui/DataTable";
 import AdminLayout from "@/Layouts/AdminLayout";
 import { useForm } from "@inertiajs/react";
 import GenericModal from "@/Components/ui/GenericModal";
-
-const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("id-ID", {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-    });
-};
+import { formatDate2 } from "@/utils/helpers";
 
 const Header = memo(({ onAdd }) => (
     <header className="flex items-center justify-between">
@@ -160,13 +150,13 @@ const BimbinganPage = ({ bimbingans }) => {
             Header: "Created at",
             accessor: "created_at",
             sortable: true,
-            Cell: ({ value }) => formatDate(value),
+            Cell: ({ value }) => formatDate2(value),
         },
         {
             Header: "Updated at",
             accessor: "updated_at",
             sortable: true,
-            Cell: ({ value }) => formatDate(value),
+            Cell: ({ value }) => formatDate2(value),
         },
     ];
 

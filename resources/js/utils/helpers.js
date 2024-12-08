@@ -8,6 +8,17 @@ export const formatDate = (dateString) => {
     });
 };
 
+export const formatDate2 = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("id-ID", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+    });
+};
+
 export const getStatusColor = (status) => {
     const colors = {
         pending: "bg-yellow-100 text-yellow-800",
