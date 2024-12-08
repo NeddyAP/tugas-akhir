@@ -8,7 +8,7 @@ import {
     Menu,
 } from "lucide-react";
 import { Link, usePage } from "@inertiajs/react";
-import DarkmodeToggle from "../ui/DarkmodeToggle";
+import DarkModeToggle from "@/Components/ui/DarkModeToggle";
 
 const ProfileDropdown = memo(({ user, isOpen, onClose }) => (
     <div className="absolute right-0 z-50 w-48 py-1 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg dark:bg-gray-800 dark:border-gray-700">
@@ -96,7 +96,7 @@ const AdminNavbar = memo(
                         })}
                     </span>
                     <LucideCalendar className="hidden w-4 h-4 text-gray-600 md:block dark:text-gray-300" />
-                    <DarkmodeToggle />
+                    <DarkModeToggle />
                     <div className="relative" ref={profileRef}>
                         <button
                             onClick={() => setIsProfileOpen(!isProfileOpen)}

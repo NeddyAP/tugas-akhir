@@ -2,7 +2,7 @@ import React, { useCallback, useState, useEffect } from "react";
 import { Link, usePage } from "@inertiajs/react";
 import { Menu, X } from "lucide-react";
 import avatarProfile from "@images/avatar-profile.jpg";
-import DarkmodeToggle from "../ui/DarkmodeToggle";
+import DarkModeToggle from "@/Components/ui/DarkModeToggle";
 
 const NavLink = ({ href, children }) => (
     <Link
@@ -169,7 +169,7 @@ const FrontNavbar = () => {
                                 <NavLink href="logbook.index">Logbook</NavLink>
                                 <NavLink href="laporan.index">Laporan</NavLink>
                             </div>
-                            <DarkmodeToggle />
+                            <DarkModeToggle />
                             <AuthButton user={auth.user} />
                             <button
                                 className="p-2 text-white rounded-md lg:hidden hover:bg-teal-700 dark:hover:bg-gray-700"
