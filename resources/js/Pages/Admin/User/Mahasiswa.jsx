@@ -26,6 +26,7 @@ const Mahasiswa = ({ users }) => {
         password: "",
         role: "mahasiswa",
         nim: "",
+        angkatan: "",
         phone: "",
         address: "",
     });
@@ -117,6 +118,7 @@ const Mahasiswa = ({ users }) => {
                 password: "",
                 role: "mahasiswa",
                 nim: profile.nim || "",
+                angkatan: profile.angkatan || "",
                 phone: profile.phone || "",
                 address: profile.address || "",
             });

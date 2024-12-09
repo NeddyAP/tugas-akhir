@@ -26,6 +26,7 @@ const AllData = ({ users }) => {
         password: "",
         userType: USER_TYPES.ADMIN,
         role: "admin",
+        angkatan: "",
         nim: "",
         nip: "",
         phone: "",
@@ -125,6 +126,7 @@ const AllData = ({ users }) => {
                 password: "",
                 role: modalState.editingData.role,
                 userType: role,
+                angkatan: profile.angkatan || "",
                 nim: profile.nim || "",
                 nip: profile.nip || "",
                 phone: profile.phone || "",
@@ -164,6 +166,7 @@ const AllData = ({ users }) => {
                         newUserType === USER_TYPES.ADMIN
                             ? "admin"
                             : newUserType,
+                    angkatan: "",
                     nim: "",
                     nip: "",
                 }));

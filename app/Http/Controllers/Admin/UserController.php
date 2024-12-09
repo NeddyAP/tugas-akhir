@@ -63,7 +63,6 @@ class UserController extends Controller
             case 'mahasiswa':
                 $query->where('role', 'mahasiswa');
                 $mahasiswas = $query->latest()->paginate($perPage)->withQueryString();
-
                 return Inertia::render('Admin/User/UserPage', [
                     'tab' => $tab,
                     'mahasiswas' => $mahasiswas,
@@ -96,6 +95,7 @@ class UserController extends Controller
         $rules = [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', $id ? Rule::unique('users')->ignore($id) : 'unique:users'],
+            'angkatan' => ['nullable', 'integer', 'min:2000', 'max:2099'],
             'phone' => ['nullable', 'string', 'max:20'],
             'address' => ['nullable', 'string'],
         ];
@@ -165,7 +165,6 @@ class UserController extends Controller
         }
 
         $rules = $this->getValidationRules($tab);
-
         try {
             $validated = $request->validate($rules);
 
@@ -176,6 +175,7 @@ class UserController extends Controller
                 ]);
 
                 if (isset($validated['nim'])) {
+                    $profileData['angkatan'] = $validated['angkatan'];
                     $profileData['nim'] = $validated['nim'];
                 }
                 if (isset($validated['nip'])) {
@@ -258,13 +258,14 @@ class UserController extends Controller
                 $userFields = array_intersect_key($validated, array_flip(['name', 'email', 'password', 'role']));
                 $user->update($userFields);
 
+                // Explicitly set the profile fields including angkatan
                 $profileFields = array_filter([
                     'phone' => $validated['phone'] ?? null,
                     'address' => $validated['address'] ?? null,
+                    'angkatan' => $validated['angkatan'] ?? null,
                     'nim' => $validated['nim'] ?? null,
                     'nip' => $validated['nip'] ?? null,
                 ]);
-
                 if ($user->profilable) {
                     $user->profilable->update($profileFields);
                 }
@@ -276,7 +277,7 @@ class UserController extends Controller
             ]);
         } catch (Exception $e) {
             return redirect()->back()->with('flash', [
-                'message' => 'Gagal memperbarui ' . $this->getUserTypeLabel($tab),
+                'message' => 'Gagal memperbarui ' . $this->getUserTypeLabel($tab) . ': ' . $e->getMessage(),
                 'type' => 'error',
             ]);
         }

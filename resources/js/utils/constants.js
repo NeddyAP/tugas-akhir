@@ -109,15 +109,15 @@ export const USER_COMMON_COLUMNS = [
     },
     {
         Header: "No. Telepon",
-        accessor: (row) => row.profilable?.phone || "-",
+        accessor: "profilable.phone",
+        Cell: ({ row }) => row.original.profilable?.phone || "-",
         sortable: true,
-        id: "phone",
     },
     {
         Header: "Alamat",
-        accessor: (row) => row.profilable?.address || "-",
+        accessor: "profilable.address",
+        Cell: ({ row }) => row.original.profilable?.address || "-",
         sortable: true,
-        id: "address",
     },
 ];
 
@@ -132,17 +132,23 @@ export const USER_SPECIFIC_COLUMNS = {
     [USER_TYPES.DOSEN]: [
         {
             Header: "NIP",
-            accessor: (row) => row.profilable?.nip || "-",
+            accessor: "profilable.nip",
+            Cell: ({ row }) => row.original.profilable?.nip || "-",
             sortable: true,
-            id: "nip",
         },
     ],
     [USER_TYPES.MAHASISWA]: [
         {
             Header: "NIM",
-            accessor: (row) => row.profilable?.nim || "-",
+            accessor: "profilable.nim",
+            Cell: ({ value }) => value || "-",
             sortable: true,
-            id: "nim",
+        },
+        {
+            Header: "Angkatan",
+            accessor: "profilable.angkatan",
+            Cell: ({ value }) => value || "-",
+            sortable: true,
         },
     ],
     [USER_TYPES.ALL]: [
@@ -153,10 +159,12 @@ export const USER_SPECIFIC_COLUMNS = {
         },
         {
             Header: "NIM/NIP",
-            accessor: (row) =>
-                row.profilable?.nim || row.profilable?.nip || "-",
+            accessor: "profilable.identifier",
+            Cell: ({ row }) =>
+                row.original.profilable?.nim ||
+                row.original.profilable?.nip ||
+                "-",
             sortable: true,
-            id: "identifier",
         },
     ],
 };
@@ -195,6 +203,21 @@ export const USER_COMMON_FIELDS = [
     },
 ];
 
+const generateYearOptions = (() => {
+    let cachedOptions = null;
+    return () => {
+        if (cachedOptions) return cachedOptions;
+
+        const currentYear = new Date().getFullYear();
+        const years = [];
+        for (let year = currentYear; year >= 2021; year--) {
+            years.push({ value: year, label: year.toString() });
+        }
+        cachedOptions = years;
+        return cachedOptions;
+    };
+})();
+
 export const USER_SPECIFIC_FIELDS = {
     [USER_TYPES.ADMIN]: [
         {
@@ -222,6 +245,14 @@ export const USER_SPECIFIC_FIELDS = {
             label: "NIM",
             type: "text",
             required: true,
+        },
+        {
+            name: "angkatan",
+            label: "Angkatan",
+            type: "select",
+            options: generateYearOptions(),
+            required: true,
+            parse: (value) => parseInt(value, 10),
         },
     ],
 };
