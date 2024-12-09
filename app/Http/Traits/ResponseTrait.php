@@ -10,7 +10,7 @@ trait ResponseTrait
     {
         return redirect()->back()->with('flash', [
             'message' => $message,
-            'type' => $type
+            'type' => $type,
         ]);
     }
 }

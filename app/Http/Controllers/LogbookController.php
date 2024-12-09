@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use App\Http\Requests\LogbookRequest;
 use App\Http\Traits\ResponseTrait;
-use App\Models\{Logbook, Bimbingan};
-use App\Services\{LogbookService, BimbinganService};
+use App\Models\Logbook;
+use App\Services\BimbinganService;
+use App\Services\LogbookService;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\RedirectResponse;
-use Inertia\{Response, Inertia};
+use Inertia\Inertia;
+use Inertia\Response;
 
 class LogbookController extends Controller
 {

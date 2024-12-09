@@ -24,7 +24,7 @@ class Setting extends Model
     {
         $settings = static::first();
 
-        if (!$settings) {
+        if (! $settings) {
             $settings = static::create();
         }
 

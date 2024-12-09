@@ -2,7 +2,8 @@
 
 namespace App\Policies;
 
-use App\Models\{User, Logbook};
+use App\Models\Logbook;
+use App\Models\User;
 
 class LogbookPolicy
 {

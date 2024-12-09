@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Http\Traits\ResponseTrait;
-use Inertia\Inertia;
 use App\Models\Setting;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class SettingController extends Controller
 {
@@ -15,7 +15,7 @@ class SettingController extends Controller
     public function create()
     {
         return Inertia::render('Admin/Settings/SettingsForm', [
-            'settings_data' => Setting::get()
+            'settings_data' => Setting::get(),
         ]);
     }
 
@@ -37,7 +37,7 @@ class SettingController extends Controller
 
         return redirect()->back()->with('flash', [
             'message' => 'Settings berhasil diubah',
-            'type' => 'success'
+            'type' => 'success',
         ]);
     }
 }

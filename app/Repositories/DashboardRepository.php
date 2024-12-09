@@ -2,7 +2,11 @@
 
 namespace App\Repositories;
 
-use App\Models\{Logbook, User, Bimbingan, DataKkl, DataKkn};
+use App\Models\Bimbingan;
+use App\Models\DataKkl;
+use App\Models\DataKkn;
+use App\Models\Logbook;
+use App\Models\User;
 use Carbon\Carbon;
 
 class DashboardRepository
@@ -23,7 +27,7 @@ class DashboardRepository
     private function getActiveUsers(): int
     {
         return User::where('role', 'mahasiswa')
-            ->whereHas('logbook', fn($query) => $query->where('created_at', '>=', now()->subDays(30)))
+            ->whereHas('logbook', fn ($query) => $query->where('created_at', '>=', now()->subDays(30)))
             ->count();
     }
 
@@ -66,7 +70,7 @@ class DashboardRepository
             'created_at',
             'updated_at',
             \DB::raw("'KKL' as type"),
-            \DB::raw($statusCase . ' as status')
+            \DB::raw($statusCase.' as status')
         );
 
         $kkn = DataKkn::select(
@@ -76,7 +80,7 @@ class DashboardRepository
             'created_at',
             'updated_at',
             \DB::raw("'KKN' as type"),
-            \DB::raw($statusCase . ' as status')
+            \DB::raw($statusCase.' as status')
         );
 
         // Apply status filter

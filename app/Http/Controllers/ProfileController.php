@@ -36,7 +36,7 @@ class ProfileController extends Controller
 
         return Redirect::route('profile.edit')->with('flash', [
             'type' => $result['status'],
-            'message' => $result['message']
+            'message' => $result['message'],
         ]);
     }
 

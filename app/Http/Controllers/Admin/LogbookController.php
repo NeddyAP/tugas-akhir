@@ -8,8 +8,8 @@ use App\Models\Logbook;
 use App\Services\LogbookService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Inertia\Response;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class LogbookController extends Controller
 {
@@ -52,7 +52,7 @@ class LogbookController extends Controller
     {
         return redirect()->back()->with('flash', [
             'message' => $message,
-            'type' => 'success'
+            'type' => 'success',
         ]);
     }
 }

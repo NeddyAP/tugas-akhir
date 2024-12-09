@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Setting;
+use Illuminate\Database\Seeder;
 
 class SettingsSeeder extends Seeder
 {
@@ -27,8 +27,8 @@ class SettingsSeeder extends Seeder
                 'Twitter' => 'https://twitter.com/PMBUnidaBogor',
                 'Instagram' => 'https://www.instagram.com/faipgunida',
                 'Youtube' => 'https://www.youtube.com/channel/UC9EKxYOSyg0QtOs8sAXTceQ',
-                'LinkedIn' => 'https://www.linkedin.com/in/universitas-djuanda-bogor-a97702172'
-            ]
+                'LinkedIn' => 'https://www.linkedin.com/in/universitas-djuanda-bogor-a97702172',
+            ],
         ]);
     }
 }

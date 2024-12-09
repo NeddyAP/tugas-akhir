@@ -2,7 +2,8 @@
 
 namespace App\Policies;
 
-use App\Models\{User, Bimbingan};
+use App\Models\Bimbingan;
+use App\Models\User;
 
 class BimbinganPolicy
 {

@@ -26,7 +26,7 @@ class DashboardController extends Controller
         // Add filters to the response
         $dashboardData['filters'] = [
             'activity' => $activityFilter,
-            'status' => $statusFilter
+            'status' => $statusFilter,
         ];
 
         return Inertia::render('Admin/Dashboard', $dashboardData);

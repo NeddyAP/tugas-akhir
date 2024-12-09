@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use App\Http\Requests\BimbinganRequest;
 use App\Http\Traits\ResponseTrait;
 use App\Models\Bimbingan;
 use App\Services\BimbinganService;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\RedirectResponse;
 
 class BimbinganController extends Controller

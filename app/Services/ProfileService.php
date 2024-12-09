@@ -24,12 +24,12 @@ class ProfileService
 
             return [
                 'status' => 'success',
-                'message' => 'Profile berhasil diubah'
+                'message' => 'Profile berhasil diubah',
             ];
         } catch (\Exception $e) {
             return [
                 'status' => 'error',
-                'message' => 'Profile gagal diubah'
+                'message' => 'Profile gagal diubah',
             ];
         }
     }
@@ -49,7 +49,7 @@ class ProfileService
                 'fakultas' => $data['fakultas'],
             ]),
             'dosen' => array_merge($profileData, [
-                'nip' => $data['nip']
+                'nip' => $data['nip'],
             ]),
             default => $profileData
         };

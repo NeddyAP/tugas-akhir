@@ -7,13 +7,13 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class LogbookService
 {
-    public function getFilteredLogbooks(string $search = null, int $perPage = 10): LengthAwarePaginator
+    public function getFilteredLogbooks(?string $search = null, int $perPage = 10): LengthAwarePaginator
     {
         $query = Logbook::with('user');
 
         if ($search) {
             $query->where(function ($q) use ($search) {
-                $q->whereHas('user', fn($q) => $q->where('name', 'like', "%{$search}%"))
+                $q->whereHas('user', fn ($q) => $q->where('name', 'like', "%{$search}%"))
                     ->orWhere('catatan', 'like', "%{$search}%")
                     ->orWhere('keterangan', 'like', "%{$search}%");
             });

@@ -2,8 +2,10 @@
 
 namespace App\Services;
 
+use App\Models\Panduan;
+use App\Models\Question;
+use App\Models\Tutorial;
 use App\Repositories\DashboardRepository;
-use App\Models\{Tutorial, Question, Panduan};
 
 class DashboardService
 {
@@ -45,7 +47,7 @@ class DashboardService
             ],
             [
                 'title' => 'Penyelesaian Laporan',
-                'value' => number_format($stats['completionRate'], 0) . '%',
+                'value' => number_format($stats['completionRate'], 0).'%',
                 'change' => '+0.0%',
                 'changeType' => 'increase',
             ],
