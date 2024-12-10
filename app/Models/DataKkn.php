@@ -12,6 +12,8 @@ class DataKkn extends Model
         'user_id',
         'dosen_id',
         'id_laporan',
+        'id_logbook',
+        'id_bimbingan',
         'tanggal_mulai',
         'tanggal_selesai',
         'status',
@@ -32,5 +34,15 @@ class DataKkn extends Model
     public function laporan()
     {
         return $this->belongsTo(Laporan::class, 'id_laporan');
+    }
+
+    public function logbook()
+    {
+        return $this->belongsTo(Logbook::class, 'id_logbook');
+    }
+
+    public function bimbingan()
+    {
+        return $this->belongsTo(Bimbingan::class, 'id_bimbingan');
     }
 }

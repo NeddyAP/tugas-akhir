@@ -22,4 +22,22 @@ class Logbook extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function kkl()
+    {
+        return $this->hasOne(DataKkl::class, 'id_logbook');
+    }
+
+    public function kkn()
+    {
+        return $this->hasOne(DataKkn::class, 'id_logbook');
+    }
+
+    // Helper method to determine the type
+    public function getTypeAttribute()
+    {
+        if ($this->kkl) return 'KKL';
+        if ($this->kkn) return 'KKN';
+        return 'Undefined';
+    }
 }

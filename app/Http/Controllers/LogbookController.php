@@ -11,6 +11,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
+use Illuminate\Http\Request;
 
 class LogbookController extends Controller
 {
@@ -21,13 +22,26 @@ class LogbookController extends Controller
         protected BimbinganService $bimbinganService
     ) {}
 
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        $userId = auth()->id();
+        $user = auth()->user();
+        $userId = $user->id;
+        $type = $request->get('type'); // KKL or KKN
+
+        $logbooks = match ($user->role) {
+            'dosen' => $this->logbookService->getDosenMahasiswaLogbooks($userId, null, $type),
+            default => $this->logbookService->getUserLogbooks($userId),
+        };
+
+        $bimbingans = match ($user->role) {
+            'dosen' => $this->bimbinganService->getDosenMahasiswaBimbingans($userId, null, $type),
+            default => $this->bimbinganService->getUserBimbingans($userId),
+        };
 
         return Inertia::render('Front/Logbook/LogbookPage', [
-            'logbooks' => $this->logbookService->getUserLogbooks($userId),
-            'bimbingans' => $this->bimbinganService->getUserBimbingans($userId),
+            'logbooks' => $logbooks,
+            'bimbingans' => $bimbingans,
+            'initialType' => $type,
         ]);
     }
 

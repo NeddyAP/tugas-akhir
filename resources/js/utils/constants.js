@@ -17,63 +17,46 @@ export const DOWNLOAD_OPTIONS = [
     { label: "Salin ke Clipboard", format: "copy" },
 ];
 
-export const getTableConfigs = (logbooks, bimbingans, formatDate) => ({
-    Logbook: {
-        columns: [
-            {
-                Header: "Tanggal Pelaksanaan",
-                accessor: "tanggal",
-                Cell: ({ value }) => formatDate(value),
-            },
-            { Header: "Catatan Kegiatan", accessor: "catatan" },
-            { Header: "Keterangan Kegiatan", accessor: "keterangan" },
-        ],
-        modalFields: [
-            { name: "tanggal", label: "Tanggal", type: "date", required: true },
-            {
-                name: "catatan",
-                label: "Catatan Kegiatan",
-                type: "textarea",
-                required: true,
-            },
-            {
-                name: "keterangan",
-                label: "Keterangan Kegiatan",
-                type: "textarea",
-                required: true,
-            },
-        ],
-        data: logbooks.data || [],
-        pagination: logbooks,
-    },
-    Bimbingan: {
-        columns: [
-            {
-                Header: "Tanggal Bimbingan",
-                accessor: "tanggal",
-                Cell: ({ value }) => formatDate(value),
-            },
-            { Header: "Keterangan Bimbingan", accessor: "keterangan" },
-            { Header: "Tanda Tangan Dosen Pembimbing", accessor: "status" },
-        ],
-        modalFields: [
-            {
-                name: "tanggal",
-                label: "Tanggal Bimbingan",
-                type: "date",
-                required: true,
-            },
-            {
-                name: "keterangan",
-                label: "Keterangan Bimbingan",
-                type: "textarea",
-                required: true,
-            },
-        ],
-        data: bimbingans.data || [],
-        pagination: bimbingans,
-    },
-});
+export const getTableConfigs = (logbooks, bimbingans, formatDate) => {
+    const emptyPagination = {
+        current_page: 1,
+        last_page: 1,
+        per_page: 10,
+        total: 0,
+        from: 0,
+        to: 0,
+    };
+
+    return {
+        Logbook: {
+            columns: [
+                { Header: "Tanggal", accessor: "tanggal" },
+                { Header: "Catatan", accessor: "catatan" },
+                { Header: "Keterangan", accessor: "keterangan" },
+            ],
+            data: logbooks?.data || [],
+            pagination: logbooks || emptyPagination,
+            modalFields: [
+                { name: "tanggal", label: "Tanggal", type: "date" },
+                { name: "catatan", label: "Catatan", type: "textarea" },
+                { name: "keterangan", label: "Keterangan", type: "textarea" },
+            ],
+        },
+        Bimbingan: {
+            columns: [
+                { Header: "Tanggal", accessor: "tanggal" },
+                { Header: "Keterangan", accessor: "keterangan" },
+                { Header: "Status", accessor: "status" },
+            ],
+            data: bimbingans?.data || [],
+            pagination: bimbingans || emptyPagination,
+            modalFields: [
+                { name: "tanggal", label: "Tanggal", type: "date" },
+                { name: "keterangan", label: "Keterangan", type: "textarea" },
+            ],
+        },
+    };
+};
 
 export const USER_TYPES = {
     ADMIN: "admin",

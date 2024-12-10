@@ -48,4 +48,28 @@ class LogbookService
     {
         return $logbook->user_id === $userId;
     }
+
+    public function getDosenMahasiswaLogbooks(int $dosenId, ?string $search = null, ?string $type = null, int $perPage = 10): LengthAwarePaginator
+    {
+        return Logbook::with(['user.profilable', 'kkl', 'kkn'])
+            ->whereHas('user', function ($query) use ($dosenId, $type) {
+                $query->when($type === 'KKL', function ($q) use ($dosenId) {
+                    $q->whereHas('kkl', fn($q) => $q->where('dosen_id', $dosenId));
+                })->when($type === 'KKN', function ($q) use ($dosenId) {
+                    $q->whereHas('kkn', fn($q) => $q->where('dosen_id', $dosenId));
+                })->when(!$type, function ($q) use ($dosenId) {
+                    $q->whereHas('kkl', fn($q) => $q->where('dosen_id', $dosenId))
+                      ->orWhereHas('kkn', fn($q) => $q->where('dosen_id', $dosenId));
+                });
+            })
+            ->when($search, function ($query) use ($search) {
+                $query->where(function ($q) use ($search) {
+                    $q->whereHas('user', fn ($q) => $q->where('name', 'like', "%{$search}%"))
+                        ->orWhere('catatan', 'like', "%{$search}%")
+                        ->orWhere('keterangan', 'like', "%{$search}%");
+                });
+            })
+            ->latest()
+            ->paginate($perPage);
+    }
 }

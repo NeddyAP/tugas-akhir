@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useMemo, useEffect } from "react";
-import { Head, useForm, usePage } from "@inertiajs/react";
+import { Head, useForm, usePage, router } from "@inertiajs/react";
 import FrontLayout from "@/Layouts/FrontLayout";
 import DataTable from "@/Components/ui/DataTable";
 import GenericModal from "@/Components/ui/GenericModal";
@@ -7,8 +7,9 @@ import { copyToClipboard, downloadFile } from "@/utils/exportService";
 import TableHeader from "@/Components/ui/TableHeader";
 import { getTableConfigs } from "@/utils/constants";
 import { formatDate2 } from "@/utils/helpers";
+import { Tab } from "@headlessui/react";
 
-export default function LogbookPage({ logbooks, bimbingans }) {
+export default function LogbookPage({ logbooks, bimbingans, initialType }) {
     const user = usePage().props.auth.user.role;
     const form = useForm({
         tanggal: "",
@@ -16,32 +17,82 @@ export default function LogbookPage({ logbooks, bimbingans }) {
         keterangan: "",
     });
 
-    const tableConfigs = useMemo(
-        () => getTableConfigs(logbooks, bimbingans, formatDate2),
-        [logbooks?.data, bimbingans?.data],
-    );
     const [activeTab, setActiveTab] = useState("Logbook");
+    const [activeType, setActiveType] = useState(initialType || "ALL");
     const [modalState, setModalState] = useState({
         isOpen: false,
         type: null,
         editingData: null,
     });
 
-    const currentTableConfig = useMemo(
+    const tableConfigs = useMemo(
         () => ({
-            columns: tableConfigs[activeTab].columns,
-            data: tableConfigs[activeTab].data,
-            pagination: {
-                pageIndex: tableConfigs[activeTab].pagination.current_page - 1,
-                pageCount: tableConfigs[activeTab].pagination.last_page,
-                pageSize: tableConfigs[activeTab].pagination.per_page,
-                total: tableConfigs[activeTab].pagination.total,
-                from: tableConfigs[activeTab].pagination.from,
-                to: tableConfigs[activeTab].pagination.to,
+            Logbook: {
+                columns: [
+                    { Header: "Tanggal", accessor: "tanggal" },
+                    { Header: "Catatan", accessor: "catatan" },
+                    { Header: "Keterangan", accessor: "keterangan" },
+                ],
+                data: logbooks?.data || [],
+                pagination: logbooks || {
+                    current_page: 1,
+                    last_page: 1,
+                    per_page: 10,
+                    total: 0,
+                    from: 0,
+                    to: 0,
+                },
+                modalFields: [
+                    { name: "tanggal", label: "Tanggal", type: "date" },
+                    { name: "catatan", label: "Catatan", type: "textarea" },
+                    {
+                        name: "keterangan",
+                        label: "Keterangan",
+                        type: "textarea",
+                    },
+                ],
+            },
+            Bimbingan: {
+                columns: [
+                    { Header: "Tanggal", accessor: "tanggal" },
+                    { Header: "Keterangan", accessor: "keterangan" },
+                    { Header: "Status", accessor: "status" },
+                ],
+                data: bimbingans?.data || [],
+                pagination: bimbingans || {
+                    current_page: 1,
+                    last_page: 1,
+                    per_page: 10,
+                    total: 0,
+                    from: 0,
+                    to: 0,
+                },
+                modalFields: [
+                    { name: "tanggal", label: "Tanggal", type: "date" },
+                    {
+                        name: "keterangan",
+                        label: "Keterangan",
+                        type: "textarea",
+                    },
+                ],
             },
         }),
-        [activeTab, tableConfigs],
+        [logbooks, bimbingans],
     );
+
+    const currentTableConfig = useMemo(() => {
+        const config = tableConfigs[activeTab];
+        return {
+            columns: [
+                ...config.columns,
+                ...(user === "dosen"
+                    ? [{ Header: "Jenis", accessor: "type" }]
+                    : []),
+            ],
+            data: config.data,
+            pagination: config.pagination,
+        };
+    }, [activeTab, tableConfigs, user]);
 
     const handleAdd = useCallback(() => {
         form.reset();
@@ -173,93 +224,134 @@ export default function LogbookPage({ logbooks, bimbingans }) {
         }
     }, [modalState.editingData]);
 
-    const renderContent = () => {
-        if (user === "dosen") {
-            return (
-                <div className="p-6 text-center bg-white border rounded-xl dark:bg-gray-800/50 dark:border-gray-700">
-                    <p className="text-gray-600 dark:text-gray-400">
-                        Tidak ada data{" "}
-                        <span className="text-red-500">{activeTab}</span> yang
-                        tersedia.
-                    </p>
-                    <p className="text-gray-600 dark:text-gray-400">
-                        Login sebagai{" "}
-                        <span className="text-red-500">Mahasiswa</span> untuk
-                        membuat {activeTab}.
-                    </p>
-                </div>
-            );
-        }
+    const handleTypeChange = useCallback((type) => {
+        setActiveType(type);
+        router.get(
+            route(route().current()),
+            { type: type === "ALL" ? "" : type },
+            { preserveState: true },
+        );
+    }, []);
+
+    const renderTypeFilter = () => {
+        if (user !== "dosen") return null;
+
+        const types = ["ALL", "KKL", "KKN"];
 
         return (
-            <>
-                <TableHeader
-                    title={`${activeTab} Mahasiswa`}
-                    onDownload={(format) => handleDownload(format)}
-                    onAdd={() => handleAdd(activeTab)}
-                />
+            <div className="flex justify-center mb-6">
+                <Tab.Group>
+                    <Tab.List className="flex p-1.5 space-x-1.5 bg-gray-100/80 dark:bg-gray-800/60 rounded-xl shadow-sm">
+                        {types.map((type) => (
+                            <Tab
+                                key={type}
+                                className={({ selected }) =>
+                                    `px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm ${
+                                        selected
+                                            ? "bg-white dark:bg-gray-700 text-teal-600 dark:text-teal-400 shadow-sm"
+                                            : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800/80"
+                                    }`
+                                }
+                                onClick={() => handleTypeChange(type)}
+                            >
+                                {type}
+                            </Tab>
+                        ))}
+                    </Tab.List>
+                </Tab.Group>
+            </div>
+        );
+    };
 
-                <DataTable
-                    columns={currentTableConfig.columns}
-                    data={currentTableConfig.data}
-                    pagination={currentTableConfig.pagination}
-                    actions={tableActions}
-                />
+    const renderContent = () => {
+        return (
+            <div className="space-y-6">
+                {renderTypeFilter()}
 
-                <GenericModal
-                    isOpen={modalState.isOpen}
-                    onClose={() =>
-                        setModalState({
-                            isOpen: false,
-                            type: null,
-                            editingData: null,
-                        })
-                    }
-                    title={`${
-                        modalState.editingData ? "Edit" : "Tambah"
-                    } ${modalState.type}`}
-                    data={form.data}
-                    setData={form.setData}
-                    errors={form.errors}
-                    processing={form.processing}
-                    handleSubmit={handleSubmit}
-                    clearErrors={form.clearErrors}
-                    fields={tableConfigs[modalState.type]?.modalFields || []}
-                />
-            </>
+                <div className="p-6 bg-white shadow-sm dark:bg-gray-800/40 rounded-xl">
+                    <TableHeader
+                        title={`${activeTab} ${
+                            user === "dosen"
+                                ? "Mahasiswa Bimbingan"
+                                : "Mahasiswa"
+                        } ${activeType !== "ALL" ? activeType : ""}`}
+                        onDownload={handleDownload}
+                        onAdd={user !== "dosen" ? handleAdd : undefined}
+                    />
+
+                    <div className="mt-4">
+                        <DataTable
+                            columns={currentTableConfig.columns}
+                            data={currentTableConfig.data}
+                            pagination={currentTableConfig.pagination}
+                            actions={{
+                                ...tableActions,
+                                ...(user === "dosen" && {
+                                    handleAdd: undefined,
+                                    handleEdit: undefined,
+                                    handleDelete: undefined,
+                                }),
+                            }}
+                        />
+                    </div>
+
+                    {user !== "dosen" && (
+                        <GenericModal
+                            isOpen={modalState.isOpen}
+                            onClose={() =>
+                                setModalState({
+                                    isOpen: false,
+                                    type: null,
+                                    editingData: null,
+                                })
+                            }
+                            title={`${modalState.editingData ? "Edit" : "Tambah"} ${
+                                modalState.type
+                            }`}
+                            data={form.data}
+                            setData={form.setData}
+                            errors={form.errors}
+                            processing={form.processing}
+                            handleSubmit={handleSubmit}
+                            clearErrors={form.clearErrors}
+                            fields={
+                                tableConfigs[modalState.type]?.modalFields || []
+                            }
+                        />
+                    )}
+                </div>
+            </div>
         );
     };
 
     return (
         <FrontLayout>
             <Head title="Logbook" />
-            <div>
-                <div className="max-w-6xl p-6 mx-auto my-20">
-                    <div className="grid grid-cols-1 mb-8">
-                        <div className="flex flex-col gap-8">
-                            <div className="flex justify-center">
-                                <nav className="flex items-center p-1 space-x-1 overflow-x-auto text-sm text-gray-600 bg-gray-200 rtl:space-x-reverse rounded-xl dark:bg-gray-500/20">
-                                    {["Logbook", "Bimbingan"].map((tab) => (
-                                        <button
-                                            key={tab}
-                                            role="tab"
-                                            type="button"
-                                            className={`flex whitespace-nowrap items-center h-8 px-5 font-medium rounded-lg outline-none focus:ring-2 focus:ring-teal-600 focus:ring-inset ${
-                                                activeTab === tab
+            <div className="max-w-6xl p-6 mx-auto my-20">
+                <div className="space-y-8">
+                    <Tab.Group>
+                        <Tab.List className="flex justify-center">
+                            <div className="flex items-center p-1.5 space-x-2 bg-gray-100/80 dark:bg-gray-800/60 rounded-xl shadow-sm">
+                                {["Logbook", "Bimbingan"].map((tab) => (
+                                    <Tab
+                                        key={tab}
+                                        className={({ selected }) =>
+                                            `flex whitespace-nowrap items-center h-8 px-5 font-medium rounded-lg outline-none focus:ring-2 focus:ring-teal-600 focus:ring-inset ${
+                                                selected
                                                     ? "text-teal-600 shadow bg-white dark:text-white dark:bg-teal-600"
                                                     : "hover:text-gray-800 focus:text-teal-600 dark:text-gray-400 dark:hover:text-gray-300 dark:focus:text-gray-400"
-                                            }`}
-                                            onClick={() => setActiveTab(tab)}
-                                        >
-                                            {tab}
-                                        </button>
-                                    ))}
-                                </nav>
+                                            }`
+                                        }
+                                        onClick={() => setActiveTab(tab)}
+                                    >
+                                        {tab}
+                                    </Tab>
+                                ))}
                             </div>
+                        </Tab.List>
+                    </Tab.Group>
 
-                            {renderContent()}
-                        </div>
-                    </div>
+                    {renderContent()}
                 </div>
             </div>
         </FrontLayout>
