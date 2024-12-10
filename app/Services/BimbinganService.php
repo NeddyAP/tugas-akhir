@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Models\Bimbingan;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\DB;
 
 class BimbinganService
 {
@@ -17,41 +16,21 @@ class BimbinganService
 
     public function getDosenMahasiswaBimbingans(int $dosenId, ?string $search = null, ?string $type = null, int $perPage = 10): LengthAwarePaginator
     {
-        return Bimbingan::with(['user'])
-            ->where(function ($query) use ($dosenId, $type) {
-                if ($type === 'KKL') {
-                    $query->whereExists(function ($q) use ($dosenId) {
-                        $q->select(DB::raw(1))
-                            ->from('data_kkls')
-                            ->whereColumn('data_kkls.id_bimbingan', 'bimbingans.id')
-                            ->where('data_kkls.dosen_id', $dosenId);
-                    });
-                } elseif ($type === 'KKN') {
-                    $query->whereExists(function ($q) use ($dosenId) {
-                        $q->select(DB::raw(1))
-                            ->from('data_kkns')
-                            ->whereColumn('data_kkns.id_bimbingan', 'bimbingans.id')
-                            ->where('data_kkns.dosen_id', $dosenId);
-                    });
-                } else {
-                    $query->where(function ($q) use ($dosenId) {
-                        $q->whereExists(function ($subQ) use ($dosenId) {
-                            $subQ->select(DB::raw(1))
-                                ->from('data_kkls')
-                                ->whereColumn('data_kkls.id_bimbingan', 'bimbingans.id')
-                                ->where('data_kkls.dosen_id', $dosenId);
-                        })->orWhereExists(function ($subQ) use ($dosenId) {
-                            $subQ->select(DB::raw(1))
-                                ->from('data_kkns')
-                                ->whereColumn('data_kkns.id_bimbingan', 'bimbingans.id')
-                                ->where('data_kkns.dosen_id', $dosenId);
-                        });
-                    });
-                }
+        return Bimbingan::with(['user.profilable', 'kkl', 'kkn'])
+            ->whereHas('user', function ($query) use ($dosenId, $type) {
+                $query->when($type === 'KKL', function ($q) use ($dosenId) {
+                    $q->whereHas('kkl', fn ($q) => $q->where('dosen_id', $dosenId));
+                })->when($type === 'KKN', function ($q) use ($dosenId) {
+                    $q->whereHas('kkn', fn ($q) => $q->where('dosen_id', $dosenId));
+                })->when(! $type, function ($q) use ($dosenId) {
+                    $q->whereHas('kkl', fn ($q) => $q->where('dosen_id', $dosenId))
+                        ->orWhereHas('kkn', fn ($q) => $q->where('dosen_id', $dosenId));
+                });
             })
             ->when($search, function ($query) use ($search) {
                 $query->where(function ($q) use ($search) {
-                    $q->whereHas('user', fn($q) => $q->where('name', 'like', "%{$search}%"))
+                    $q->whereHas('user', fn ($q) => $q->where('name', 'like', "%{$search}%"))
+                        ->orWhere('catatan', 'like', "%{$search}%")
                         ->orWhere('keterangan', 'like', "%{$search}%");
                 });
             })

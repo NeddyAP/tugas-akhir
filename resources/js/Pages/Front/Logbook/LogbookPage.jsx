@@ -26,69 +26,14 @@ export default function LogbookPage({ logbooks, bimbingans, initialType }) {
     });
 
     const tableConfigs = useMemo(
-        () => ({
-            Logbook: {
-                columns: [
-                    { Header: "Tanggal", accessor: "tanggal" },
-                    { Header: "Catatan", accessor: "catatan" },
-                    { Header: "Keterangan", accessor: "keterangan" },
-                ],
-                data: logbooks?.data || [],
-                pagination: logbooks || {
-                    current_page: 1,
-                    last_page: 1,
-                    per_page: 10,
-                    total: 0,
-                    from: 0,
-                    to: 0,
-                },
-                modalFields: [
-                    { name: "tanggal", label: "Tanggal", type: "date" },
-                    { name: "catatan", label: "Catatan", type: "textarea" },
-                    {
-                        name: "keterangan",
-                        label: "Keterangan",
-                        type: "textarea",
-                    },
-                ],
-            },
-            Bimbingan: {
-                columns: [
-                    { Header: "Tanggal", accessor: "tanggal" },
-                    { Header: "Keterangan", accessor: "keterangan" },
-                    { Header: "Status", accessor: "status" },
-                ],
-                data: bimbingans?.data || [],
-                pagination: bimbingans || {
-                    current_page: 1,
-                    last_page: 1,
-                    per_page: 10,
-                    total: 0,
-                    from: 0,
-                    to: 0,
-                },
-                modalFields: [
-                    { name: "tanggal", label: "Tanggal", type: "date" },
-                    {
-                        name: "keterangan",
-                        label: "Keterangan",
-                        type: "textarea",
-                    },
-                ],
-            },
-        }),
+        () => getTableConfigs(logbooks, bimbingans, formatDate2),
         [logbooks, bimbingans],
     );
 
     const currentTableConfig = useMemo(() => {
         const config = tableConfigs[activeTab];
         return {
-            columns: [
-                ...config.columns,
-                ...(user === "dosen"
-                    ? [{ Header: "Jenis", accessor: "type" }]
-                    : []),
-            ],
+            columns: [...config.columns],
             data: config.data,
             pagination: config.pagination,
         };

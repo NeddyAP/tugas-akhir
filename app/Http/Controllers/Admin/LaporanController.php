@@ -185,7 +185,7 @@ class LaporanController extends Controller
             'status' => $validated['status'],
         ]);
 
-        return redirect()->back()->with('flash', ['message' => 'Data ' . $validated['type'] . ' berhasil ditambahkan.', 'type' => 'success']);
+        return redirect()->back()->with('flash', ['message' => 'Data '.$validated['type'].' berhasil ditambahkan.', 'type' => 'success']);
     }
 
     public function update(Request $request, $id)
@@ -212,7 +212,7 @@ class LaporanController extends Controller
         ]);
 
         return redirect()->back()->with('flash', [
-            'message' => 'Data ' . $validated['type'] . ' berhasil diperbarui.',
+            'message' => 'Data '.$validated['type'].' berhasil diperbarui.',
             'type' => 'success',
         ]);
     }
@@ -235,7 +235,7 @@ class LaporanController extends Controller
 
             $data->delete();
 
-            return redirect()->back()->with('flash', ['message' => 'Data ' . $type . ' berhasil dihapus.', 'type' => 'success']);
+            return redirect()->back()->with('flash', ['message' => 'Data '.$type.' berhasil dihapus.', 'type' => 'success']);
         });
     }
 
@@ -268,7 +268,7 @@ class LaporanController extends Controller
 
             if ($updated) {
                 return redirect()->back()->with('flash', [
-                    'message' => $updated . ' data berhasil diperbarui.',
+                    'message' => $updated.' data berhasil diperbarui.',
                     'type' => 'success',
                 ]);
             }
@@ -281,7 +281,7 @@ class LaporanController extends Controller
             DB::rollBack();
 
             return redirect()->back()->with('flash', [
-                'message' => 'Gagal memperbarui data: ' . $e->getMessage(),
+                'message' => 'Gagal memperbarui data: '.$e->getMessage(),
                 'type' => 'error',
             ]);
         }

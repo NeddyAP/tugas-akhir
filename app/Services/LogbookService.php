@@ -54,12 +54,12 @@ class LogbookService
         return Logbook::with(['user.profilable', 'kkl', 'kkn'])
             ->whereHas('user', function ($query) use ($dosenId, $type) {
                 $query->when($type === 'KKL', function ($q) use ($dosenId) {
-                    $q->whereHas('kkl', fn($q) => $q->where('dosen_id', $dosenId));
+                    $q->whereHas('kkl', fn ($q) => $q->where('dosen_id', $dosenId));
                 })->when($type === 'KKN', function ($q) use ($dosenId) {
-                    $q->whereHas('kkn', fn($q) => $q->where('dosen_id', $dosenId));
-                })->when(!$type, function ($q) use ($dosenId) {
-                    $q->whereHas('kkl', fn($q) => $q->where('dosen_id', $dosenId))
-                      ->orWhereHas('kkn', fn($q) => $q->where('dosen_id', $dosenId));
+                    $q->whereHas('kkn', fn ($q) => $q->where('dosen_id', $dosenId));
+                })->when(! $type, function ($q) use ($dosenId) {
+                    $q->whereHas('kkl', fn ($q) => $q->where('dosen_id', $dosenId))
+                        ->orWhereHas('kkn', fn ($q) => $q->where('dosen_id', $dosenId));
                 });
             })
             ->when($search, function ($query) use ($search) {

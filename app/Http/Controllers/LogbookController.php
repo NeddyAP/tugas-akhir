@@ -9,9 +9,9 @@ use App\Services\BimbinganService;
 use App\Services\LogbookService;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
-use Illuminate\Http\Request;
 
 class LogbookController extends Controller
 {

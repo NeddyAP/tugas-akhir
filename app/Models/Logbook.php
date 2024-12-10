@@ -36,8 +36,13 @@ class Logbook extends Model
     // Helper method to determine the type
     public function getTypeAttribute()
     {
-        if ($this->kkl) return 'KKL';
-        if ($this->kkn) return 'KKN';
+        if ($this->kkl) {
+            return 'KKL';
+        }
+        if ($this->kkn) {
+            return 'KKN';
+        }
+
         return 'Undefined';
     }
 }
