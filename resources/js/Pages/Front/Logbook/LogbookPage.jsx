@@ -18,7 +18,7 @@ export default function LogbookPage({ logbooks, bimbingans, initialType }) {
     });
 
     const [activeTab, setActiveTab] = useState("Logbook");
-    const [activeType, setActiveType] = useState(initialType || "ALL");
+    const [activeType, setActiveType] = useState(initialType || "Semua");
     const [modalState, setModalState] = useState({
         isOpen: false,
         type: null,
@@ -173,7 +173,7 @@ export default function LogbookPage({ logbooks, bimbingans, initialType }) {
         setActiveType(type);
         router.get(
             route(route().current()),
-            { type: type === "ALL" ? "" : type },
+            { type: type === "Semua" ? "" : type },
             { preserveState: true },
         );
     }, []);
@@ -181,7 +181,7 @@ export default function LogbookPage({ logbooks, bimbingans, initialType }) {
     const renderTypeFilter = () => {
         if (user !== "dosen") return null;
 
-        const types = ["ALL", "KKL", "KKN"];
+        const types = ["Semua", "KKL", "KKN"];
 
         return (
             <div className="flex justify-center mb-6">
@@ -219,7 +219,7 @@ export default function LogbookPage({ logbooks, bimbingans, initialType }) {
                             user === "dosen"
                                 ? "Mahasiswa Bimbingan"
                                 : "Mahasiswa"
-                        } ${activeType !== "ALL" ? activeType : ""}`}
+                        } ${activeType !== "Semua" ? activeType : ""}`}
                         onDownload={handleDownload}
                         onAdd={user !== "dosen" ? handleAdd : undefined}
                     />
