@@ -14,6 +14,7 @@ class LogbookRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'type' => 'required|string',
             'tanggal' => 'required|date',
             'catatan' => 'required|string',
             'keterangan' => 'required|string',

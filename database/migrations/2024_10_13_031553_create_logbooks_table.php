@@ -16,7 +16,10 @@ return new class extends Migration
             $table->date('tanggal');
             $table->text('catatan');
             $table->text('keterangan');
+            $table->string('type')->nullable();
             $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('id_kkl')->nullable()->constrained('data_kkls')->nullOnDelete();
+            $table->foreignId('id_kkn')->nullable()->constrained('data_kkns')->nullOnDelete();
             $table->timestamps();
         });
     }

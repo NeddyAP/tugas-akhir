@@ -26,22 +26,24 @@ class LogbookController extends Controller
     {
         $user = auth()->user();
         $userId = $user->id;
-        $type = $request->get('type'); // KKL or KKN
+        $type = $request->get('type');
+        $search = $request->get('search');
 
         $logbooks = match ($user->role) {
-            'dosen' => $this->logbookService->getDosenMahasiswaLogbooks($userId, null, $type),
-            default => $this->logbookService->getUserLogbooks($userId),
+            'dosen' => $this->logbookService->getDosenMahasiswaLogbooks($userId, $search, $type),
+            default => $this->logbookService->getUserLogbooks($userId, $search, $type),
         };
 
         $bimbingans = match ($user->role) {
-            'dosen' => $this->bimbinganService->getDosenMahasiswaBimbingans($userId, null, $type),
-            default => $this->bimbinganService->getUserBimbingans($userId),
+            'dosen' => $this->bimbinganService->getDosenMahasiswaBimbingans($userId, $search, $type),
+            default => $this->bimbinganService->getUserBimbingans($userId, $search, $type),
         };
 
         return Inertia::render('Front/Logbook/LogbookPage', [
             'logbooks' => $logbooks,
             'bimbingans' => $bimbingans,
             'initialType' => $type,
+            'filters' => $request->only(['search', 'type']),
         ]);
     }
 

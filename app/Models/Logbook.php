@@ -15,6 +15,9 @@ class Logbook extends Model
         'tanggal',
         'catatan',
         'keterangan',
+        'type',
+        'id_kkl',
+        'id_kkn',
         'user_id',
     ];
 
@@ -25,21 +28,21 @@ class Logbook extends Model
 
     public function kkl()
     {
-        return $this->hasOne(DataKkl::class, 'id_logbook');
+        return $this->belongsTo(DataKkl::class, 'id_kkl');
     }
 
     public function kkn()
     {
-        return $this->hasOne(DataKkn::class, 'id_logbook');
+        return $this->belongsTo(DataKkn::class, 'id_kkn');
     }
 
     // Helper method to determine the type
     public function getTypeAttribute()
     {
-        if ($this->kkl) {
+        if ($this->id_kkl) {
             return 'KKL';
         }
-        if ($this->kkn) {
+        if ($this->id_kkn) {
             return 'KKN';
         }
 

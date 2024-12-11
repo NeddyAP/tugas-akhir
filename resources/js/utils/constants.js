@@ -27,16 +27,50 @@ export const getTableConfigs = (logbooks, bimbingans, formatDate) => {
         to: 0,
     };
 
+    const getMahasiswaInfo = (row) => {
+        if (row.kkl?.mahasiswa || row.kkn?.mahasiswa) {
+            const mahasiswa = row.kkl?.mahasiswa || row.kkn?.mahasiswa;
+            return `${mahasiswa.name} (${mahasiswa.profilable.nim})`;
+        }
+        return row.user?.name || "-";
+    };
+
     return {
         Logbook: {
             columns: [
+                {
+                    Header: "Mahasiswa",
+                    accessor: "mahasiswa_info",
+                    Cell: ({ row }) => getMahasiswaInfo(row.original),
+                    show: ({ user }) => user.role === "dosen",
+                },
                 { Header: "Tanggal", accessor: "tanggal" },
                 { Header: "Catatan", accessor: "catatan" },
                 { Header: "Keterangan", accessor: "keterangan" },
+                {
+                    Header: "Tipe",
+                    accessor: "type",
+                    Cell: ({ row }) =>
+                        row.original.kkl
+                            ? "KKL"
+                            : row.original.kkn
+                                ? "KKN"
+                                : "-",
+                },
             ],
             data: logbooks?.data || [],
             pagination: logbooks || emptyPagination,
             modalFields: [
+                {
+                    name: "type",
+                    label: "Tipe",
+                    type: "select",
+                    options: [
+                        { value: "KKL", label: "KKL" },
+                        { value: "KKN", label: "KKN" },
+                    ],
+                    required: true,
+                },
                 { name: "tanggal", label: "Tanggal", type: "date" },
                 { name: "catatan", label: "Catatan", type: "textarea" },
                 { name: "keterangan", label: "Keterangan", type: "textarea" },
@@ -44,13 +78,38 @@ export const getTableConfigs = (logbooks, bimbingans, formatDate) => {
         },
         Bimbingan: {
             columns: [
-                { Header: "Tanggal", accessor: "tanggal" },
+                {
+                    Header: "Mahasiswa",
+                    accessor: "mahasiswa_info",
+                    Cell: ({ row }) => getMahasiswaInfo(row.original),
+                    show: ({ user }) => user.role === "dosen",
+                },
                 { Header: "Keterangan", accessor: "keterangan" },
                 { Header: "Status", accessor: "status" },
+                {
+                    Header: "Tipe",
+                    accessor: "type",
+                    Cell: ({ row }) =>
+                        row.original.kkl
+                            ? "KKL"
+                            : row.original.kkn
+                                ? "KKN"
+                                : "-",
+                },
             ],
             data: bimbingans?.data || [],
             pagination: bimbingans || emptyPagination,
             modalFields: [
+                {
+                    name: "type",
+                    label: "Tipe",
+                    type: "select",
+                    options: [
+                        { value: "KKL", label: "KKL" },
+                        { value: "KKN", label: "KKN" },
+                    ],
+                    required: true,
+                },
                 { name: "tanggal", label: "Tanggal", type: "date" },
                 { name: "keterangan", label: "Keterangan", type: "textarea" },
             ],
@@ -374,9 +433,7 @@ export const getLaporanConfig = (mahasiswas, dosens) => ({
             accessor: "status",
             Cell: ({ value }) => ({
                 value,
-                className: `px-2 py-1 rounded-full text-xs ${renderStatusBadge(
-                    value,
-                )}`,
+                className: `px-2 py-1 rounded-full text-xs ${renderStatusBadge(value)}`,
             }),
         },
         {

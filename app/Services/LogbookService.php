@@ -13,7 +13,7 @@ class LogbookService
 
         if ($search) {
             $query->where(function ($q) use ($search) {
-                $q->whereHas('user', fn ($q) => $q->where('name', 'like', "%{$search}%"))
+                $q->whereHas('user', fn($q) => $q->where('name', 'like', "%{$search}%"))
                     ->orWhere('catatan', 'like', "%{$search}%")
                     ->orWhere('keterangan', 'like', "%{$search}%");
             });
@@ -24,7 +24,17 @@ class LogbookService
 
     public function create(array $data): Logbook
     {
-        return Logbook::create($data + ['user_id' => auth()->id()]);
+        $type = $data['type'] ?? null;
+        unset($data['type']);
+
+        $user = auth()->user();
+        if ($type === 'KKL' && $user->kkl) {
+            $data['id_kkl'] = $user->kkl->id;
+        } elseif ($type === 'KKN' && $user->kkn) {
+            $data['id_kkn'] = $user->kkn->id;
+        }
+
+        return Logbook::create($data + ['user_id' => $user->id]);
     }
 
     public function update(Logbook $logbook, array $data): bool
@@ -37,11 +47,24 @@ class LogbookService
         return $logbook->delete();
     }
 
-    public function getUserLogbooks(int $userId, int $perPage = 10): LengthAwarePaginator
+    public function getUserLogbooks($userId, $search = null, $type = null)
     {
-        return Logbook::where('user_id', $userId)
-            ->latest()
-            ->paginate($perPage);
+        $query = Logbook::where('user_id', $userId);
+
+        if ($type === 'KKL') {
+            $query->whereNotNull('id_kkl');
+        } elseif ($type === 'KKN') {
+            $query->whereNotNull('id_kkn');
+        }
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('catatan', 'like', "%{$search}%")
+                    ->orWhere('keterangan', 'like', "%{$search}%");
+            });
+        }
+
+        return $query->latest()->paginate(10);
     }
 
     public function checkUserOwnership(Logbook $logbook, int $userId): bool
@@ -51,20 +74,27 @@ class LogbookService
 
     public function getDosenMahasiswaLogbooks(int $dosenId, ?string $search = null, ?string $type = null, int $perPage = 10): LengthAwarePaginator
     {
-        return Logbook::with(['user.profilable', 'kkl', 'kkn'])
-            ->whereHas('user', function ($query) use ($dosenId, $type) {
-                $query->when($type === 'KKL', function ($q) use ($dosenId) {
-                    $q->whereHas('kkl', fn ($q) => $q->where('dosen_id', $dosenId));
-                })->when($type === 'KKN', function ($q) use ($dosenId) {
-                    $q->whereHas('kkn', fn ($q) => $q->where('dosen_id', $dosenId));
-                })->when(! $type, function ($q) use ($dosenId) {
-                    $q->whereHas('kkl', fn ($q) => $q->where('dosen_id', $dosenId))
-                        ->orWhereHas('kkn', fn ($q) => $q->where('dosen_id', $dosenId));
-                });
+        return Logbook::with([
+            'user.profilable',
+            'kkl.mahasiswa.profilable',
+            'kkn.mahasiswa.profilable'
+        ])
+            ->select('logbooks.*') // Ensure we get all fields
+            ->where(function ($query) use ($dosenId, $type) {
+                if ($type === 'KKL') {
+                    $query->whereHas('kkl', fn($q) => $q->where('dosen_id', $dosenId));
+                } elseif ($type === 'KKN') {
+                    $query->whereHas('kkn', fn($q) => $q->where('dosen_id', $dosenId));
+                } else {
+                    $query->where(function ($q) use ($dosenId) {
+                        $q->whereHas('kkl', fn($q) => $q->where('dosen_id', $dosenId))
+                            ->orWhereHas('kkn', fn($q) => $q->where('dosen_id', $dosenId));
+                    });
+                }
             })
             ->when($search, function ($query) use ($search) {
                 $query->where(function ($q) use ($search) {
-                    $q->whereHas('user', fn ($q) => $q->where('name', 'like', "%{$search}%"))
+                    $q->whereHas('user', fn($q) => $q->where('name', 'like', "%{$search}%"))
                         ->orWhere('catatan', 'like', "%{$search}%")
                         ->orWhere('keterangan', 'like', "%{$search}%");
                 });

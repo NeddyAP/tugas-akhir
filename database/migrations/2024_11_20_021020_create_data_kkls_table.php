@@ -19,10 +19,6 @@ return new class extends Migration
                 ->constrained('users')->nullOnDelete();
             $table->foreignId('id_laporan')->nullable()
                 ->constrained('laporans')->nullOnDelete();
-            $table->foreignId('id_logbook')->nullable()
-                ->constrained('logbooks')->nullOnDelete();
-            $table->foreignId('id_bimbingan')->nullable()
-                ->constrained('bimbingans')->nullOnDelete();
             $table->date('tanggal_mulai')->nullable();
             $table->date('tanggal_selesai')->nullable();
             $table->string('status')

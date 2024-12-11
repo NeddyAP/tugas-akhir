@@ -12,8 +12,6 @@ class DataKkl extends Model
         'user_id',
         'dosen_id',
         'id_laporan',
-        'id_logbook',
-        'id_bimbingan',
         'tanggal_mulai',
         'tanggal_selesai',
         'status',
@@ -36,13 +34,13 @@ class DataKkl extends Model
         return $this->belongsTo(Laporan::class, 'id_laporan');
     }
 
-    public function logbook()
+    public function logbooks()
     {
-        return $this->belongsTo(Logbook::class, 'id_logbook');
+        return $this->hasMany(Logbook::class, 'id_kkl');
     }
 
-    public function bimbingan()
+    public function bimbingans()
     {
-        return $this->belongsTo(Bimbingan::class, 'id_bimbingan');
+        return $this->hasMany(Bimbingan::class, 'id_kkl');
     }
 }

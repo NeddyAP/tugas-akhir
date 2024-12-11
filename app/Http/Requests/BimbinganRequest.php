@@ -14,6 +14,7 @@ class BimbinganRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'type' => 'required|string',
             'tanggal' => 'required|date',
             'keterangan' => 'required|string',
         ];

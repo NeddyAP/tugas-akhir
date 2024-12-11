@@ -15,8 +15,11 @@ return new class extends Migration
             $table->id();
             $table->date('tanggal');
             $table->text('keterangan');
+            $table->string('type')->nullable();
             $table->boolean('status')->default(false);
             $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('id_kkl')->nullable()->constrained('data_kkls')->nullOnDelete();
+            $table->foreignId('id_kkn')->nullable()->constrained('data_kkns')->nullOnDelete();
             $table->timestamps();
         });
     }
