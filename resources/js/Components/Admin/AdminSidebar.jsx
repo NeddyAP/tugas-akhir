@@ -349,7 +349,7 @@ const AdminSidebar = memo(
                                 <SidebarItem
                                     href={route("home")}
                                     icon={<Home />}
-                                    label="Front Page"
+                                    label="Home"
                                     isCollapsed={isCollapsed}
                                 />
                                 <SidebarItem
