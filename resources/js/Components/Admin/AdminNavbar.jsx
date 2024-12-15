@@ -20,11 +20,17 @@ const ProfileDropdown = memo(({ user, isOpen, onClose }) => (
                 {user.email}
             </p>
         </div>
-        <Link className="flex items-center w-full px-4 py-2 space-x-2 text-left text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700">
+        <Link
+            href={route("profile.edit")}
+            className="flex items-center w-full px-4 py-2 space-x-2 text-left text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
+        >
             <User className="w-4 h-4" />
             <span>Profile</span>
         </Link>
-        <Link className="flex items-center w-full px-4 py-2 space-x-2 text-left text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700">
+        <Link
+            href={route("admin.settings.create")}
+            className="flex items-center w-full px-4 py-2 space-x-2 text-left text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
+        >
             <Settings className="w-4 h-4" />
             <span>Settings</span>
         </Link>
