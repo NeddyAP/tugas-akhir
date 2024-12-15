@@ -15,6 +15,14 @@ use App\Http\Controllers\LogbookController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
+
+Route::get('/error', function () {
+    return Inertia::render('Error', [
+        'status' => request()->input('status', 500),
+        'message' => request()->input('message', 'An unexpected error occurred')
+    ]);
+})->name('error');
 
 Route::get('/', [HomeController::class, 'home'])->name('home');
 Route::get('/pedoman', [HomeController::class, 'pedoman'])->name('pedoman');

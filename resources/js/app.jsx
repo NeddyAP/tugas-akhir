@@ -2,8 +2,9 @@ import "../css/app.css";
 import "./bootstrap";
 import "react-toastify/dist/ReactToastify.css";
 import { createInertiaApp } from "@inertiajs/react";
-import { createRoot, hydrateRoot } from "react-dom/client";
+import { createRoot } from "react-dom/client";
 import { LoadingProvider } from "./Contexts/LoadingContext";
+import ErrorBoundary from "./Components/ErrorBoundary";
 
 createInertiaApp({
     title: (title) => `${title} - FILKOM`,
@@ -13,15 +14,13 @@ createInertiaApp({
     },
     setup({ el, App, props }) {
         const root = (
-            <LoadingProvider>
-                <App {...props} />
-            </LoadingProvider>
+            <ErrorBoundary>
+                <LoadingProvider>
+                    <App {...props} />
+                </LoadingProvider>
+            </ErrorBoundary>
         );
 
-        if (import.meta.env.SSR) {
-            hydrateRoot(el, root);
-            return;
-        }
         createRoot(el).render(root);
     },
     progress: {
