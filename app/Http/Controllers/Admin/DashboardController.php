@@ -23,7 +23,6 @@ class DashboardController extends Controller
             $statusFilter
         );
 
-        // Add filters to the response
         $dashboardData['filters'] = [
             'activity' => $activityFilter,
             'status' => $statusFilter,

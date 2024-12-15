@@ -13,7 +13,7 @@ class LogbookService
 
         if ($search) {
             $query->where(function ($q) use ($search) {
-                $q->whereHas('user', fn($q) => $q->where('name', 'like', "%{$search}%"))
+                $q->whereHas('user', fn ($q) => $q->where('name', 'like', "%{$search}%"))
                     ->orWhere('catatan', 'like', "%{$search}%")
                     ->orWhere('keterangan', 'like', "%{$search}%");
             });
@@ -77,24 +77,24 @@ class LogbookService
         return Logbook::with([
             'user.profilable',
             'kkl.mahasiswa.profilable',
-            'kkn.mahasiswa.profilable'
+            'kkn.mahasiswa.profilable',
         ])
-            ->select('logbooks.*') // Ensure we get all fields
+            ->select('logbooks.*')
             ->where(function ($query) use ($dosenId, $type) {
                 if ($type === 'KKL') {
-                    $query->whereHas('kkl', fn($q) => $q->where('dosen_id', $dosenId));
+                    $query->whereHas('kkl', fn ($q) => $q->where('dosen_id', $dosenId));
                 } elseif ($type === 'KKN') {
-                    $query->whereHas('kkn', fn($q) => $q->where('dosen_id', $dosenId));
+                    $query->whereHas('kkn', fn ($q) => $q->where('dosen_id', $dosenId));
                 } else {
                     $query->where(function ($q) use ($dosenId) {
-                        $q->whereHas('kkl', fn($q) => $q->where('dosen_id', $dosenId))
-                            ->orWhereHas('kkn', fn($q) => $q->where('dosen_id', $dosenId));
+                        $q->whereHas('kkl', fn ($q) => $q->where('dosen_id', $dosenId))
+                            ->orWhereHas('kkn', fn ($q) => $q->where('dosen_id', $dosenId));
                     });
                 }
             })
             ->when($search, function ($query) use ($search) {
                 $query->where(function ($q) use ($search) {
-                    $q->whereHas('user', fn($q) => $q->where('name', 'like', "%{$search}%"))
+                    $q->whereHas('user', fn ($q) => $q->where('name', 'like', "%{$search}%"))
                         ->orWhere('catatan', 'like', "%{$search}%")
                         ->orWhere('keterangan', 'like', "%{$search}%");
                 });

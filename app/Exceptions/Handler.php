@@ -3,8 +3,8 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use Throwable;
 use Inertia\Inertia;
+use Throwable;
 
 class Handler extends ExceptionHandler
 {
@@ -43,7 +43,7 @@ class Handler extends ExceptionHandler
 
     private function getProductionMessage($statusCode): string
     {
-        return match($statusCode) {
+        return match ($statusCode) {
             401 => 'Unauthorized access',
             403 => 'Forbidden access',
             404 => 'Page not found',

@@ -14,7 +14,6 @@ class ErrorBoundary extends React.Component {
     componentDidCatch(error, errorInfo) {
         console.error("Error:", error, errorInfo);
 
-        // Use Inertia router instead of window.location
         router.visit("/error", {
             data: {
                 status: 500,

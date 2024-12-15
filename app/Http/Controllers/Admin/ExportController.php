@@ -26,7 +26,6 @@ class ExportController extends Controller
 
         $query = User::query();
 
-        // Filter based on tab
         if ($tab !== 'all') {
             $query->where('role', $tab);
         }

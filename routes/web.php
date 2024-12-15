@@ -20,7 +20,7 @@ use Inertia\Inertia;
 Route::get('/error', function () {
     return Inertia::render('Error', [
         'status' => request()->input('status', 500),
-        'message' => request()->input('message', 'An unexpected error occurred')
+        'message' => request()->input('message', 'An unexpected error occurred'),
     ]);
 })->name('error');
 
@@ -44,6 +44,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
     // Admin Page
     Route::prefix('admin')->as('admin.')->middleware(AdminMiddleware::class)->group(function () {
         Route::resource('dashboard', DashboardController::class)->only('index');

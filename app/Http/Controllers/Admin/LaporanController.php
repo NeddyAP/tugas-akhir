@@ -48,7 +48,6 @@ class LaporanController extends Controller
             });
         }
 
-        // Apply filters
         if (! empty($filters['pembimbing'])) {
             $query->where('dosen_id', $filters['pembimbing']);
         }

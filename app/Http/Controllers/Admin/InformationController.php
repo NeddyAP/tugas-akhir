@@ -64,7 +64,6 @@ class InformationController extends Controller
             $rules = $this->getValidationRules($type);
             $validated = $request->validate($rules);
 
-            // Filter out null values
             $validated = array_filter($validated, function ($value) {
                 return ! is_null($value);
             });
@@ -90,7 +89,6 @@ class InformationController extends Controller
             $rules = $this->getValidationRules($type, true);
             $validated = $request->validate($rules);
 
-            // Filter out null values
             $validated = array_filter($validated, function ($value) {
                 return ! is_null($value);
             });

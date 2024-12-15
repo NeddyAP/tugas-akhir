@@ -83,7 +83,6 @@ class DashboardRepository
             \DB::raw($statusCase.' as status')
         );
 
-        // Apply status filter
         if ($statusFilter !== 'all') {
             $mappedStatus = match ($statusFilter) {
                 'pending' => 'Pending',
@@ -96,8 +95,6 @@ class DashboardRepository
             $kkl->where($statusCondition, $mappedStatus);
             $kkn->where($statusCondition, $mappedStatus);
         }
-
-        // Apply type filter
         if ($typeFilter === 'kkl') {
             $query = $kkl;
         } elseif ($typeFilter === 'kkn') {
