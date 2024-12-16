@@ -1,3 +1,6 @@
 vendor
 bootstrap/cache/*
+node_modules
+public/storage
+compose.prod.yml
 tests

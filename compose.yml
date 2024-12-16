@@ -1,0 +1,22 @@
+services:
+  php:
+    build: .
+    restart: unless-stopped
+    environment:
+      SERVER_NAME: ":8080"
+      APP_ENV: production
+      APP_DEBUG: "false"
+      DB_CONNECTION: sqlite
+      CACHE_DRIVER: file
+      SESSION_DRIVER: file
+      QUEUE_CONNECTION: sync
+      PHP_MEMORY_LIMIT: "512M"
+      PHP_MAX_EXECUTION_TIME: "300"
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - ./storage:/app/storage
+      - ./bootstrap/cache:/app/bootstrap/cache
+      - ./database:/app/database
