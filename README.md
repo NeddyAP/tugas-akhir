@@ -14,7 +14,7 @@ Sebelum memulai, pastikan Anda telah memenuhi persyaratan berikut:
 0. **Klon repositori:**
 
     ```sh
-    git clone https://github.com/neddy1298/tugas-akhir
+    git clone https://github.com/neddyap/tugas-akhir
     cd tugas-akhir
     ```
 

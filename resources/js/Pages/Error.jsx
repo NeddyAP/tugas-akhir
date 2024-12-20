@@ -92,7 +92,7 @@ const Error = ({
                     </div>
 
                     {/* Debug information in development */}
-                    {debug && process.env.NODE_ENV === "development" && (
+                    {debug && process.env.NODE_ENV !== "production" && (
                         <div className="w-full p-4 mt-8 bg-gray-100 rounded-lg dark:bg-gray-800">
                             <details className="text-sm text-gray-700 dark:text-gray-300">
                                 <summary className="font-medium cursor-pointer">
