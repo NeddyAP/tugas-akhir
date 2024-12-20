@@ -66,4 +66,7 @@ Route::middleware('auth')->group(function () {
     });
 });
 
-require __DIR__.'/auth.php';
+if (env('APP_ENV') !== 'local') {
+    URL::forceScheme('https');
+}
+require __DIR__ . '/auth.php';
