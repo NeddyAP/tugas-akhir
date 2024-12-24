@@ -69,4 +69,4 @@ Route::middleware('auth')->group(function () {
 if (env('APP_ENV') !== 'local') {
     URL::forceScheme('https');
 }
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';

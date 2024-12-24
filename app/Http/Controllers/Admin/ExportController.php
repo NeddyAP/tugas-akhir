@@ -45,7 +45,7 @@ class ExportController extends Controller
             return response()->json(['data' => $users]);
         }
 
-        $fileName = "users-$tab-".date('Y-m-d-His');
+        $fileName = "users-$tab-" . date('Y-m-d-His');
 
         return $this->exportService->export($users, $format, $fileName);
     }
@@ -71,7 +71,7 @@ class ExportController extends Controller
             return response()->json(['data' => $logbooks]);
         }
 
-        $fileName = 'logbooks-'.date('Y-m-d-His');
+        $fileName = 'logbooks-' . date('Y-m-d-His');
 
         return $this->exportService->exportLogbook($logbooks, $format, $fileName);
     }
@@ -96,7 +96,7 @@ class ExportController extends Controller
             return response()->json(['data' => $bimbingans]);
         }
 
-        $fileName = 'bimbingans-'.date('Y-m-d-His');
+        $fileName = 'bimbingans-' . date('Y-m-d-His');
 
         return $this->exportService->exportBimbingan($bimbingans, $format, $fileName);
     }

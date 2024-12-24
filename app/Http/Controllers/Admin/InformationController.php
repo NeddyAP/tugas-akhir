@@ -141,7 +141,7 @@ class InformationController extends Controller
         if ($isUpdate) {
             // Make all fields nullable on update
             $rules = array_map(function ($rule) {
-                return 'nullable|'.$rule;
+                return 'nullable|' . $rule;
             }, $rules);
 
             // Special handling for panduan file
@@ -183,7 +183,7 @@ class InformationController extends Controller
             ->back()
             ->with('flash', [
                 'type' => 'error',
-                'message' => 'Gagal memproses data: '.$e->getMessage(),
+                'message' => 'Gagal memproses data: ' . $e->getMessage(),
             ]);
     }
 }

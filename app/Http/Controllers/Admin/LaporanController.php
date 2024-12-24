@@ -61,7 +61,7 @@ class LaporanController extends Controller
             }
         }
 
-        if (!empty($filters['angkatan'])) {
+        if (! empty($filters['angkatan'])) {
             $query->whereHas('mahasiswa', function ($query) use ($filters) {
                 $query->whereHasMorph('profilable', [MahasiswaProfile::class], function ($query) use ($filters) {
                     $query->where('angkatan', $filters['angkatan']);
@@ -150,7 +150,7 @@ class LaporanController extends Controller
             $query->where('dosen_id', $filters['pembimbing']);
         }
 
-        if (!empty($filters['angkatan'])) {
+        if (! empty($filters['angkatan'])) {
             $query->whereHas('mahasiswa', function ($query) use ($filters) {
                 $query->whereHasMorph('profilable', [MahasiswaProfile::class], function ($query) use ($filters) {
                     $query->where('angkatan', $filters['angkatan']);

@@ -190,7 +190,7 @@ class LaporanController extends Controller
             } catch (\Exception $e) {
                 return back()->with('flash', [
                     'type' => 'error',
-                    'message' => 'Gagal menghapus laporan: '.$e->getMessage(),
+                    'message' => 'Gagal menghapus laporan: ' . $e->getMessage(),
                 ]);
             }
         });
