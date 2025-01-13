@@ -18,7 +18,7 @@ class BimbinganService
         }
 
         if ($search) {
-            $query->where(function ($q) use ($search) {
+            $query->where(function ($q) use ($search): void {
                 $q->where('keterangan', 'like', "%{$search}%");
             });
         }
@@ -34,20 +34,20 @@ class BimbinganService
             'kkn.mahasiswa.profilable',
         ])
             ->select('bimbingans.*')
-            ->where(function ($query) use ($dosenId, $type) {
+            ->where(function ($query) use ($dosenId, $type): void {
                 if ($type === 'KKL') {
                     $query->whereHas('kkl', fn ($q) => $q->where('dosen_id', $dosenId));
                 } elseif ($type === 'KKN') {
                     $query->whereHas('kkn', fn ($q) => $q->where('dosen_id', $dosenId));
                 } else {
-                    $query->where(function ($q) use ($dosenId) {
+                    $query->where(function ($q) use ($dosenId): void {
                         $q->whereHas('kkl', fn ($q) => $q->where('dosen_id', $dosenId))
                             ->orWhereHas('kkn', fn ($q) => $q->where('dosen_id', $dosenId));
                     });
                 }
             })
-            ->when($search, function ($query) use ($search) {
-                $query->where(function ($q) use ($search) {
+            ->when($search, function ($query) use ($search): void {
+                $query->where(function ($q) use ($search): void {
                     $q->whereHas('user', fn ($q) => $q->where('name', 'like', "%{$search}%"))
                         ->orWhere('keterangan', 'like', "%{$search}%");
                 });

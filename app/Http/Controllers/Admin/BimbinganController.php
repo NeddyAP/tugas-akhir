@@ -15,8 +15,8 @@ class BimbinganController extends Controller
 
         if ($request->has('search')) {
             $searchTerm = $request->search;
-            $query->where(function ($q) use ($searchTerm) {
-                $q->whereHas('user', function ($q) use ($searchTerm) {
+            $query->where(function ($q) use ($searchTerm): void {
+                $q->whereHas('user', function ($q) use ($searchTerm): void {
                     $q->where('name', 'like', "%{$searchTerm}%");
                 })
                     ->orWhere('keterangan', 'like', "%{$searchTerm}%")

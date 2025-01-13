@@ -117,7 +117,7 @@ class User extends Authenticatable
     public function mahasiswaBimbingan()
     {
         return $this->hasMany(DataKkl::class, 'dosen_id')
-            ->orWhere(function ($query) {
+            ->orWhere(function ($query): void {
                 $query->hasMany(DataKkn::class, 'dosen_id');
             });
     }

@@ -11,11 +11,8 @@ use Illuminate\Http\Request;
 
 class ExportController extends Controller
 {
-    protected ExportService $exportService;
-
-    public function __construct(ExportService $exportService)
+    public function __construct(protected ExportService $exportService)
     {
-        $this->exportService = $exportService;
     }
 
     public function export(Request $request)
@@ -31,7 +28,7 @@ class ExportController extends Controller
         }
 
         if ($search) {
-            $query->where(function ($q) use ($search) {
+            $query->where(function ($q) use ($search): void {
                 $q->where('name', 'like', "%$search%")
                     ->orWhere('email', 'like', "%$search%")
                     ->orWhere('nim', 'like', "%$search%")
@@ -58,7 +55,7 @@ class ExportController extends Controller
         $query = Logbook::with('user');
 
         if ($search) {
-            $query->where(function ($q) use ($search) {
+            $query->where(function ($q) use ($search): void {
                 $q->where('tanggal', 'like', "%$search%")
                     ->orWhere('catatan', 'like', "%$search%")
                     ->orWhere('keterangan', 'like', "%$search%");
@@ -84,7 +81,7 @@ class ExportController extends Controller
         $query = Bimbingan::with('user');
 
         if ($search) {
-            $query->where(function ($q) use ($search) {
+            $query->where(function ($q) use ($search): void {
                 $q->where('tanggal', 'like', "%$search%")
                     ->orWhere('keterangan', 'like', "%$search%");
             });

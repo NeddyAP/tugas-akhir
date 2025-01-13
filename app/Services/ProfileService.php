@@ -12,7 +12,7 @@ class ProfileService
     public function updateProfile($user, array $data)
     {
         try {
-            DB::transaction(function () use ($user, $data) {
+            DB::transaction(function () use ($user, $data): void {
                 $user->update([
                     'name' => $data['name'],
                     'email' => $data['email'],
@@ -26,7 +26,7 @@ class ProfileService
                 'status' => 'success',
                 'message' => 'Profile berhasil diubah',
             ];
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             return [
                 'status' => 'error',
                 'message' => 'Profile gagal diubah',

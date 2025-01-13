@@ -26,7 +26,7 @@ class LaporanController extends Controller
 
         // Eager load relationships with specific fields
         $query->with([
-            'mahasiswa' => function ($query) {
+            'mahasiswa' => function ($query): void {
                 $query->select('id', 'name', 'email', 'profilable_id', 'profilable_type')
                     ->with('profilable');
             },
@@ -36,14 +36,14 @@ class LaporanController extends Controller
 
         // Add search functionality
         if ($search) {
-            $query->where(function ($query) use ($search) {
-                $query->whereHas('mahasiswa', function ($q) use ($search) {
+            $query->where(function ($query) use ($search): void {
+                $query->whereHas('mahasiswa', function ($q) use ($search): void {
                     $q->where('name', 'like', "%{$search}%")
-                        ->orWhereHas('profilable', function ($q) use ($search) {
+                        ->orWhereHas('profilable', function ($q) use ($search): void {
                             $q->where('nim', 'like', "%{$search}%");
                         });
                 })
-                    ->orWhereHas('pembimbing', function ($q) use ($search) {
+                    ->orWhereHas('pembimbing', function ($q) use ($search): void {
                         $q->where('name', 'like', "%{$search}%");
                     });
             });
@@ -62,8 +62,8 @@ class LaporanController extends Controller
         }
 
         if (! empty($filters['angkatan'])) {
-            $query->whereHas('mahasiswa', function ($query) use ($filters) {
-                $query->whereHasMorph('profilable', [MahasiswaProfile::class], function ($query) use ($filters) {
+            $query->whereHas('mahasiswa', function ($query) use ($filters): void {
+                $query->whereHasMorph('profilable', [MahasiswaProfile::class], function ($query) use ($filters): void {
                     $query->where('angkatan', $filters['angkatan']);
                 });
             });
@@ -108,23 +108,19 @@ class LaporanController extends Controller
         $mahasiswas = User::mahasiswa()
             ->with('profilable:id,nim,angkatan')
             ->get()
-            ->map(function ($user) {
-                return [
-                    'value' => $user->id,
-                    'label' => "{$user->name} ({$user->profilable->nim})",
-                ];
-            });
+            ->map(fn($user) => [
+                'value' => $user->id,
+                'label' => "{$user->name} ({$user->profilable->nim})",
+            ]);
 
         // Get dosen options for select
         $dosens = User::dosen()
             ->with('profilable:id,nip')
             ->get()
-            ->map(function ($user) {
-                return [
-                    'value' => $user->id,
-                    'label' => $user->name,
-                ];
-            });
+            ->map(fn($user) => [
+                'value' => $user->id,
+                'label' => $user->name,
+            ]);
 
         // Calculate grouped statistics
         $groupedStats = $this->calculateGroupedStats($type, $filters);
@@ -151,8 +147,8 @@ class LaporanController extends Controller
         }
 
         if (! empty($filters['angkatan'])) {
-            $query->whereHas('mahasiswa', function ($query) use ($filters) {
-                $query->whereHasMorph('profilable', [MahasiswaProfile::class], function ($query) use ($filters) {
+            $query->whereHas('mahasiswa', function ($query) use ($filters): void {
+                $query->whereHasMorph('profilable', [MahasiswaProfile::class], function ($query) use ($filters): void {
                     $query->where('angkatan', $filters['angkatan']);
                 });
             });

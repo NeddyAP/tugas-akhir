@@ -17,17 +17,15 @@ use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::get('/error', function () {
-    return Inertia::render('Error', [
-        'status' => request()->input('status', 500),
-        'message' => request()->input('message', 'An unexpected error occurred'),
-    ]);
-})->name('error');
+Route::get('/error', fn() => Inertia::render('Error', [
+    'status' => request()->input('status', 500),
+    'message' => request()->input('message', 'An unexpected error occurred'),
+]))->name('error');
 
 Route::get('/', [HomeController::class, 'home'])->name('home');
 Route::get('/pedoman', [HomeController::class, 'pedoman'])->name('pedoman');
 
-Route::middleware('auth')->group(function () {
+Route::middleware('auth')->group(function (): void {
 
     Route::resource('bimbingan', BimbinganController::class);
     Route::resource('logbook', LogbookController::class);
@@ -46,7 +44,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // Admin Page
-    Route::prefix('admin')->as('admin.')->middleware(AdminMiddleware::class)->group(function () {
+    Route::prefix('admin')->as('admin.')->middleware(AdminMiddleware::class)->group(function (): void {
         Route::resource('dashboard', DashboardController::class)->only('index');
 
         Route::resource('logbooks', AdminLogbookController::class);
@@ -61,7 +59,7 @@ Route::middleware('auth')->group(function () {
 
         Route::resource('informations', AdminInformationController::class);
 
-        Route::post('laporan/bulk-update', [AdminLaporanController::class, 'bulkUpdate'])
+        Route::post('laporan/bulk-update', (new AdminLaporanController())->bulkUpdate(...))
             ->name('laporan.bulk-update');
     });
 });

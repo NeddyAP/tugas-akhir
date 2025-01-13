@@ -29,10 +29,10 @@ class UserController extends Controller
 
         if ($search) {
             $searchWildcard = '%' . $search . '%';
-            $query->where(function ($q) use ($searchWildcard) {
+            $query->where(function ($q) use ($searchWildcard): void {
                 $q->where('name', 'like', $searchWildcard)
                     ->orWhere('email', 'like', $searchWildcard)
-                    ->orWhereHas('profilable', function ($q) use ($searchWildcard) {
+                    ->orWhereHas('profilable', function ($q) use ($searchWildcard): void {
                         $q->where('nim', 'like', $searchWildcard)
                             ->orWhere('nip', 'like', $searchWildcard);
                     });
@@ -169,7 +169,7 @@ class UserController extends Controller
         try {
             $validated = $request->validate($rules);
 
-            DB::transaction(function () use ($validated, $tab) {
+            DB::transaction(function () use ($validated, $tab): void {
                 $profileData = array_filter([
                     'phone' => $validated['phone'] ?? null,
                     'address' => $validated['address'] ?? null,
@@ -224,7 +224,7 @@ class UserController extends Controller
                 'message' => ucfirst($tab) . ' berhasil ditambahkan',
                 'type' => 'success',
             ]);
-        } catch (Exception $e) {
+        } catch (Exception) {
             return redirect()->back()->with('flash', [
                 'message' => 'Gagal menambahkan ' . $this->getUserTypeLabel($tab),
                 'type' => 'error',
@@ -249,7 +249,7 @@ class UserController extends Controller
             $rules = $this->getValidationRules($tab, $id);
             $validated = $request->validate($rules);
 
-            DB::transaction(function () use ($user, $validated) {
+            DB::transaction(function () use ($user, $validated): void {
                 if (isset($validated['password'])) {
                     $validated['password'] = Hash::make($validated['password']);
                 } else {
@@ -312,7 +312,7 @@ class UserController extends Controller
                 'message' => ucfirst($tab) . ' berhasil dihapus',
                 'type' => 'success',
             ]);
-        } catch (Exception $e) {
+        } catch (Exception) {
             return redirect()->back()->with('flash', [
                 'message' => 'Gagal menghapus ' . $this->getUserTypeLabel($tab),
                 'type' => 'error',

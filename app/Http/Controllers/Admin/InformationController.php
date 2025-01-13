@@ -64,9 +64,7 @@ class InformationController extends Controller
             $rules = $this->getValidationRules($type);
             $validated = $request->validate($rules);
 
-            $validated = array_filter($validated, function ($value) {
-                return ! is_null($value);
-            });
+            $validated = array_filter($validated, fn($value) => ! is_null($value));
 
             if ($type === self::TYPE_PANDUAN && isset($validated['file'])) {
                 $path = $request->file('file')->store('panduans', 'public');
@@ -89,9 +87,7 @@ class InformationController extends Controller
             $rules = $this->getValidationRules($type, true);
             $validated = $request->validate($rules);
 
-            $validated = array_filter($validated, function ($value) {
-                return ! is_null($value);
-            });
+            $validated = array_filter($validated, fn($value) => ! is_null($value));
 
             $model = $this->getModelClass($type);
             $item = $model::findOrFail($id);
@@ -140,9 +136,7 @@ class InformationController extends Controller
 
         if ($isUpdate) {
             // Make all fields nullable on update
-            $rules = array_map(function ($rule) {
-                return 'nullable|' . $rule;
-            }, $rules);
+            $rules = array_map(fn($rule) => 'nullable|' . $rule, $rules);
 
             // Special handling for panduan file
             if ($type === self::TYPE_PANDUAN) {

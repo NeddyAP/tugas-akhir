@@ -8,14 +8,8 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 
 class UsersExport implements FromCollection, WithHeadings, WithMapping
 {
-    protected $data;
-
-    protected $tab;
-
-    public function __construct($data, $tab)
+    public function __construct(protected $data, protected $tab)
     {
-        $this->data = $data;
-        $this->tab = $tab;
     }
 
     public function collection()

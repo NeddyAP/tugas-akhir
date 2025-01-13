@@ -18,6 +18,6 @@ class Question extends Model
 
     public function getQuestionAttribute($value)
     {
-        return ucfirst($value);
+        return ucfirst((string) $value);
     }
 }

@@ -19,7 +19,7 @@ class LaporanController extends Controller
         $search = $request->input('search');
         $perPage = $request->input('per_page', 10);
 
-        $baseQuery = function ($query) use ($user, $search) {
+        $baseQuery = function ($query) use ($user, $search): void {
             if ($user->role === 'dosen') {
                 $query->where('dosen_id', $user->id);
             } else {
@@ -27,8 +27,8 @@ class LaporanController extends Controller
             }
 
             $query->with(['mahasiswa:id,name', 'pembimbing:id,name', 'laporan'])
-                ->when($search, function ($query) use ($search) {
-                    $query->whereHas('mahasiswa', function ($q) use ($search) {
+                ->when($search, function ($query) use ($search): void {
+                    $query->whereHas('mahasiswa', function ($q) use ($search): void {
                         $q->where('name', 'like', "%{$search}%");
                     });
                 });
